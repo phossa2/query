@@ -6,7 +6,7 @@
 [![Latest Stable Version](https://img.shields.io/packagist/vpre/phossa2/query.svg?style=flat)](https://packagist.org/packages/phossa2/query)
 [![License](https://poser.pugx.org/phossa2/query/license)](http://mit-license.org/)
 
-**phossa2/query** is a PHP library.
+**phossa2/query** is a SQL query builder library with concise syntax for PHP.
 
 It requires PHP 5.4, supports PHP 7.0+ and HHVM. It is compliant with [PSR-1][PSR-1],
 [PSR-2][PSR-2], [PSR-3][PSR-3], [PSR-4][PSR-4], and the proposed [PSR-5][PSR-5].

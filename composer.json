@@ -2,7 +2,7 @@
     "name": "phossa2/query",
     "license": "MIT",
     "type": "library",
-    "description": ":package_description",
+    "description": "A SQL query builder library with concise syntax for PHP.",
     "keywords": ["query", "phossa"],
     "homepage": "https://github.com/phossa2/query",
     "authors": [
