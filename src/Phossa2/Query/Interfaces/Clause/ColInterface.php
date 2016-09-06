@@ -45,7 +45,7 @@ interface ColInterface extends ClauseInterface
      * ```
      *
      * @param  mixed $col column/field specification[s]
-     * @param  string $colAlias column alias name
+     * @param  string $alias column alias name
      * @param  bool $rawMode raw mode
      * @param  bool $distinct add distinct
      * @return $this
@@ -54,7 +54,7 @@ interface ColInterface extends ClauseInterface
      */
     public function col(
         $col,
-        /*# string */ $colAlias = '',
+        /*# string */ $alias = '',
         /*# bool */ $rawMode = false,
         /*# bool */ $distinct = false
     );
@@ -77,12 +77,12 @@ interface ColInterface extends ClauseInterface
      * ```
      *
      * @param  mixed $col column/field specification[s] if any
-     * @param  string $colAlias column alias name
+     * @param  string $alias column alias name
      * @return $this
      * @access public
      * @api
      */
-    public function distinct($col = '', /*# string */ $colAlias = '');
+    public function distinct($col = '', /*# string */ $alias = '');
 
     /**
      * COUNT()

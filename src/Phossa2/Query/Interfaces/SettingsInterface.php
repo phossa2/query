@@ -15,31 +15,31 @@
 namespace Phossa2\Query\Interfaces;
 
 /**
- * DialectAwareInterface
+ * SettingsInterface
+ *
+ * Used in BuilderInterface and StatementInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface DialectAwareInterface
+interface SettingsInterface
 {
     /**
-     * Set the dialect
+     * Set settings
      *
-     * @param  DialectInterface $dialect
-     * @return $this
+     * @param  array $settings
+     * @return self
      * @access public
-     * @api
      */
-    public function setDialect(DialectInterface $dialect);
+    public function setSettings(array $settings);
 
     /**
-     * Get the dialect
+     * Get all settings
      *
-     * @return DialectInterface
+     * @return array
      * @access public
-     * @api
      */
-    public function getDialect()/*# : DialectInterface */;
+    public function getSettings()/*# : array */;
 }

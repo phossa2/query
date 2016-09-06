@@ -12,20 +12,19 @@
  */
 /*# declare(strict_types=1); */
 
-namespace Phossa2\Query\Interfaces\Clause;
+namespace Phossa2\Query\Misc;
 
-use Phossa2\Query\Interfaces\FromInterface;
-use Phossa2\Query\Interfaces\ClauseInterface;
+use Phossa2\Query\Interfaces\RawInterface;
 
 /**
- * FromInterface
+ * Raw
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     ClauseInterface
+ * @see     RawInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FromInterface extends FromInterface, ClauseInterface
+class Raw implements RawInterface
 {
 }

@@ -15,31 +15,13 @@
 namespace Phossa2\Query\Interfaces;
 
 /**
- * DialectAwareInterface
+ * RawInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface DialectAwareInterface
+interface RawInterface
 {
-    /**
-     * Set the dialect
-     *
-     * @param  DialectInterface $dialect
-     * @return $this
-     * @access public
-     * @api
-     */
-    public function setDialect(DialectInterface $dialect);
-
-    /**
-     * Get the dialect
-     *
-     * @return DialectInterface
-     * @access public
-     * @api
-     */
-    public function getDialect()/*# : DialectInterface */;
 }
