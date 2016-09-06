@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * FunctionClauseInterface
+ * ColInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -25,24 +25,64 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FunctionClauseInterface extends ClauseInterface
+interface ColInterface extends ClauseInterface
 {
     /**
-     * Use function template with col
+     * Add col[s] to query
      *
      * ```php
-     * // SELECT CONCAT(`user_name`, "XXX") AS `new_name` FROM `users`
-     * $users->select()->func('CONCAT(%s, "XXX")', 'user_name', 'new_name');
+     * // SELECT `user_id`, `user_name`
+     * ->col('user_id')->col('user_name')
+     *
+     * // SELECT `user_name` AS `n`
+     * ->col('user_name', 'n')
+     *
+     * // SELECT `user_id`, `user_name`
+     * ->col(['user_id', 'user_name'])
+     *
+     * // SELECT `user_id`, `user_name` AS `n`
+     * ->col(['user_id', 'user_name' => 'n'])
      * ```
      *
-     * @param  string $function function template with lots of '%s'
-     * @param  string|string[] $cols col or array of cols
-     * @param  string $alias
+     * @param  mixed $col column/field specification[s]
+     * @param  string $colAlias column alias name
+     * @param  bool $rawMode raw mode
+     * @param  bool $distinct add distinct
      * @return $this
      * @access public
      * @api
      */
-    public function func(/*# string */ $function, $col, /*# string */ $alias = '');
+    public function col(
+        $col,
+        /*# string */ $colAlias = '',
+        /*# bool */ $rawMode = false,
+        /*# bool */ $distinct = false
+    );
+
+    /**
+     * DISTINCT
+     *
+     * ```php
+     * // SELECT DISTINCT `user_name`
+     * ->distince()->col('user_name')
+     *
+     * // SELECT DISTINCT `user_name`
+     * ->distinct('user_name')
+     *
+     * // SELECT DISTINCT `user_name` AS `n`
+     * ->distinct('user_name', 'n')
+     *
+     * // SELECT DISTINCT `user_id`, `user_name` AS `n`
+     * ->distinct(['user_id', 'user_name' => 'n'])
+     * ```
+     *
+     * @param  mixed $col column/field specification[s] if any
+     * @param  string $colAlias column alias name
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function distinct($col = '', /*# string */ $colAlias = '');
 
     /**
      * COUNT()
@@ -125,18 +165,34 @@ interface FunctionClauseInterface extends ClauseInterface
     public function sum(/*# string */ $col, /*# string */ $alias = '');
 
     /**
-     * SUM(DISTINCT)
+     * Provides a templated field specifications
      *
      * ```php
-     * // SELECT SUM(DISTINCT `score`) AS `s`
-     * select()->sumDistinct('score', 's')
+     * // SELECT CONCAT(`firstname`, ' ', `surname`) AS `n`
+     * ->colTpl('CONCAT(%s, ' ', %s)', ['firstname', 'surname'], 'n')
      * ```
      *
-     * @param  string $col
+     * @param  string $template
+     * @param  string|string[] $col column[s]
+     * @param  string $alias
+     * @access public
+     * @api
+     */
+    public function colTpl(/*# string */ $template, $col, /*# string */ $alias = '');
+
+    /**
+     * Raw mode col
+     *
+     * ```php
+     * // SELECT COUNT(user_id) AS `cnt`
+     * ->colRaw('COUNT(user_id)', 'cnt')
+     * ```
+     *
+     * @param  string $rawString
      * @param  string $alias
      * @return $this
      * @access public
      * @api
      */
-    public function sumDistinct(/*# string */ $col, /*# string */ $alias = '');
+    public function colRaw(/*# string */ $rawString, /*# string */ $alias = '');
 }

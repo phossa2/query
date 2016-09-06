@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * FromClauseInterface
+ * FromInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -25,10 +25,10 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FromClauseInterface extends ClauseInterface
+interface FromInterface extends ClauseInterface
 {
     /**
-     * FROM clause, APPEND to from table[s] if any
+     * FROM clause, APPEND to existing table lists
      *
      * ```php
      * // FROM `users`, `accounts`
@@ -48,38 +48,32 @@ interface FromClauseInterface extends ClauseInterface
      * ```
      *
      * @param  string|array|SelectStatementInterface $table table[s]
-     * @param  string $tableAlias alias to be used later in the query
+     * @param  string $alias alias to be used later in the query
      * @return $this
      * @access public
      * @api
      */
-    public function from(
-        $table,
-        /*# string */ $tableAlias = ''
-    );
+    public function from($table, /*# string */ $alias = '');
 
     /**
-     * Simliar to from(), but REPLACE current table[s] !
+     * FROM clause but REPLACE existing table lists !
      *
      * ```php
-     * // FROM `accounts` (NO 'users')
+     * // FROM `accounts`
      * select()->from('users')->table('accounts')
      *
-     * // FROM `users`, `accounts` (HAS users)
+     * // FROM `users`, `accounts`
      * select()->table('users')->from('accounts')
      *
-     * // FROM `users`, `accounts`
-     * select()->table(['users', 'accounts'])
+     * // FROM `users`, `accounts` AS `a`
+     * select()->table(['users', 'accounts' => 'a'])
      * ```
      *
      * @param  string|array|SelectStatementInterface $table table[s]
-     * @param  string $tableAlias alias to be used later in the query
+     * @param  string $alias alias to be used later in the query
      * @return $this
      * @access public
      * @api
      */
-    public function table(
-        $table,
-        /*# string */ $tableAlias = ''
-    );
+    public function table($table, /*# string */ $alias = '');
 }
