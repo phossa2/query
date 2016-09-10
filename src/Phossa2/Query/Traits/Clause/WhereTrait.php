@@ -358,36 +358,46 @@ trait WhereTrait
         $wheres = &$this->getClause($clause);
         foreach ($wheres as $idx => $where) {
             $cls = [];
-
-            // logic
             if ($idx) {
                 $cls[] = $where[2] ? 'AND' : 'OR';
             }
-
-            // NOT
             if ($where[1]) {
                 $cls[] = 'NOT';
             }
-
-            if (!empty($where[3])) {
-                $cls[] = $this->quoteItem(
-                    $where[3], $settings, $this->isRaw($where[3], $where[0])
-                );
-            }
-
-            // operator
-            if (WhereInterface::NO_OPERATOR !== $where[4]) {
-                $cls[] = $where[4];
-            }
-
-            // value
-            if (WhereInterface::NO_VALUE !== $where[5]) {
-                $cls[] = $this->processValue($where[5]);
-            }
-
-            $result[] = join(' ', $cls);
+            $result[] = $this->bulidWhereClause($cls, $where, $settings);
         }
         return $this->joinClause($clause, '', $result, $settings);
+    }
+
+    /**
+     * Build 'col = val' part
+     *
+     * @param  array $cls
+     * @param  array $where
+     * @param  array $settings
+     * @return string
+     * @access protected
+     */
+    protected function buildWhereClause(array $cls, array $where, array $settings)
+    {
+        // col
+        if (!empty($where[3])) {
+            $cls[] = $this->quoteItem(
+                $where[3], $settings, $this->isRaw($where[3], $where[0])
+            );
+        }
+
+        // operator
+        if (WhereInterface::NO_OPERATOR !== $where[4]) {
+            $cls[] = $where[4];
+        }
+
+        // value
+        if (WhereInterface::NO_VALUE !== $where[5]) {
+            $cls[] = $this->processValue($where[5]);
+        }
+
+        return join(' ', $cls);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
