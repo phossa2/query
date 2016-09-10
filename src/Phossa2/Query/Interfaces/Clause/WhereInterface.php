@@ -19,7 +19,7 @@ use Phossa2\Query\Interfaces\ExpressionInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
- * WhereClauseInterface
+ * WhereInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -27,7 +27,7 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface WhereClauseInterface extends ClauseInterface
+interface WhereInterface extends ClauseInterface
 {
     /**
      * Generic WHERE clause
@@ -132,10 +132,10 @@ interface WhereClauseInterface extends ClauseInterface
      *
      * ```php
      * // AND `age` > 18
-     * ->and('age', '>', 18)
+     * ->andWhere('age', '>', 18)
      *
      * // AND (`age` = 18 AND `score` = 100)
-     * ->and(['age' => 18, 'score' => 100])
+     * ->andWhere(['age' => 18, 'score' => 100])
      * ```
      *
      * @param  string|string[]|ExpressionInterface $col col or cols
@@ -153,10 +153,10 @@ interface WhereClauseInterface extends ClauseInterface
      *
      * ```php
      * // OR `age` > 18
-     * ->or('age', '>', 18)
+     * ->orWhere('age', '>', 18)
      *
      * // OR (`age` = 18 AND `score` = 100)
-     * ->or(['age' => 18, 'score' => 100])
+     * ->orWhere(['age' => 18, 'score' => 100])
      * ```
      *
      * @param  string|string[]|ExpressionInterface $col col or cols

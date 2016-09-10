@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * GroupByInterface
+ * LimitInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -25,54 +25,52 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface GroupByInterface extends ClauseInterface
+interface LimitInterface extends ClauseInterface
 {
     /**
-     * Generic GROUP BY
+     * Limit return rows, if $count is -1, means to the end
      *
      * ```php
-     * // GROUP BY `year`
-     * ->groupBy('year')
-     *
-     * // GROUP BY `year`, `gender`
-     * ->groupBy(['year', 'gender'])
+     * // LIMIT 10 OFFSET 20
+     * ->limit(10, 20)
      * ```
      *
-     * @param  string|string[] $col column[s]
+     * @param  int $count
+     * @param  int $offset
      * @return $this
      * @access public
      * @api
      */
-    public function groupBy($col);
+    public function limit(/*# int */ $count, /*# int */ $offset = 0);
 
     /**
-     * Generic GROUP BY template
+     * Offset
      *
      * ```php
-     * // GROUP BY `year` WITH ROLLUP
-     * ->groupByTpl('%s WITH ROLLUP', 'year')
+     * // LIMIT 10 OFFSET 20
+     * ->limit(10)->offset(20)
      * ```
      *
-     * @param  string $template
-     * @param  string|string[] $col column[s]
+     * @param  int $offset
      * @return $this
      * @access public
      * @api
      */
-    public function groupByTpl(/*# string */ $template, $col);
+    public function offset(/*# int */ $offset);
 
     /**
-     * Generic GROUP BY Raw mode
+     * Paging
      *
      * ```php
-     * // GROUP BY year WITH ROLLUP
-     * ->groupByRaw('year WITH ROLLUP')
+     * // LIMIT 30 OFFSET 0
+     * ->page(1)
      * ```
      *
-     * @param  string $groupby
+     * @param  int $pageNumber start from 1
+     * @param  int $perPage rows per page
      * @return $this
      * @access public
      * @api
      */
-    public function groupByRaw(/*# string */ $groupby);
+    public function page(/*# int */ $pageNumber, /*# int */ $perPage = 30);
 }

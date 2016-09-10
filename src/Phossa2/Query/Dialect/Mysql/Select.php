@@ -12,29 +12,18 @@
  */
 /*# declare(strict_types=1); */
 
-namespace Phossa2\Query\Dialect;
+namespace Phossa2\Query\Dialect\Mysql;
+
+use Phossa2\Query\Dialect\Common\Select as CommonSelect;
 
 /**
- * Mysql
- *
- * Mysql dialect
+ * Mysql Select
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     Common
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Mysql extends Common
+class Select extends CommonSelect
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function dialectSettings()/*# : array */
-    {
-        return [
-            'quotePrefix' => '`',
-            'quoteSuffix' => '`'
-        ];
-    }
 }

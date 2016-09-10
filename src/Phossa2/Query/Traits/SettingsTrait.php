@@ -37,25 +37,25 @@ trait SettingsTrait
      */
     protected $settings = [
         // auto quote db identifier
-        'autoQuote'         => true,
+        'autoQuote' => true,
 
         // replace value with '?'
-        'positionedParam'   => false,
+        'positionedParam' => false,
 
         // named parameters?
-        'namedParam'        => false,
+        'namedParam' => false,
 
         // clause seperator
-        'seperator'         => ' ',
+        'seperator' => ' ',
 
         // subline indention
-        'indent'            => '',
+        'indent' => '',
 
         // escape/quote function
-        'escapeFunction'    => null,
+        'escapeFunction' => null,
 
         // INSERT NULL instead of DEFAULT
-        'useNullAsDefault'  => false,
+        'useNullAsDefault' => false,
     ];
 
     /**

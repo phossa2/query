@@ -30,7 +30,7 @@ interface SettingsInterface
      * Set settings
      *
      * @param  array $settings
-     * @return self
+     * @return $this
      * @access public
      */
     public function setSettings(array $settings);

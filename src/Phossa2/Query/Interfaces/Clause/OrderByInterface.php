@@ -39,17 +39,11 @@ interface OrderByInterface extends ClauseInterface
      * ```
      *
      * @param  string|string[] $col
-     * @param  bool $rawMode
-     * @param  string $suffix 'ASC' or 'DESC'
      * @return $this
      * @access public
      * @api
      */
-    public function orderBy(
-        $col,
-        /*# bool */ $rawMode = false,
-        /*# sting */ $suffix = 'ASC'
-    );
+    public function orderBy($col);
 
     /**
      * Generic ORDER BY DESC
@@ -63,12 +57,11 @@ interface OrderByInterface extends ClauseInterface
      * ```
      *
      * @param  string|string[] $col
-     * @param  bool $rawMode
      * @return $this
      * @access public
      * @api
      */
-    public function orderByDesc($col, /*# bool */ $rawMode = false);
+    public function orderByDesc($col);
 
     /**
      * ORDER BY template

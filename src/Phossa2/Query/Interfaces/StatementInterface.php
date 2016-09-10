@@ -19,9 +19,30 @@ namespace Phossa2\Query\Interfaces;
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
+ * @see     DialectAwareInterface
+ * @see     SettingsInterface
+ * @see     BuilderAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface
+interface StatementInterface extends DialectAwareInterface, SettingsInterface, BuilderAwareInterface
 {
+    /**
+     * Return the statement string
+     *
+     * @param  array $settings extra settings if any
+     * @return string
+     * @access public
+     * @api
+     */
+    public function getStatement(array $settings = [])/*# : string */;
+
+    /**
+     * Get the statement with default settings & dialect
+     *
+     * @return string
+     * @access public
+     * @api
+     */
+    public function __toString()/*# : string */;
 }

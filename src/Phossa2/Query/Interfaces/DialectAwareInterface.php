@@ -32,10 +32,19 @@ interface DialectAwareInterface
      * @access public
      * @api
      */
-    public function setDialect(DialectInterface $dialect);
+    public function setDialect(DialectInterface $dialect = null);
 
     /**
-     * Get the dialect
+     * Has dialect set ?
+     *
+     * @return bool
+     * @access public
+     * @api
+     */
+    public function hasDialect()/*# : bool */;
+
+    /**
+     * Get the dialect, if not set get Mysql dialect
      *
      * @return DialectInterface
      * @access public

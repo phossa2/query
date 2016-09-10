@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits;
 
+use Phossa2\Query\Dialect\Mysql;
 use Phossa2\Query\Interfaces\DialectInterface;
 use Phossa2\Query\Interfaces\DialectAwareInterface;
 
@@ -41,7 +42,7 @@ trait DialectAwareTrait
     /**
      * {@inheritDoc}
      */
-    public function setDialect(DialectInterface $dialect)
+    public function setDialect(DialectInterface $dialect = null)
     {
         $this->dialect = $dialect;
         return $this;
@@ -50,8 +51,19 @@ trait DialectAwareTrait
     /**
      * {@inheritDoc}
      */
+    public function hasDialect()/*# : bool */
+    {
+        return null !== $this->dialect;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getDialect()/*# : DialectInterface */
     {
+        if (!$this->hasDialect()) {
+            $this->dialect = new Mysql();
+        }
         return $this->dialect;
     }
 }

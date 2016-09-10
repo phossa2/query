@@ -24,4 +24,12 @@ namespace Phossa2\Query\Interfaces;
  */
 interface DialectInterface
 {
+    /**
+     * Get dialect specific settings
+     *
+     * @return array
+     * @access public
+     * @api
+     */
+    public function dialectSettings()/*# : array */;
 }

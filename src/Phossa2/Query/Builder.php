@@ -15,14 +15,12 @@
 namespace Phossa2\Query;
 
 use Phossa2\Query\Dialect\Mysql;
-use Phossa2\Query\Message\Message;
 use Phossa2\Shared\Base\ObjectAbstract;
 use Phossa2\Query\Traits\SettingsTrait;
 use Phossa2\Query\Traits\DialectAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
-use Phossa2\Query\Interfaces\StatementInterface;
-use Phossa2\Query\Exception\BadMethodCallException;
+use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
  * Builder
@@ -31,6 +29,7 @@ use Phossa2\Query\Exception\BadMethodCallException;
  * @author  Hong Zhang <phossa@126.com>
  * @see     ObjectAbstract
  * @see     BuilderInterface
+ * @see     SelectStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
@@ -70,14 +69,22 @@ class Builder extends ObjectAbstract implements BuilderInterface
         DialectInterface $dialect = null,
         array $settings = []
     ) {
-        // settings
-        $this->setSettings($settings);
+        $this
+            ->setSettings($settings)
+            ->setDialect($dialect)
+            ->table($table);
+    }
 
-        // @TODO default to Mysql
-        $this->setDialect($dialect ?: new Mysql());
-
-        // tables
-        $this->from($table);
+    /**
+     * Change table[s]
+     *
+     * @param  $table change to table[s]
+     * @return $this
+     * @access public
+     */
+    public function __invoke($table)
+    {
+        return $this->table($table);
     }
 
     /**
@@ -97,6 +104,8 @@ class Builder extends ObjectAbstract implements BuilderInterface
     }
 
     /**
+     * If has existing tables, return a new instance with provided table[s]
+     *
      * {@inheritDoc}
      */
     public function table($table, /*# string */ $alias = '')
@@ -108,6 +117,8 @@ class Builder extends ObjectAbstract implements BuilderInterface
     }
 
     /**
+     * Append to existing tables
+     *
      * {@inheritDoc}
      */
     public function from($table, /*# string */ $alias = '')
@@ -124,17 +135,15 @@ class Builder extends ObjectAbstract implements BuilderInterface
         $col = '',
         /*# string */ $alias = ''
     )/*# : SelectStatementInterface */ {
-        /* @var $select SelectStatementInterface */
-        $select = $this->getDialectStatement('select');
+        /* @var SelectStatementInterface $select */
+        $select = $this->getDialect()->select($this);
         return $select->table($this->tables)->col($col, $alias);
     }
 
     /**
-     * fix table notation
-     *
      * Convert to [$table => alias] or [$table]
      *
-     * @param  mixed $table
+     * @param  string|string[] $table
      * @param  string $alias
      * @return array
      * @access protected
@@ -149,34 +158,5 @@ class Builder extends ObjectAbstract implements BuilderInterface
             $table = empty($alias) ? [$table] : [$table => $alias];
         }
         return $table;
-    }
-
-    /**
-     * Get the statement object
-     *
-     * @param  string $method
-     * @return StatementInterface
-     * @throws BadMethodCallException if no method found for this dialect
-     * @access protected
-     */
-    protected function getDialectStatement(
-        /*# string */ $method
-    )/*# StatementInterface */ {
-        $dialect = $this->getDialect();
-        if (!method_exists($dialect, $method)) {
-            throw new BadMethodCallException(
-                Message::get(
-                    Message::MSG_METHOD_NOTFOUND,
-                    $method,
-                    get_class($dialect)
-                ),
-                Message::MSG_METHOD_NOTFOUND
-            );
-        }
-
-        /* @var $statement StatementInterface */
-        $statement = call_user_func([$dialect, $method], $this);
-
-        return $statement;
     }
 }
