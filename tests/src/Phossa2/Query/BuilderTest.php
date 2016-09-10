@@ -69,7 +69,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testTable()
     {
-        $sql = 'SELECT * FROM "Orders" AS "o", "Users"';
+        $sql = 'SELECT * FROM `Orders` AS `o`, `Users`';
         $this->assertEquals(
             $sql,
             $this->object->table(['Orders' => 'o', 'Users'])->select()->getStatement()
@@ -81,7 +81,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testFrom()
     {
-        $sql = 'SELECT * FROM "Users", "Orders" AS "o"';
+        $sql = 'SELECT * FROM `Users`, `Orders` AS `o`';
         $this->assertEquals(
             $sql,
             $this->object->from('Orders', 'o')->select()->getStatement()
@@ -96,35 +96,35 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     public function testSelect1()
     {
         // empty col, *
-        $sql = 'SELECT * FROM "Users"';
+        $sql = 'SELECT * FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select()->getStatement()
         );
 
         // single col
-        $sql = 'SELECT "user_name" FROM "Users"';
+        $sql = 'SELECT `u`.`user_name` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select('user_name')->getStatement()
+            $this->object->select('u.user_name')->getStatement()
         );
 
         // distinct
-        $sql = 'SELECT DISTINCT "user_name" FROM "Users"';
+        $sql = 'SELECT DISTINCT `user_name` FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select()->distinct('user_name')->getStatement()
         );
 
         // col alias
-        $sql = 'SELECT "user_name" AS "n" FROM "Users"';
+        $sql = 'SELECT `user_name` AS `n` FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select('user_name', 'n')->getStatement()
         );
 
         // multiple cols
-        $sql = 'SELECT "user_id", "user_name" AS "n" FROM "Users"';
+        $sql = 'SELECT `user_id`, `user_name` AS `n` FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select('user_id')->col('user_name', 'n')->getStatement()
@@ -137,21 +137,21 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         );
 
         // count
-        $sql = 'SELECT COUNT("user_id") AS "cnt" FROM "Users"';
+        $sql = 'SELECT COUNT(`user_id`) AS `cnt 2` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->count('user_id', 'cnt')->getStatement()
+            $this->object->select()->count('user_id', 'cnt 2')->getStatement()
         );
 
         // multiple max
-        $sql = 'SELECT MAX("lang_score"), MAX("math_score") FROM "Users"';
+        $sql = 'SELECT MAX(`lang_score`), MAX(`math_score`) FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select()->max('lang_score')->max('math_score')->getStatement()
         );
 
         // col template
-        $sql = 'SELECT SUM(DISTINCT "score") AS "s" FROM "Users"';
+        $sql = 'SELECT SUM(DISTINCT `score`) AS `s` FROM `Users`';
         $this->assertEquals(
             $sql,
             $this->object->select()->colTpl('SUM(DISTINCT %s)', 'score', 's')
@@ -161,7 +161,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         // raw col
         $this->assertEquals(
             $sql,
-            $this->object->select()->colRaw('SUM(DISTINCT "score")', 's')
+            $this->object->select()->colRaw('SUM(DISTINCT `score`)', 's')
                 ->getStatement()
         );
     }

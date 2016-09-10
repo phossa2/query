@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\WhereInterface;
 use Phossa2\Query\Interfaces\Clause\HavingInterface;
 
@@ -46,7 +47,7 @@ trait HavingTrait
      */
     public function havingTpl(/*# string */ $template, $col)
     {
-        return $this->realWhere($this->clauseTpl($template, $col),
+        return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
             true, false, true, 'HAVING');
     }
@@ -85,5 +86,4 @@ trait HavingTrait
         /*# bool */ $rawMode  = false,
         /*# string */ $clause = 'WHERE'
     );
-    abstract protected function clauseTpl(/*# string */ $template, $col)/*# : string */;
 }

@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\ColInterface;
 
 /**
@@ -100,7 +101,7 @@ trait ColTrait
         $col,
         /*# string */ $alias = ''
     ) {
-        return $this->colRaw($this->clauseTpl($template, $col), $alias);
+        return $this->realCol(new Template($template, $col), $alias);
     }
 
     /**
@@ -171,8 +172,8 @@ trait ColTrait
             $result[] = '*';
         } else {
             foreach ($clause as $as => $col) {
-                $alias = $this->quoteAlias($as);
-                $field = $this->quoteItem($col[0], $col[1]);
+                $alias = $this->quoteAlias($as, $settings);
+                $field = $this->quoteItem($col[0], $settings, $col[1]);
                 $result[] = $field . $alias;
             }
         }
@@ -193,9 +194,8 @@ trait ColTrait
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function quoteAlias($alias)/*# : string */;
-    abstract protected function quoteItem($item, /*# bool */ $rawMode = false)/*# : string */;
-    abstract protected function clauseTpl(/*# string */ $template, $col)/*# : string */;
+    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
+    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function joinClause(
         /*# : string */ $prefix,

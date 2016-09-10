@@ -12,21 +12,27 @@
  */
 /*# declare(strict_types=1); */
 
-namespace Phossa2\Query\Interfaces\Clause;
-
-use Phossa2\Query\Interfaces\ClauseInterface;
-use Phossa2\Query\Interfaces\FromInterface as BuilderFromInterface;
+namespace Phossa2\Query\Interfaces;
 
 /**
- * FromInterface
+ * TemplateInterface
+ *
+ * Clause template interface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     ClauseInterface
- * @see     BuilderFromInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FromInterface extends BuilderFromInterface, ClauseInterface
+interface TemplateInterface
 {
+    /**
+     * Get output of the template base on settings
+     *
+     * @param  array $settings
+     * @return string
+     * @access public
+     * @api
+     */
+    public function getOutput(array $settings)/*# : string */;
 }

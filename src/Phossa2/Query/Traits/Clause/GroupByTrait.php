@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\GroupByInterface;
 
 /**
@@ -40,7 +41,7 @@ trait GroupByTrait
      */
     public function groupByTpl(/*# string */ $template, $col)
     {
-        return $this->realGroupBy($this->clauseTpl($template, $col), true);
+        return $this->realGroupBy(new Template($template, $col), true);
     }
 
     /**
@@ -93,15 +94,14 @@ trait GroupByTrait
         $result = [];
         $clause = &$this->getClause('GROUP BY');
         foreach ($clause as $grp) {
-            $result[] = $this->quoteItem($grp[0], $grp[1]);
+            $result[] = $this->quoteItem($grp[0], $settings, $grp[1]);
         }
         return $this->joinClause('GROUP BY', ',', $result, $settings);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function clauseTpl(/*# string */ $template, $col)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function quoteItem($item, /*# bool */ $rawMode = false)/*# : string */;
+    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function joinClause(
         /*# : string */ $prefix,
         /*# : string */ $seperator,

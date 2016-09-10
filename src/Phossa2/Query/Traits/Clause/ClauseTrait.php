@@ -16,8 +16,8 @@ namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Interfaces\RawInterface;
 use Phossa2\Query\Interfaces\ClauseInterface;
+use Phossa2\Query\Interfaces\TemplateInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
-
 
 /**
  * ClauseTrait
@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 trait ClauseTrait
 {
+    use QuoteTrait;
+
     /**
      * storage for clauses
      *
@@ -39,7 +41,7 @@ trait ClauseTrait
     protected $clause = [];
 
     /**
-     * Is $str a raw string ?
+     * Is $str a raw sql string ?
      *
      * @param  mixed $str
      * @param  bool $rawMode
@@ -49,42 +51,58 @@ trait ClauseTrait
     {
         if ($rawMode) {
             return true;
-        } elseif (is_string($str)) {
-            return (bool) preg_match('/[^0-9a-zA-Z\$_.]/', $str);
-        } elseif (is_object($str) && $str instanceof RawInterface) {
-            return true;
         }
-        return false;
+
+        if (is_string($str)) {
+            return (bool) preg_match('/[^0-9a-zA-Z\$_.]/', $str);
+        }
+
+        return is_object($str) && $str instanceof RawInterface;
     }
 
     /**
      * Quote an alias if not an int
      *
      * @param  int|string $alias
+     * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function quoteAlias($alias)/*# : string */
+    protected function quoteAlias($alias, array $settings)/*# : string */
     {
-        return is_int($alias) ? '' : (' AS ' . $this->quoteSpace($alias));
+        $prefix = $settings['quotePrefix'];
+        $suffix = $settings['quoteSuffix'];
+        return is_int($alias) ?
+            '' : (' AS ' . $this->quoteSpace($alias, $prefix, $suffix));
     }
 
     /**
-     * Quote an item with spaces allowed in between
+     * Quote an item if it is a field/column
      *
      * @param  string|StatementInterface $item
+     * @param  array $settings
      * @param  bool $rawMode
      * @access protected
      */
     protected function quoteItem(
-        $item, /*# bool */ $rawMode = false
+        $item,
+        array $settings,
+        /*# bool */ $rawMode = false
     )/*# : string */ {
-        if (is_object($item) && $item instanceof StatementInterface) {
-            // @TODO quoteItem check settings
-            return '(' . $item->getStatement([], false) . ')';
-        } else {
-            return $rawMode ? (string) $item : $this->quote($item);
+        if (is_object($item)) {
+            if ($item instanceof StatementInterface) {
+                $settings = array_merge(
+                    $settings,
+                    ['seperator' => ' ', 'indent' => '']
+                );
+                return '(' . $item->getStatement($settings) . ')';
+            }
+            if ($item instanceof TemplateInterface) {
+                return $item->getOutput($settings);
+            }
         }
+        return $rawMode ? (string) $item :
+            $this->quote($item, $settings['quotePrefix'], $settings['quoteSuffix']);
     }
 
     /**
@@ -107,32 +125,20 @@ trait ClauseTrait
     }
 
     /**
-     * Convert a template 'COUNT(%s)' to 'COUNT(`score`)'
+     * Quote string even space found
      *
-     * @param  string $template
-     * @param  string|string[] $col column[s]
+     * @param  string $str
+     * @param  string $prefix
+     * @param  string $suffix
      * @return string
      * @access protected
      */
-    protected function clauseTpl(/*# string */ $template, $col)/*# : string */
-    {
-        $quoted = [];
-        foreach ((array) $col as $c) {
-            $quoted[] = $this->quote($c);
-        }
-        return vsprintf($template, $quoted);
-    }
-
-    protected function quote(/*# string */ $str)/*# : string */
-    {
-        // @TODO quote()
-        return '"' . $str . '"';
-    }
-
-    protected function quoteSpace(/*# string */ $str)/*# : string */
-    {
-        // @TODO quoteSpace
-        return $this->quote($str);
+    protected function quoteSpace(
+        /*# string */ $str,
+        /*# string */ $prefix,
+        /*# string */ $suffix
+    )/*# : string */ {
+        return sprintf('%s%s%s', $prefix, $str, $suffix);
     }
 
     /**

@@ -85,15 +85,15 @@ trait FromTrait
         $result = [];
         $clause = &$this->getClause('FROM');
         foreach ($clause as $as => $tbl) {
-            $alias = $this->quoteAlias($as);
-            $table = $this->quoteItem($tbl);
+            $alias = $this->quoteAlias($as, $settings);
+            $table = $this->quoteItem($tbl, $settings);
             $result[] = $table . $alias;
         }
         return $this->joinClause('FROM', ',', $result, $settings);
     }
 
-    abstract protected function quoteAlias($alias)/*# : string */;
-    abstract protected function quoteItem($item, /*# bool */ $rawMode = false)/*# : string */;
+    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
+    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function joinClause(
         /*# : string */ $prefix,

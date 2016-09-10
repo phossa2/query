@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\OrderByInterface;
 
 /**
@@ -50,7 +51,7 @@ trait OrderByTrait
      */
     public function orderByTpl(/*# string */ $template, $col)
     {
-        return $this->realOrderBy($this->clauseTpl($template, $col), '', true);
+        return $this->realOrderBy(new Template($template, $col), '', true);
     }
 
     /**
@@ -74,12 +75,26 @@ trait OrderByTrait
         /*# bool */ $rawMode = false
     ) {
         if (is_array($col)) {
-            $this->multipleOrderBy($col);
+            $this->multipleOrderBy($col, $suffix);
         } else {
             $clause = &$this->getClause('ORDER BY');
             $clause[] = [$col, $suffix, $this->isRaw($col, $rawMode)];
         }
         return $this;
+    }
+
+    /**
+     * Multitple orderbys
+     *
+     * @param  array $cols
+     * @param  string $suffix 'ASC' or 'DESC'
+     * @access protected
+     */
+    protected function multipleOrderBy(array $cols, /*# sting */ $suffix)
+    {
+        foreach ($cols as $col) {
+            $this->realOrderBy($col, $suffix);
+        }
     }
 
     /**
@@ -94,7 +109,7 @@ trait OrderByTrait
         $result = [];
         $clause = &$this->getClause('ORDER BY');
         foreach ($clause as $ord) {
-            $item = $this->quoteItem($ord[0], $ord[2]);
+            $item = $this->quoteItem($ord[0], $settings, $ord[2]);
             $ordr = $ord[1] ? (' ' . $ord[1]) : '';
             $result[] =  $item . $ordr;
         }
@@ -102,9 +117,8 @@ trait OrderByTrait
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function clauseTpl(/*# string */ $template, $col)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function quoteItem($item, /*# bool */ $rawMode = false)/*# : string */;
+    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function joinClause(
         /*# : string */ $prefix,
         /*# : string */ $seperator,

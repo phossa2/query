@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\WhereInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
@@ -46,7 +47,7 @@ trait WhereTrait
      */
     public function whereTpl(/*# string */ $template, $col)
     {
-        return $this->realWhere($this->clauseTpl($template, $col),
+        return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
             true, false, true);
     }
@@ -56,7 +57,7 @@ trait WhereTrait
      */
     public function orWhereTpl(/*# string */ $template, $col)
     {
-        return $this->realWhere($this->clauseTpl($template, $col),
+        return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
             false, false, true);
     }
@@ -283,22 +284,37 @@ trait WhereTrait
         $value    = WhereInterface::NO_VALUE,
         /*# bool */ $logicAnd = true,
         /*# bool */ $whereNot = false,
-        /*# bool */ $rawMode  = false,
+        /*# bool */ $rawMode = false,
         /*# string */ $clause = 'WHERE'
     ) {
         $clause = &$this->getClause($clause);
         if (is_array($col)) {
             $this->multipleWhere($col, $logicAnd, $whereNot, $rawMode);
             return $this;
-        } elseif (WhereInterface::NO_OPERATOR === $operator) {
+        }
+        $this->fixOperatorValue($operator, $value, $rawMode);
+
+        $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
+        return $this;
+    }
+
+    /**
+     * Fix operator and value
+     *
+     * @param  mixed $operator
+     * @param  mixed $value
+     * @param  bool $rawMode
+     * @access protected
+     */
+    protected function fixOperatorValue(&$operator, &$value, &$rawMode)
+    {
+        if (WhereInterface::NO_OPERATOR === $operator) {
             $rawMode = true;
             $value = WhereInterface::NO_VALUE;
         } elseif (WhereInterface::NO_VALUE === $value) {
             $value = $operator;
             $operator = '=';
         }
-        $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
-        return $this;
     }
 
     /**
@@ -352,7 +368,9 @@ trait WhereTrait
             }
 
             if (!empty($where[3])) {
-                $cls[] = $this->quoteItem($where[3], $this->isRaw($where[3], $where[0]));
+                $cls[] = $this->quoteItem(
+                    $where[3], $settings, $this->isRaw($where[3], $where[0])
+                );
             }
 
             // operator
@@ -370,10 +388,10 @@ trait WhereTrait
         return $this->joinClause($clause, '', $result, $settings);
     }
 
+    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function processValue($value)/*# : string */;
-    abstract protected function clauseTpl(/*# string */ $template, $col)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function quoteItem($item, /*# bool */ $rawMode = false)/*# : string */;
+    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function joinClause(
         /*# : string */ $prefix,
         /*# : string */ $seperator,
