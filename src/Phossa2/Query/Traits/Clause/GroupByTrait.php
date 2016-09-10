@@ -53,7 +53,8 @@ trait GroupByTrait
     }
 
     /**
-     * @param  string|string[] $col column[s]
+     * real group by
+     * @param  string|string[]|Template $col column[s]
      * @param  bool $rawMode
      * @return $this
      * @access protected

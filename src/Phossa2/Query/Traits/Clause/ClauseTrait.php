@@ -89,20 +89,37 @@ trait ClauseTrait
         array $settings,
         /*# bool */ $rawMode = false
     )/*# : string */ {
+        // object
         if (is_object($item)) {
-            if ($item instanceof StatementInterface) {
-                $settings = array_merge(
-                    $settings,
-                    ['seperator' => ' ', 'indent' => '']
-                );
-                return '(' . $item->getStatement($settings) . ')';
-            }
-            if ($item instanceof TemplateInterface) {
-                return $item->getOutput($settings);
-            }
+            return $this->quoteObject($item, $settings);
         }
+
+        // string
         return $rawMode ? (string) $item :
             $this->quote($item, $settings['quotePrefix'], $settings['quoteSuffix']);
+    }
+
+    /**
+     * Quote object
+     *
+     * @param  object $object
+     * @param  array $settings
+     * @return string
+     * @access protected
+     */
+    protected function quoteObject($object, $settings)/*# : string */
+    {
+        if ($object instanceof StatementInterface) {
+            $settings = array_merge(
+                $settings,
+                ['seperator' => ' ', 'indent' => '']
+            );
+            return '(' . $object->getStatement($settings) . ')';
+        }
+        if ($object instanceof TemplateInterface) {
+            return $object->getOutput($settings);
+        }
+        return (string) $object;
     }
 
     /**

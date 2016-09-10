@@ -63,7 +63,9 @@ trait OrderByTrait
     }
 
     /**
-     * @param  string|string[] $col
+     * Real orderby
+     *
+     * @param  string|string[]|Template $col
      * @param  string $suffix 'ASC' or 'DESC'
      * @param  bool $rawMode
      * @return $this

@@ -268,7 +268,9 @@ trait WhereTrait
     }
 
     /**
-     * @param  string|array $col col or cols
+     * Real where
+     *
+     * @param  string|string[]|Template $col col or cols
      * @param  mixed $operator
      * @param  mixed $value
      * @param  bool $logicAnd 'AND'
