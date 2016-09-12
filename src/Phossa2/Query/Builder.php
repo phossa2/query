@@ -14,10 +14,13 @@
 
 namespace Phossa2\Query;
 
+use Phossa2\Query\Misc\Raw;
 use Phossa2\Query\Dialect\Mysql;
+use Phossa2\Query\Misc\Expression;
 use Phossa2\Shared\Base\ObjectAbstract;
 use Phossa2\Query\Traits\SettingsTrait;
 use Phossa2\Query\Traits\DialectAwareTrait;
+use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
@@ -35,7 +38,7 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Builder extends ObjectAbstract implements BuilderInterface
 {
-    use DialectAwareTrait, SettingsTrait;
+    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait;
 
     /**
      * tables
@@ -70,7 +73,8 @@ class Builder extends ObjectAbstract implements BuilderInterface
         array $settings = []
     ) {
         $this
-            ->setSettings($settings)
+            ->initParameter()
+            ->setSettings(array_replace($this->defaultSettings(), $settings))
             ->setDialect($dialect)
             ->table($table);
     }
@@ -92,7 +96,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
      */
     public function expr()/*# : ExpressionInterface */
     {
-        // @TODO
+        return new Expression($this);
     }
 
     /**
@@ -100,7 +104,15 @@ class Builder extends ObjectAbstract implements BuilderInterface
      */
     public function raw(/*# string */ $string)/*# : RawInterface */
     {
-        // @TODO
+        // values found
+        if (func_num_args() > 1) {
+            $values = func_get_args();
+            array_shift($values);
+            $string = $this->getParameter()
+                ->replaceQuestionMark($string, $values);
+        }
+
+        return new Raw($string, $this);
     }
 
     /**
@@ -158,5 +170,37 @@ class Builder extends ObjectAbstract implements BuilderInterface
             $table = empty($alias) ? [$table] : [$table => $alias];
         }
         return $table;
+    }
+
+    /**
+     * Builder default settings
+     *
+     * @return array
+     * @access protected
+     */
+    protected function defaultSettings()/*# : array */
+    {
+        return [
+            // auto quote db identifier
+            'autoQuote' => true,
+
+            // default NOT using '?'
+            'positionedParam' => false,
+
+            // conside value ':name' as named parameter
+            'namedParam' => false,
+
+            // clause seperator
+            'seperator' => ' ',
+
+            // subline indention
+            'indent' => '',
+
+            // escape/quote function
+            'escapeFunction' => null,
+
+            // INSERT NULL instead of DEFAULT
+            'useNullAsDefault' => false,
+        ];
     }
 }

@@ -48,8 +48,7 @@ trait WhereTrait
     public function whereTpl(/*# string */ $template, $col)
     {
         return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            true, false, true);
+            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE, 'AND', '');
     }
 
     /**
@@ -58,8 +57,7 @@ trait WhereTrait
     public function orWhereTpl(/*# string */ $template, $col)
     {
         return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            false, false, true);
+            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE, 'OR', '');
     }
 
     /**
@@ -68,7 +66,7 @@ trait WhereTrait
     public function whereRaw(/*# string */ $rawString)
     {
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
-            WhereInterface::NO_VALUE, true, false, true);
+            WhereInterface::NO_VALUE, 'AND', '', true);
     }
 
     /**
@@ -77,7 +75,7 @@ trait WhereTrait
     public function orWhereRaw(/*# string */ $rawString)
     {
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
-            WhereInterface::NO_VALUE, false, false, true);
+            WhereInterface::NO_VALUE, 'OR', '', true);
     }
 
     /**
@@ -99,7 +97,7 @@ trait WhereTrait
         $operator = WhereInterface::NO_OPERATOR,
         $value = WhereInterface::NO_VALUE
     ) {
-        return $this->realWhere($col, $operator, $value, false);
+        return $this->realWhere($col, $operator, $value, 'OR');
     }
 
     /**
@@ -110,7 +108,7 @@ trait WhereTrait
         $operator = WhereInterface::NO_OPERATOR,
         $value = WhereInterface::NO_VALUE
     ) {
-        return $this->realWhere($col, $operator, $value, true, true);
+        return $this->realWhere($col, $operator, $value, 'AND', 'NOT');
     }
 
     /**
@@ -121,7 +119,7 @@ trait WhereTrait
         $operator = WhereInterface::NO_OPERATOR,
         $value = WhereInterface::NO_VALUE
     ) {
-        return $this->realWhere($col, $operator, $value, false, true);
+        return $this->realWhere($col, $operator, $value, 'OR', 'NOT');
     }
 
     /**
@@ -137,7 +135,7 @@ trait WhereTrait
      */
     public function orWhereIn(/*# string */ $col, $value)
     {
-        return $this->realWhere($col, 'IN', $value, false);
+        return $this->realWhere($col, 'IN', $value, 'OR');
     }
 
     /**
@@ -153,7 +151,7 @@ trait WhereTrait
      */
     public function orWhereNotIn(/*# string */ $col, $value)
     {
-        return $this->realWhere($col, 'NOT IN', $value, false);
+        return $this->realWhere($col, 'NOT IN', $value, 'OR');
     }
 
     /**
@@ -171,7 +169,7 @@ trait WhereTrait
     public function orWhereBetween(/*# string */ $col, $value1, $value2)
     {
         $val = sprintf('%s AND %s', $value1, $value2);
-        return $this->realWhere($col, 'BETWEEN', $val, false);
+        return $this->realWhere($col, 'BETWEEN', $val, 'OR');
     }
 
     /**
@@ -189,7 +187,7 @@ trait WhereTrait
     public function orWhereNotBetween(/*# string */ $col, $value1, $value2)
     {
         $val = sprintf('%s AND %s', $value1, $value2);
-        return $this->realWhere($col, 'NOT BETWEEN', $val, false);
+        return $this->realWhere($col, 'NOT BETWEEN', $val, 'OR');
     }
 
     /**
@@ -205,7 +203,7 @@ trait WhereTrait
      */
     public function orWhereNull(/*# string */ $col)
     {
-        return $this->realWhere($col, 'IS', 'NULL', false);
+        return $this->realWhere($col, 'IS', 'NULL', 'OR');
     }
 
     /**
@@ -221,7 +219,7 @@ trait WhereTrait
      */
     public function orWhereNotNull(/*# string */ $col)
     {
-        return $this->realWhere($col, 'IS', 'NOT NULL', false);
+        return $this->realWhere($col, 'IS', 'NOT NULL', 'OR');
     }
 
     /**
@@ -248,7 +246,7 @@ trait WhereTrait
      */
     public function orWhereExists(SelectStatementInterface $sel)
     {
-        return $this->realWhere('', 'EXISTS', $sel, false);
+        return $this->realWhere('', 'EXISTS', $sel, 'OR');
     }
 
     /**
@@ -264,7 +262,7 @@ trait WhereTrait
      */
     public function orWhereNotExists(SelectStatementInterface $sel)
     {
-        return $this->realWhere('', 'NOT EXISTS', $sel, false);
+        return $this->realWhere('', 'NOT EXISTS', $sel, 'OR');
     }
 
     /**
@@ -273,8 +271,8 @@ trait WhereTrait
      * @param  string|string[]|Template $col col or cols
      * @param  mixed $operator
      * @param  mixed $value
-     * @param  bool $logicAnd 'AND'
-     * @param  bool $whereNot 'WHERE NOT'
+     * @param  string $logicAnd 'AND'
+     * @param  string $whereNot 'WHERE NOT'
      * @param  bool $rawMode
      * @param  string $clause 'where' or 'having'
      * @return $this
@@ -284,8 +282,8 @@ trait WhereTrait
         $col,
         $operator = WhereInterface::NO_OPERATOR,
         $value    = WhereInterface::NO_VALUE,
-        /*# bool */ $logicAnd = true,
-        /*# bool */ $whereNot = false,
+        /*# string */ $logicAnd = 'AND',
+        /*# string */ $whereNot = '',
         /*# bool */ $rawMode = false,
         /*# string */ $clause = 'WHERE'
     ) {
@@ -321,15 +319,15 @@ trait WhereTrait
 
     /**
      * @param  array $cols
-     * @param  bool $logicAnd
-     * @param  bool $whereNot
+     * @param  string $logicAnd
+     * @param  string $whereNot
      * @param  bool $rawMode
      * @access protected
      */
     protected function multipleWhere(
         array $cols,
-        /*# bool */ $logicAnd = true,
-        /*# bool */ $whereNot = false,
+        /*# string */ $logicAnd = 'AND',
+        /*# string */ $whereNot = '',
         /*# bool */ $rawMode  = false
     ) {
         foreach ($cols as $fld => $val) {
@@ -358,13 +356,15 @@ trait WhereTrait
         $wheres = &$this->getClause($clause);
         foreach ($wheres as $idx => $where) {
             $cls = [];
+            // AND OR
             if ($idx) {
-                $cls[] = $where[2] ? 'AND' : 'OR';
+                $cls[] = $where[2];
             }
+            // NOT
             if ($where[1]) {
-                $cls[] = 'NOT';
+                $cls[] = $where[1];
             }
-            $result[] = $this->bulidWhereClause($cls, $where, $settings);
+            $result[] = $this->buildWhereClause($cls, $where, $settings);
         }
         return $this->joinClause($clause, '', $result, $settings);
     }
@@ -394,14 +394,14 @@ trait WhereTrait
 
         // value
         if (WhereInterface::NO_VALUE !== $where[5]) {
-            $cls[] = $this->processValue($where[5]);
+            $cls[] = $this->processValue($where[5], $settings);
         }
 
         return join(' ', $cls);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function processValue($value)/*# : string */;
+    abstract protected function processValue($value, array $settings)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function joinClause(

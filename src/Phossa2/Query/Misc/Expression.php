@@ -14,6 +14,11 @@
 
 namespace Phossa2\Query\Misc;
 
+use Phossa2\Query\Traits\Clause\OnTrait;
+use Phossa2\Query\Traits\StatementAbstract;
+use Phossa2\Query\Traits\Clause\WhereTrait;
+use Phossa2\Query\Traits\Clause\ClauseTrait;
+use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\ExpressionInterface;
 
 /**
@@ -25,6 +30,34 @@ use Phossa2\Query\Interfaces\ExpressionInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Expression implements ExpressionInterface
+class Expression extends StatementAbstract implements ExpressionInterface
 {
+    use ClauseTrait, WhereTrait, OnTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __construct(BuilderInterface $builder)
+    {
+        parent::__construct($builder);
+
+        // force flat notation
+        $this->setSettings(['seperator' => ' ', 'indent' => '']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function buildSql(array $settings)/*# : string */
+    {
+        return '(' . parent::buildSql($settings) . ')';
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getConfigs()/*# : array */
+    {
+        return ['WHERE', 'ON'];
+    }
 }

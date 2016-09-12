@@ -33,6 +33,10 @@ trait GroupByTrait
      */
     public function groupBy($col)
     {
+        // support multiple group by
+        if (func_num_args() > 1) {
+            $col = func_get_args();
+        }
         return $this->realGroupBy($col);
     }
 

@@ -19,9 +19,10 @@ namespace Phossa2\Query\Interfaces;
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
+ * @see     StatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface RawInterface
+interface RawInterface extends StatementInterface
 {
 }

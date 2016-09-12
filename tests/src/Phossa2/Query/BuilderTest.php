@@ -165,4 +165,73 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 ->getStatement()
         );
     }
+
+    /**
+     * Tests Builder->select()->from()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect2()
+    {
+        // replace table
+        $sql = 'SELECT * FROM `Topics` AS `t`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->table('Topics', 't')->getStatement()
+        );
+
+        // append table
+        $sql = 'SELECT * FROM `Users`, `Topics` AS `t`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->from('Topics', 't')->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->groupBy()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect3()
+    {
+        // group by
+        $sql = 'SELECT * FROM `Users` GROUP BY `last_name`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->groupBy('last_name')->getStatement()
+        );
+
+        // multiple groupby
+        $sql = 'SELECT * FROM `Users` GROUP BY `last_name`, `first_name`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->groupBy('last_name', 'first_name')->getStatement()
+        );
+
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->groupBy(['last_name', 'first_name'])->getStatement()
+        );
+
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->groupBy('last_name')->groupBy('first_name')->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->where()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect4()
+    {
+        // where
+        $sql = 'SELECT * FROM `Users` WHERE `user_id` = 10';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->where('user_id', 10)->getStatement()
+        );
+    }
 }

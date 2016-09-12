@@ -19,13 +19,12 @@ namespace Phossa2\Query\Interfaces;
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     DialectAwareInterface
  * @see     SettingsInterface
  * @see     BuilderAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface extends DialectAwareInterface, SettingsInterface, BuilderAwareInterface
+interface StatementInterface extends SettingsInterface, BuilderAwareInterface
 {
     /**
      * Return the statement string
@@ -38,7 +37,16 @@ interface StatementInterface extends DialectAwareInterface, SettingsInterface, B
     public function getStatement(array $settings = [])/*# : string */;
 
     /**
-     * Get the statement with default settings & dialect
+     * Return binding values
+     *
+     * @return array
+     * @access public
+     * @api
+     */
+    public function getBindings()/*# : array */;
+
+    /**
+     * Get the statement with positionedParam and namedParam FALSE
      *
      * @return string
      * @access public

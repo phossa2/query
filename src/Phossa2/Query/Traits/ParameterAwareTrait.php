@@ -14,43 +14,45 @@
 
 namespace Phossa2\Query\Traits;
 
-use Phossa2\Query\Interfaces\SettingsInterface;
+use Phossa2\Query\Misc\Parameter;
+use Phossa2\Query\Interfaces\ParameterAwareInterface;
 
 /**
- * SettingsTrait
- *
- * Implementation of SettingsInterface
+ * ParameterAwareTrait
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     SettingsInterface
+ * @see     ParameterAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait SettingsTrait
+trait ParameterAwareTrait
 {
     /**
-     * settings
+     * the Parameter object
      *
-     * @var    array
+     * @var    Parameter
      * @access protected
      */
-    protected $settings = [];
+    protected $parameter;
 
     /**
      * {@inheritDoc}
      */
-    public function setSettings(array $settings)
+    public function getParameter()/*# : Parameter */
     {
-        $this->settings = array_replace($this->settings, $settings);
-        return $this;
+        return $this->parameter;
     }
 
     /**
-     * {@inheritDoc}
+     * Create Parameter object
+     *
+     * @return $this
+     * @access protected
      */
-    public function getSettings()/*# : array */
+    protected function initParameter()
     {
-        return $this->settings;
+        $this->parameter = new Parameter();
+        return $this;
     }
 }

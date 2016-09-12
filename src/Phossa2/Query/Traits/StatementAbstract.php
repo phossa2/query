@@ -30,7 +30,15 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use DialectAwareTrait, SettingsTrait, BuilderAwareTrait;
+    use SettingsTrait, BuilderAwareTrait;
+
+    /**
+     * value bindings
+     *
+     * @var    array
+     * @access protected
+     */
+    protected $bindings;
 
     /**
      * Constructor
@@ -46,30 +54,24 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     /**
      * {@inheritDoc}
      */
-    public function getDialect()/*# : DialectInterface */
+    public function getStatement(array $settings = [])/*# : string */
     {
-        if ($this->hasDialect()) {
-            return $this->getDialect();
-        } else {
-            return $this->getBuilder()->getDialect();
-        }
+        // combine settings
+        $settings = $this->combineSettings($settings);
+
+        // build sql
+        $sql = $this->buildSql($settings);
+
+        // replace with ?, :name or real values
+        return $this->bindValues($sql, $settings);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getStatement(array $settings = [])/*# : string */
+    public function getBindings()/*# : array */
     {
-        // combine settings
-        $settings = $this->combineSettings(
-            $this->getDialect()->dialectSettings(), // dialect specific
-            $settings // user provided settings
-        );
-
-        // build sql
-        $sql = $this->build($settings);
-
-        return $sql;
+        return $this->bindings;
     }
 
     /**
@@ -77,25 +79,26 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      */
     public function __toString()/*# : string */
     {
-        return $this->getStatement();
+        return $this->getStatement([
+            'positionedParam' => false,
+            'namedParam' => false,
+        ]);
     }
 
     /**
      * Combine builder/statement and provided settings
      *
-     * @param  array $settings1 dialect specific
-     * @param  array $settings2 user provided
+     * @param  array $settings statement specific settings
+     * @return array
      * @access protected
      */
-    protected function combineSettings(
-        array $settings1,
-        array $settings2
-    )/*# : array */ {
-        return array_merge(
-            $this->getBuilder()->getSettings(), // from builder
-            $this->getSettings(), // current statement
-            $settings1, // dialect specific
-            $settings2  // user settings
+    protected function combineSettings(array $settings)/*# : array */
+    {
+        return array_replace(
+            $this->getBuilder()->getSettings(), // builder settings
+            $this->getBuilder()->getDialect()->dialectSettings(), // dialect
+            $settings,  // user settings
+            $this->getSettings() // statement settings
         );
     }
 
@@ -106,7 +109,7 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      * @param  string
      * @access protected
      */
-    protected function build(array $settings)/*# : string */
+    protected function buildSql(array $settings)/*# : string */
     {
         $result = $this->getType();
         $settings['join'] = $settings['seperator'] . $settings['indent'];
@@ -115,6 +118,24 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
             $result .= $this->{$method}($settings);
         }
         return $result;
+    }
+
+    /**
+     * Replace placeholders in the sql with '?', ':named' or real value
+     *
+     * @param  string $sql
+     * @param  array $settings
+     * @return string
+     * @access protected
+     */
+    protected function bindValues(/*# string */ $sql, array $settings)
+    {
+        // init bindings
+        $this->bindings = [];
+
+        // bind values
+        return $this->getBuilder()->getParameter()
+            ->bindValues($sql, $this->bindings, $settings);
     }
 
     /**
@@ -134,5 +155,8 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      * @return array
      * @access protected
      */
-    abstract protected function getConfigs()/*# : array */;
+    protected function getConfigs()/*# : array */
+    {
+        return [];
+    }
 }

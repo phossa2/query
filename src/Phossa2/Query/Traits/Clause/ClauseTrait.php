@@ -18,6 +18,7 @@ use Phossa2\Query\Interfaces\RawInterface;
 use Phossa2\Query\Interfaces\ClauseInterface;
 use Phossa2\Query\Interfaces\TemplateInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
+use Phossa2\Query\Interfaces\BuilderInterface;
 
 /**
  * ClauseTrait
@@ -159,16 +160,24 @@ trait ClauseTrait
     }
 
     /**
-     * Process value
+     * Process value part in the clause
+     *
+     * - either RawIn
      *
      * @param  mixed $value
+     * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function processValue($value)/*# : string */
+    protected function processValue($value, array $settings)/*# : string */
     {
-        // @TODO processValue
-        return (string) $value;
+        if (is_object($value) && $value instanceof StatementInterface) {
+            return $value->getStatement($settings);
+        } elseif (is_null($value)) {
+            return 'NULL';
+        } else {
+            return $this->getBuilder()->getParameter()->getPlaceholder($value);
+        }
     }
 
     /**
@@ -195,4 +204,12 @@ trait ClauseTrait
             return $settings['seperator'] . $pref . join($seperator . $join, $clause);
         }
     }
+
+    /**
+     * Return the builder
+     *
+     * @return BuilderInterface
+     * @access public
+     */
+    abstract public function getBuilder()/*# : BuilderInterface */;
 }
