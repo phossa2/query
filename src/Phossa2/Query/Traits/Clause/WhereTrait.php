@@ -292,29 +292,14 @@ trait WhereTrait
             $this->multipleWhere($col, $logicAnd, $whereNot, $rawMode);
             return $this;
         }
-        $this->fixOperatorValue($operator, $value, $rawMode);
 
-        $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
-        return $this;
-    }
-
-    /**
-     * Fix operator and value
-     *
-     * @param  mixed $operator
-     * @param  mixed $value
-     * @param  bool $rawMode
-     * @access protected
-     */
-    protected function fixOperatorValue(&$operator, &$value, &$rawMode)
-    {
-        if (WhereInterface::NO_OPERATOR === $operator) {
-            $rawMode = true;
-            $value = WhereInterface::NO_VALUE;
-        } elseif (WhereInterface::NO_VALUE === $value) {
+        if (WhereInterface::NO_VALUE === $value) {
             $value = $operator;
             $operator = '=';
         }
+
+        $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
+        return $this;
     }
 
     /**

@@ -181,25 +181,12 @@ class Builder extends ObjectAbstract implements BuilderInterface
     protected function defaultSettings()/*# : array */
     {
         return [
-            // auto quote db identifier
             'autoQuote' => true,
-
-            // default NOT using '?'
             'positionedParam' => false,
-
-            // conside value ':name' as named parameter
             'namedParam' => false,
-
-            // clause seperator
             'seperator' => ' ',
-
-            // subline indention
             'indent' => '',
-
-            // escape/quote function
             'escapeFunction' => null,
-
-            // INSERT NULL instead of DEFAULT
             'useNullAsDefault' => false,
         ];
     }
