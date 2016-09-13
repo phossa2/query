@@ -98,8 +98,11 @@ interface WhereInterface extends ClauseInterface
      * Raw mode WHERE
      *
      * ```php
-     * // WHERE age > 18 AND gender = "male"
-     * ->whereRaw('age > 18 AND gender = "male"')
+     * // WHERE age > 18 AND gender = 'male'
+     * ->whereRaw("age > 18 AND gender = 'male'")
+     *
+     * // same as above
+     * ->whereRaw('age > ? AND gender = ?', [18, 'male'])
      * ```
      *
      * @param  string $rawString
@@ -114,8 +117,11 @@ interface WhereInterface extends ClauseInterface
      * Raw mode WHERE with 'OR' logic
      *
      * ```php
-     * // OR (age > 18 AND gender = "male")
-     * ->orWhereRaw('age > 18 AND gender = "male"')
+     * // OR (age > 18 AND gender = 'male')
+     * ->orWhereRaw("(age > 18 AND gender = 'male')")
+     *
+     * // same as above
+     * ->orWhereRaw('(age > ? AND gender = ?)', [18, 'male'])
      * ```
      *
      * @param  string $rawString
@@ -133,7 +139,7 @@ interface WhereInterface extends ClauseInterface
      * // AND `age` > 18
      * ->andWhere('age', '>', 18)
      *
-     * // AND (`age` = 18 AND `score` = 100)
+     * // AND `age` = 18 AND `score` = 100
      * ->andWhere(['age' => 18, 'score' => 100])
      * ```
      *
@@ -154,7 +160,7 @@ interface WhereInterface extends ClauseInterface
      * // OR `age` > 18
      * ->orWhere('age', '>', 18)
      *
-     * // OR (`age` = 18 AND `score` = 100)
+     * // OR `age` = 18 OR `score` = 100
      * ->orWhere(['age' => 18, 'score' => 100])
      * ```
      *
@@ -172,14 +178,11 @@ interface WhereInterface extends ClauseInterface
      * WHERE NOT
      *
      * ```php
-     * // WHERE (NOT `age` = 18 AND NOT `gender` = 'male')
-     * ->whereNot(['age' => 18, 'gender' => 'male'])
-     *
      * // WHERE NOT `id` = 18
      * ->whereNot('id', 18)
      *
-     * // WHERE (NOT `id` = 1 AND NOT `gender` = 'male') OR NOT `name` = 'john'
-     * ->whereNot(['id' => 1, 'gender' => 'male'])->orWhereNot('name', 'john')
+     * // WHERE NOT `age` = 18 AND NOT `gender` = 'male'
+     * ->whereNot(['age' => 18, 'gender' => 'male'])
      * ```
      *
      * @param  string|string[] $col col or cols
@@ -196,8 +199,8 @@ interface WhereInterface extends ClauseInterface
      * WHERE NOT 'OR' Logic
      *
      * ```php
-     * // WHERE (NOT `id` = 1 AND NOT `gender` = 'male') OR NOT `name` = 'john'
-     * ->whereNot(['id' => 1, 'gender' => 'male'])->orWhereNot('name', 'john')
+     * // WHERE NOT `id` = 1 OR NOT `gender` = 'male'
+     * ->whereNot(['id' => 1, 'gender' => 'male'])
      * ```
      *
      * @param  string|string[] $col col or cols

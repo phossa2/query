@@ -30,7 +30,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsTrait, BuilderAwareTrait;
+    use SettingsTrait, BuilderAwareTrait, PreviousTrait;
 
     /**
      * value bindings
@@ -39,6 +39,22 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      * @access protected
      */
     protected $bindings;
+
+    /**
+     * Statement type, 'SELECT' etc.
+     *
+     * @var    string
+     * @access protected
+     */
+    protected $type = '';
+
+    /**
+     * clause configs,[name => prefix]
+     *
+     * @var    array
+     * @access protected
+     */
+    protected $configs = [];
 
     /**
      * Constructor
@@ -59,11 +75,19 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
         // combine settings
         $settings = $this->combineSettings($settings);
 
-        // build sql
-        $sql = $this->buildSql($settings);
+        // statements
+        $sql = [];
+
+        // build previous statement
+        if ($this->hasPrevious()) {
+            $sql[] = $this->getPrevious()->getStatement($settings);
+        }
+
+        // build current sql
+        $sql[] = $this->buildSql($settings);
 
         // replace with ?, :name or real values
-        return $this->bindValues($sql, $settings);
+        return $this->bindValues(join($settings['seperator'], $sql), $settings);
     }
 
     /**
@@ -111,11 +135,11 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      */
     protected function buildSql(array $settings)/*# : string */
     {
-        $result = $this->getType();
+        $result = $this->type;
         $settings['join'] = $settings['seperator'] . $settings['indent'];
-        foreach ($this->getConfigs() as $clause) {
+        foreach ($this->configs as $clause => $prefix) {
             $method = 'build' . ucfirst(strtolower($clause));
-            $result .= $this->{$method}($settings);
+            $result .= $this->{$method}($prefix, $settings);
         }
         return $result;
     }
@@ -139,24 +163,15 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     }
 
     /**
-     * Get the statement type, such as 'SELECT'
+     * Set previous statement
      *
-     * @return string
+     * @param  StatementInterface $stmt
+     * @return $this
      * @access protected
      */
-    protected function getType()/*# : string */
+    protected function setPrevous(StatementInterface $stmt)
     {
-        return '';
-    }
-
-    /**
-     * Get clause configurations
-     *
-     * @return array
-     * @access protected
-     */
-    protected function getConfigs()/*# : array */
-    {
-        return [];
+        $this->previous = $stmt;
+        return $this;
     }
 }

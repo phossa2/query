@@ -80,7 +80,11 @@ trait OrderByTrait
             $this->multipleOrderBy($col, $suffix);
         } else {
             $clause = &$this->getClause('ORDER BY');
-            $clause[] = [$col, $suffix, $this->isRaw($col, $rawMode)];
+            $part = [$col, $this->isRaw($col, $rawMode)];
+            if (!empty($suffix)) {
+                $part[] = $suffix;
+            }
+            $clause[] = $part;
         }
         return $this;
     }
@@ -102,29 +106,24 @@ trait OrderByTrait
     /**
      * Build ORDER BY
      *
+     * @param  string $prefix
      * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function buildOrderby(array $settings)/*# : string */
-    {
-        $result = [];
-        $clause = &$this->getClause('ORDER BY');
-        foreach ($clause as $ord) {
-            $item = $this->quoteItem($ord[0], $settings, $ord[2]);
-            $ordr = $ord[1] ? (' ' . $ord[1]) : '';
-            $result[] =  $item . $ordr;
-        }
-        return $this->joinClause('ORDRE BY', ',', $result, $settings);
+    protected function buildOrderby(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
+        return $this->buildClause('ORDER BY', 'ORDER BY', $settings);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
+    abstract protected function buildClause(
+        /*# string */ $clauseName,
+        /*# string */ $clausePrefix,
+        array $settings,
+        array $clauseParts = []
+    )/*# string */;
 }

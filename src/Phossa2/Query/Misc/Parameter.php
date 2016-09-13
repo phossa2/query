@@ -99,7 +99,7 @@ class Parameter
     )/*# : string */ {
         $pat = $rep = [];
         foreach ($values as $val) {
-            $pat[] = '/\b\?\b/'; // question mark
+            $pat[] = '/\?/'; // question mark
             $rep[] = $this->getPlaceholder($val); // placeholder
         }
         return preg_replace($pat, $rep, $string, 1);

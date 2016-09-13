@@ -21,10 +21,11 @@ namespace Phossa2\Query\Interfaces;
  * @author  Hong Zhang <phossa@126.com>
  * @see     SettingsInterface
  * @see     BuilderAwareInterface
+ * @see     PreviousInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface extends SettingsInterface, BuilderAwareInterface
+interface StatementInterface extends SettingsInterface, BuilderAwareInterface, PreviousInterface
 {
     /**
      * Return the statement string

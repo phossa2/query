@@ -47,7 +47,8 @@ trait WhereTrait
     public function whereTpl(/*# string */ $template, $col)
     {
         return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE, 'AND', '');
+            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
+            'AND', '', true);
     }
 
     /**
@@ -56,7 +57,8 @@ trait WhereTrait
     public function orWhereTpl(/*# string */ $template, $col)
     {
         return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE, 'OR', '');
+            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
+            'OR', '', true);
     }
 
     /**
@@ -64,6 +66,9 @@ trait WhereTrait
      */
     public function whereRaw(/*# string */ $rawString)
     {
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()->raw($rawString, func_get_arg(1));
+        }
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'AND', '', true);
     }
@@ -73,6 +78,9 @@ trait WhereTrait
      */
     public function orWhereRaw(/*# string */ $rawString)
     {
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()->raw($rawString, func_get_arg(1));
+        }
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'OR', '', true);
     }
@@ -149,7 +157,10 @@ trait WhereTrait
             return $this;
         }
 
-        if (WhereInterface::NO_VALUE === $value) {
+        $rawMode = $this->isRaw($col, $rawMode);
+
+        // fix operator & value
+        if (!$rawMode && WhereInterface::NO_VALUE === $value) {
             $value = $operator;
             $operator = '=';
         }
@@ -185,16 +196,17 @@ trait WhereTrait
     /**
      * Build WHERE
      *
-     * @param  string $clause 'where|having'
+     * @param  prefix
+     * @param  array $settings
      * @return array
      * @access protected
      */
     protected function buildWhere(
-        array $settings,
-        /*# string */ $clause = 'WHERE'
+        /*# string */ $prefix,
+        array $settings
     )/*# : string */ {
         $result = [];
-        $wheres = &$this->getClause($clause);
+        $wheres = &$this->getClause('HAVING' == $prefix ? $prefix : 'WHERE');
         foreach ($wheres as $idx => $where) {
             $cls = [];
             // AND OR
@@ -205,9 +217,9 @@ trait WhereTrait
             if ($where[1]) {
                 $cls[] = $where[1];
             }
-            $result[] = $this->buildWhereClause($cls, $where, $settings);
+            $result[] = $this->buildCondition($cls, $where, $settings);
         }
-        return $this->joinClause($clause, '', $result, $settings);
+        return $this->joinClause($prefix, '', $result, $settings);
     }
 
     /**
@@ -219,7 +231,7 @@ trait WhereTrait
      * @return string
      * @access protected
      */
-    protected function buildWhereClause(array $cls, array $where, array $settings)
+    protected function buildCondition(array $cls, array $where, array $settings)
     {
         // col
         if (!empty($where[3])) {
@@ -235,14 +247,15 @@ trait WhereTrait
 
         // value
         if (WhereInterface::NO_VALUE !== $where[5]) {
-            $cls[] = $this->processValue($where[5], $settings);
+            $cls[] = $this->processValue(
+                $where[5], $settings, (bool) preg_match('/\bbetween\b/i', $where[4]));
         }
 
         return join(' ', $cls);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function processValue($value, array $settings)/*# : string */;
+    abstract protected function processValue($value, array $settings, /*# bool */ $between = false)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function joinClause(
@@ -251,4 +264,11 @@ trait WhereTrait
         array $clause,
         array $settings
     )/*# : string */;
+    /**
+     * Return the builder
+     *
+     * @return BuilderInterface
+     * @access public
+     */
+    abstract public function getBuilder()/*# : BuilderInterface */;
 }

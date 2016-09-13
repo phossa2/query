@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Misc\Raw;
 use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\WhereInterface;
 use Phossa2\Query\Interfaces\Clause\HavingInterface;
@@ -57,6 +58,9 @@ trait HavingTrait
      */
     public function havingRaw(/*# string */ $rawString)
     {
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()->raw($rawString, func_get_arg(1));
+        }
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, true, false, true, 'HAVING');
     }
@@ -64,19 +68,22 @@ trait HavingTrait
     /**
      * Build HAVING
      *
+     * @param  string $prefix
      * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function buildHaving(array $settings)/*# : string */
-    {
-        return $this->buildWhere($settings, 'HAVING');
+    protected function buildHaving(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
+        return $this->buildWhere($prefix, $settings);
     }
 
     abstract protected function buildWhere(
-        array $settings,
-        /*# string */ $clause = 'WHERE'
-    )/*# : array */;
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */;
     abstract protected function realWhere(
         $col,
         $operator = WhereInterface::NO_OPERATOR,
@@ -86,4 +93,11 @@ trait HavingTrait
         /*# bool */ $rawMode  = false,
         /*# string */ $clause = 'WHERE'
     );
+    /**
+     * Return the builder
+     *
+     * @return BuilderInterface
+     * @access public
+     */
+    abstract public function getBuilder()/*# : BuilderInterface */;
 }

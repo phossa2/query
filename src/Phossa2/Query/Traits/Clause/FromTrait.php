@@ -39,9 +39,9 @@ trait FromTrait
         } else {
             $clause = &$this->getClause('FROM');
             if (empty($alias)) {
-                $clause[] = $table;
+                $clause[] = [$table, false];
             } else {
-                $clause[(string) $alias] = $table;
+                $clause[(string) $alias] = [$table, false];
             }
         }
         return $this;
@@ -77,28 +77,23 @@ trait FromTrait
     /**
      * Build FROM
      *
+     * @param  string $prefix
+     * @param  array $settings
      * @return array
      * @access protected
      */
-    protected function buildFrom(array $settings)/*# : string */
-    {
-        $result = [];
-        $clause = &$this->getClause('FROM');
-        foreach ($clause as $as => $tbl) {
-            $alias = $this->quoteAlias($as, $settings);
-            $table = $this->quoteItem($tbl, $settings);
-            $result[] = $table . $alias;
-        }
-        return $this->joinClause('FROM', ',', $result, $settings);
+    protected function buildFrom(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
+        return $this->buildClause('FROM', 'FROM', $settings);
     }
 
-    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
-    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
+    abstract protected function buildClause(
+        /*# string */ $clauseName,
+        /*# string */ $clausePrefix,
+        array $settings,
+        array $clauseParts = []
+    )/*# string */;
 }

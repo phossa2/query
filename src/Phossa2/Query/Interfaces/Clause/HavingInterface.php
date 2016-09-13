@@ -72,7 +72,7 @@ interface HavingInterface extends ClauseInterface
      *
      * ```php
      * // HAVNIG count = 10
-     * ->havingRaw('count = 10')
+     * ->havingRaw('count = ?', [10])
      * ```
      *
      * @param  string $rawString

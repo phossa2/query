@@ -19,6 +19,7 @@ use Phossa2\Query\Traits\Clause\FromTrait;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\WhereTrait;
 use Phossa2\Query\Traits\Clause\LimitTrait;
+use Phossa2\Query\Traits\Clause\UnionTrait;
 use Phossa2\Query\Traits\Clause\ClauseTrait;
 use Phossa2\Query\Traits\Clause\HavingTrait;
 use Phossa2\Query\Traits\Clause\GroupByTrait;
@@ -40,23 +41,25 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 class Select extends StatementAbstract implements SelectStatementInterface
 {
     use ClauseTrait, ColTrait, FromTrait, WhereTrait, GroupByTrait,
-        HavingTrait, OrderByTrait, LimitTrait;
+        HavingTrait, OrderByTrait, LimitTrait, UnionTrait;
 
     /**
      * {@inheritDoc}
      */
-    protected function getType()/*# : string */
-    {
-        return 'SELECT';
-    }
+    protected $type = 'SELECT';
 
     /**
      * {@inheritDoc}
      */
-    protected function getConfigs()/*# : array */
-    {
-        return ['DISTINCT', 'COL', 'FROM', 'WHERE', 'GROUPBY', 'HAVING',
-            'ORDERBY', 'LIMIT'
-        ];
-    }
+    protected $configs = [
+        'DISTINCT' => '',
+        'COL' => '',
+        'FROM' => 'FROM',
+        'WHERE' => 'WHERE',
+        'GROUPBY' => 'GROUP BY',
+        'HAVING' => 'HAVING',
+        'ORDERBY' => 'ORDER BY',
+        'LIMIT' => 'LIMIT',
+        'UNION' => 'UNION',
+    ];
 }

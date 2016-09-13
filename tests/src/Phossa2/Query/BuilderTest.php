@@ -47,10 +47,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testExpr()
     {
-        // TODO Auto-generated BuilderTest->testExpr()
-        $this->markTestIncomplete("expr test not implemented");
-
-        $this->object->expr(/* parameters */);
+        $sql = "SELECT * FROM `Users` WHERE (`id` = 1 OR (`id` < 20 OR `id` > 100)) OR `name` = 'Tester'";
+        $query = $this->object->select()->where(
+            $this->object->expr()->where('id', 1)->orWhere(
+                $this->object->expr()->where('id', '<', 20)->orWhere('id', '>', 100)
+            )
+        )->orWhere('name', 'Tester');
+        //$this->assertEquals($sql, $query->getStatement());
     }
 
     /**
@@ -58,10 +61,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testRaw()
     {
-        // TODO Auto-generated BuilderTest->testRaw()
-        $this->markTestIncomplete("raw test not implemented");
-
-        $this->object->raw(/* parameters */);
     }
 
     /**
@@ -69,10 +68,19 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testTable()
     {
+        // reset tables in builder
         $sql = 'SELECT * FROM `Orders` AS `o`, `Users`';
         $this->assertEquals(
             $sql,
             $this->object->table(['Orders' => 'o', 'Users'])->select()->getStatement()
+        );
+
+        // reset tables in query
+        $sales = $this->object->table('Sales', 's');
+        $sql = 'SELECT * FROM `Sales` AS `s` WHERE `user_id` = 12';
+        $this->assertEquals(
+            $sql,
+            $sales->select()->where('user_id', 12)->getStatement()
         );
     }
 
@@ -81,6 +89,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testFrom()
     {
+        // append to table list
         $sql = 'SELECT * FROM `Users`, `Orders` AS `o`';
         $this->assertEquals(
             $sql,
@@ -89,17 +98,44 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Same result
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect0()
+    {
+        // same cols
+        $sql = 'SELECT `user_id`, `user_name` AS `n` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select(['user_id', 'user_name' => 'n'])->getStatement()
+        );
+        $this->assertEquals(
+            $sql,
+            $this->object->select('user_id')->col('user_name', 'n')->getStatement()
+        );
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->col('user_id')->col('user_name', 'n')->getStatement()
+        );
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->col(['user_id', 'user_name' => 'n'])->getStatement()
+        );
+    }
+
+    /**
      * Tests Builder->select()->col()
      *
      * @covers Phossa2\Query\Builder::select()
      */
-    public function testSelect1()
+    public function testSelect10()
     {
         // empty col, *
-        $sql = 'SELECT * FROM `Users`';
+        $sql = 'SELECT * FROM `Users` LIMIT 10';
         $this->assertEquals(
             $sql,
-            $this->object->select()->getStatement()
+            $this->object->select()->limit(10)->getStatement()
         );
 
         // single col
@@ -123,33 +159,93 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             $this->object->select('user_name', 'n')->getStatement()
         );
 
-        // multiple cols
+        // multiple cols1
         $sql = 'SELECT `user_id`, `user_name` AS `n` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select('user_id')->col('user_name', 'n')->getStatement()
+            $this->object->select()->col('user_id')->col('user_name', 'n')
+                ->getStatement()
         );
 
         // multiple cols2
         $this->assertEquals(
             $sql,
-            $this->object->select(['user_id', 'user_name' => 'n'])->getStatement()
+            $this->object->select()->col(['user_id', 'user_name' => 'n'])
+                ->getStatement()
         );
+    }
 
-        // count
-        $sql = 'SELECT COUNT(`user_id`) AS `cnt 2` FROM `Users`';
+    /**
+     * Tests Builder->select()->distinct()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect11()
+    {
+        $sql = 'SELECT DISTINCT `user_name` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->count('user_id', 'cnt 2')->getStatement()
+            $this->object->select()->distinct()->col('user_name')->getStatement()
         );
 
-        // multiple max
-        $sql = 'SELECT MAX(`lang_score`), MAX(`math_score`) FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->max('lang_score')->max('math_score')->getStatement()
+            $this->object->select()->distinct('user_name')->getStatement()
         );
 
+        $sql = 'SELECT DISTINCT `user_name` AS `n` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->distinct('user_name', 'n')->getStatement()
+        );
+
+        $sql = 'SELECT DISTINCT `user_id`, `user_name` AS `n` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()
+                ->distinct(['user_id', 'user_name' => 'n'])->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->count()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect12()
+    {
+        // functions
+        $sql = 'SELECT COUNT(`user_id`) AS `cnt`, MAX(`user_id`) AS `max_id` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->count('user_id', 'cnt')
+            ->max('user_id', 'max_id')->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->colRaw()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect13()
+    {
+        // raw col
+        $sql = 'SELECT SUM(DISTINCT `score`) AS `s` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->colRaw('SUM(DISTINCT `score`)', 's')
+            ->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->colTpl()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect14()
+    {
         // col template
         $sql = 'SELECT SUM(DISTINCT `score`) AS `s` FROM `Users`';
         $this->assertEquals(
@@ -158,10 +254,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 ->getStatement()
         );
 
-        // raw col
+        // template with multiple cols
+        $sql = "SELECT CONCAT(`first_name`, ' ', `last_name`) AS `n` FROM `Users`";
         $this->assertEquals(
             $sql,
-            $this->object->select()->colRaw('SUM(DISTINCT `score`)', 's')
+            $this->object->select()
+                ->colTpl("CONCAT(%s, ' ', %s)", ['first_name', 'last_name'], 'n')
                 ->getStatement()
         );
     }
@@ -186,6 +284,23 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             $sql,
             $this->object->select()->from('Topics', 't')->getStatement()
         );
+
+        // multiple tables as array
+        $sql = 'SELECT * FROM `Topics` AS `t`, `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->table(['Topics' => 't', 'Users'])->getStatement()
+        );
+
+        // from subquery
+        $sql = 'SELECT * FROM (SELECT `user_id` FROM `oldusers`) AS `u`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->table(
+                $this->object->select('user_id')->table('oldusers'),
+                'u'
+            )->getStatement()
+        );
     }
 
     /**
@@ -195,6 +310,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSelect3()
     {
+        $sql = 'SELECT `group_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `group_id`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->col('group_id')->count('*', 'cnt')
+                ->groupBy('group_id')->getStatement()
+        );
+
         // group by
         $sql = 'SELECT * FROM `Users` GROUP BY `last_name`';
         $this->assertEquals(
@@ -209,14 +331,116 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             $this->object->select()->groupBy('last_name', 'first_name')->getStatement()
         );
 
+        // same as above
         $this->assertEquals(
             $sql,
             $this->object->select()->groupBy(['last_name', 'first_name'])->getStatement()
         );
 
+        // same as above
         $this->assertEquals(
             $sql,
             $this->object->select()->groupBy('last_name')->groupBy('first_name')->getStatement()
+        );
+
+        // raw groupby
+        $sql = 'SELECT `group_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY group_id ASC';
+        $query = $this->object->select('group_id')->count('*', 'cnt')
+            ->groupByRaw('group_id ASC');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // groupby template
+        $sql = 'SELECT COUNT(*) AS `cnt` FROM `Users` GROUP BY `age`, `group_id`';
+        $query = $this->object->select()->count('*', 'cnt')
+            ->groupByTpl('%s, %s', ['age', 'group_id']);
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->limit()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect4()
+    {
+        // limit only
+        $sql = 'SELECT * FROM `Users` LIMIT 10';
+        $query = $this->object->select()->limit(10);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // limit & offset
+        $sql = 'SELECT * FROM `Users` LIMIT 10 OFFSET 20';
+        $query = $this->object->select()->limit(10, 20);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // offset only
+        $sql = 'SELECT * FROM `Users` LIMIT -1 OFFSET 20';
+        $query = $this->object->select()->offset(20);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // limit + offset
+        $sql = 'SELECT * FROM `Users` LIMIT 15 OFFSET 30';
+        $query = $this->object->select()->limit(15)->offset(30);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // page
+        $sql = 'SELECT * FROM `Users` LIMIT 30 OFFSET 60';
+        $query = $this->object->select()->page(3, 30);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->orderBy()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect5()
+    {
+        // ASC and DESC
+        $sql = 'SELECT * FROM `Users` ORDER BY `age` ASC, `score` DESC';
+        $query = $this->object->select()->orderBy('age')->orderByDesc('score');
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // multiple cols
+        $sql = 'SELECT * FROM `Users` ORDER BY `age` ASC, `score` ASC';
+        $query = $this->object->select()->orderBy(['age', 'score']);
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // raw order by
+        $sql = 'SELECT * FROM `Users` ORDER BY col NULLS LAST DESC';
+        $query = $this->object->select()->orderByRaw('col NULLS LAST DESC');
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
+        );
+
+        // order by template
+        $sql = 'SELECT * FROM `Users` ORDER BY `col` NULLS LAST DESC';
+        $query = $this->object->select()->orderByTpl('%s NULLS LAST DESC', 'col');
+        $this->assertEquals(
+            $sql,
+            $query->getStatement()
         );
     }
 
@@ -225,13 +449,207 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      *
      * @covers Phossa2\Query\Builder::select()
      */
-    public function testSelect4()
+    public function testSelect61()
     {
-        // where
-        $sql = 'SELECT * FROM `Users` WHERE `user_id` = 10';
+        // auto raw
+        $sql = 'SELECT * FROM `Users` WHERE age > 18';
         $this->assertEquals(
             $sql,
-            $this->object->select()->where('user_id', 10)->getStatement()
+            $this->object->select()->where('age > 18')->getStatement()
         );
+
+        // auto equal, multiple wheres
+        $sql = "SELECT * FROM `Users` WHERE `age` = 18 AND `gender` = 'male'";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()
+                ->where('age', 18)->andWhere('gender', 'male')->getStatement()
+        );
+
+        // same as above
+        $this->assertEquals(
+            $sql,
+            $this->object->select()
+                ->where(['age' => 18, 'gender' => 'male'])->getStatement()
+        );
+
+        // operator
+        $sql = 'SELECT * FROM `Users` WHERE `age` > 18';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->where('age', '>', 18)->getStatement()
+        );
+
+        // multiple operators
+        $sql = "SELECT * FROM `Users` WHERE `age` > 18 AND `gender` <> 'male'";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()
+                ->where(['age' => ['>', 18], 'gender' => ['<>', 'male']])->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->orWhere()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect62()
+    {
+        $sql = "SELECT * FROM `Users` WHERE `age` = 18 OR `gender` = 'male'";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->where('age', 18)
+                ->orWhere('gender', 'male')->getStatement()
+        );
+
+        // or group
+        $sql = "SELECT * FROM `Users` WHERE `age` = 18 OR `age` = 12 OR `gender` = 'male'";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->where('age', 18)
+            ->orWhere(['age' => 12, 'gender' => 'male'])->getStatement()
+        );
+    }
+
+    /**
+     * Tests Builder->select()->whereRaw()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect63()
+    {
+        $sql = "SELECT * FROM `Users` WHERE age = 18 OR score > 90";
+        $query = $this->object->select()
+            ->whereRaw('age = 18')->orWhereRaw('score > ?', [90]);
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->whereTpl()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect64()
+    {
+        // simple tple
+        $sql = 'SELECT * FROM `Users` WHERE `age` > 18 AND `gender` = "male"';
+        $query = $this->object->select()
+            ->where('age', '>', 18)->whereTpl('%s = "male"', 'gender');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // multiple cols
+        $sql = 'SELECT * FROM `Users` WHERE `age` > 18 AND `gender` = "male"';
+        $query = $this->object->select()
+            ->whereTpl('%s > 18 AND %s = "male"', ['age', 'gender']);
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->whereNot()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect65()
+    {
+        // whereNot and orWhereNot
+        $sql = "SELECT * FROM `Users` WHERE NOT `age` = 18 OR NOT `gender` = 'male'";
+        $query = $this->object->select()
+            ->whereNot('age', 18)->orWhereNot('gender', 'male');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // array in whereNot
+        $sql = "SELECT * FROM `Users` WHERE NOT `age` = 18 AND NOT `gender` = 'male'";
+        $query = $this->object->select()
+            ->whereNot(['age' => 18, 'gender' => 'male']);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // raw in whereNot
+        $sql = "SELECT * FROM `Users` WHERE NOT age = 18";
+        $query = $this->object->select()->whereNot('age = 18');
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * IS NULL, IN, BETWEEN, EXISTS
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect66()
+    {
+        // IS NULL
+        $sql = "SELECT * FROM `Users` WHERE `age` IS NULL";
+        $query = $this->object->select()->where('age', 'IS', null);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // IS NOT NULL
+        $sql = "SELECT * FROM `Users` WHERE `age` IS NOT NULL";
+        $query = $this->object->select()->where('age', 'IS NOT', null);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // IN (10,11,12)
+        $sql = "SELECT * FROM `Users` WHERE `age` IN (10, 11, 12)";
+        $query = $this->object->select()->where('age', 'IN', [10,11,12]);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // IN subquery
+        $sql = "SELECT * FROM `Users` WHERE `age` IN (SELECT `age` FROM `newUsers`)";
+        $query = $this->object->select()->where(
+            'age', 'IN', $this->object->table('newUsers')->select('age')
+        );
+        $this->assertEquals($sql, $query->getStatement());
+
+        // BETWEEN
+        $sql = "SELECT * FROM `Users` WHERE `age` NOT BETWEEN 10 AND 20";
+        $query = $this->object->select()->where('age', 'NOT BETWEEN', [10, 20]);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // EXISTS
+        $sql = 'SELECT * FROM `Sales` WHERE EXISTS (SELECT `user_id` FROM `Users`)';
+        $query = $this->object->table('Sales')->select()->where(
+            '', 'EXISTS', $this->object->select('user_id')
+        );
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->having()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect7()
+    {
+        // having
+        $sql = "SELECT * FROM `Users` HAVING `age` = 18";
+        $query = $this->object->select()->having('age', 18);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // having raw
+        $sql = "SELECT * FROM `Users` HAVING age = 18";
+        $query = $this->object->select()->havingRaw('age = ?', [18]);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // having tpl
+        $sql = "SELECT * FROM `Users` HAVING `age` = 18";
+        $query = $this->object->select()->havingTpl('%s = 18', 'age');
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->union()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect8()
+    {
+        // union
+        $sql = "SELECT * FROM `Users` UNION SELECT * FROM `newUsers`";
+        $query = $this->object->select()->union()->select()->table('newUsers');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // uinon all
+        $sql = "SELECT * FROM `Users` UNION ALL SELECT * FROM `newUsers`";
+        $query = $this->object->select()->unionAll()->select()->table('newUsers');
+        $this->assertEquals($sql, $query->getStatement());
     }
 }

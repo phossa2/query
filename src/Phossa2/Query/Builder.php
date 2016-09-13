@@ -19,10 +19,12 @@ use Phossa2\Query\Dialect\Mysql;
 use Phossa2\Query\Misc\Expression;
 use Phossa2\Shared\Base\ObjectAbstract;
 use Phossa2\Query\Traits\SettingsTrait;
+use Phossa2\Query\Traits\PreviousTrait;
 use Phossa2\Query\Traits\DialectAwareTrait;
 use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
+use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
@@ -32,13 +34,14 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  * @author  Hong Zhang <phossa@126.com>
  * @see     ObjectAbstract
  * @see     BuilderInterface
+ * @see     StatementInterface
  * @see     SelectStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
 class Builder extends ObjectAbstract implements BuilderInterface
 {
-    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait;
+    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait, PreviousTrait;
 
     /**
      * tables
@@ -106,8 +109,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
     {
         // values found
         if (func_num_args() > 1) {
-            $values = func_get_args();
-            array_shift($values);
+            $values = func_get_arg(1);
             $string = $this->getParameter()
                 ->replaceQuestionMark($string, $values);
         }
@@ -148,8 +150,29 @@ class Builder extends ObjectAbstract implements BuilderInterface
         /*# string */ $alias = ''
     )/*# : SelectStatementInterface */ {
         /* @var SelectStatementInterface $select */
-        $select = $this->getDialect()->select($this);
+        $select = $this->getDialectStatement('select');
         return $select->table($this->tables)->col($col, $alias);
+    }
+
+    /**
+     * Get the statement
+     *
+     * @param  string $name statement name, such as 'select'
+     * @access protected
+     */
+    protected function getDialectStatement(
+        /*# string */ $name
+    )/*# : StatementInterface */ {
+        /* @var StatementInterface $stmt */
+        $stmt = $this->getDialect()->{$name}($this);
+
+        // dealing with previous statement
+        if ($this->hasPrevious()) {
+            $stmt->setPrevious($this->getPrevious());
+            $this->setPrevious();
+        }
+
+        return $stmt;
     }
 
     /**

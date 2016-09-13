@@ -16,9 +16,9 @@ namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Interfaces\RawInterface;
 use Phossa2\Query\Interfaces\ClauseInterface;
+use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\TemplateInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
-use Phossa2\Query\Interfaces\BuilderInterface;
 
 /**
  * ClauseTrait
@@ -71,10 +71,13 @@ trait ClauseTrait
      */
     protected function quoteAlias($alias, array $settings)/*# : string */
     {
-        $prefix = $settings['quotePrefix'];
-        $suffix = $settings['quoteSuffix'];
-        return is_int($alias) ?
-            '' : (' AS ' . $this->quoteSpace($alias, $prefix, $suffix));
+        if (is_int($alias)) {
+            return '';
+        } else {
+            $prefix = $settings['quotePrefix'];
+            $suffix = $settings['quoteSuffix'];
+            return ' AS ' . $this->quoteSpace($alias, $prefix, $suffix);
+        }
     }
 
     /**
@@ -90,14 +93,15 @@ trait ClauseTrait
         array $settings,
         /*# bool */ $rawMode = false
     )/*# : string */ {
-        // object
+        // is an object
         if (is_object($item)) {
             return $this->quoteObject($item, $settings);
         }
 
-        // string
-        return $rawMode ? (string) $item :
-            $this->quote($item, $settings['quotePrefix'], $settings['quoteSuffix']);
+        // is a string, quote with prefix and suffix
+        $prefix = $settings['quotePrefix'];
+        $suffix = $settings['quoteSuffix'];
+        return $rawMode ? $item : $this->quote($item, $prefix, $suffix);
     }
 
     /**
@@ -110,8 +114,11 @@ trait ClauseTrait
      */
     protected function quoteObject($object, $settings)/*# : string */
     {
+        if ($object instanceof RawInterface) {
+            return $object->getStatement($settings);
+        }
         if ($object instanceof StatementInterface) {
-            $settings = array_merge(
+            $settings = array_replace(
                 $settings,
                 ['seperator' => ' ', 'indent' => '']
             );
@@ -143,7 +150,7 @@ trait ClauseTrait
     }
 
     /**
-     * Quote string even space found
+     * Quote string even with space inside
      *
      * @param  string $str
      * @param  string $prefix
@@ -162,17 +169,20 @@ trait ClauseTrait
     /**
      * Process value part in the clause
      *
-     * - either RawIn
-     *
      * @param  mixed $value
      * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function processValue($value, array $settings)/*# : string */
-    {
-        if (is_object($value) && $value instanceof StatementInterface) {
-            return $value->getStatement($settings);
+    protected function processValue(
+        $value,
+        array $settings,
+        /*# bool */ $between = false
+    )/*# : string */ {
+        if (is_object($value)) {
+            return $this->quoteObject($value, $settings);
+        } elseif (is_array($value)) {
+            return $this->processValueArray($value, $settings, $between);
         } elseif (is_null($value)) {
             return 'NULL';
         } else {
@@ -181,7 +191,33 @@ trait ClauseTrait
     }
 
     /**
-     * Join each clause
+     * Process value array
+     *
+     * @param  array $value
+     * @param  array $settings
+     * @return string
+     * @access protected
+     */
+    protected function processValueArray(
+        array $value,
+        array $settings,
+        /*# bool */ $between = false
+    )/*# : string */ {
+        if ($between) {
+            $v1 = $this->processValue($value[0], $settings);
+            $v2 = $this->processValue($value[1], $settings);
+            return $v1 . ' AND ' . $v2;
+        } else {
+            $result = [];
+            foreach ($value as $val) {
+                $result[] = $this->processValue($val, $settings);
+            }
+            return '(' . join(', ', $result) . ')';
+        }
+    }
+
+    /**
+     * Join a clause with prefix and its parts
      *
      * @param  string $prefix
      * @param  string $seperator
@@ -203,6 +239,33 @@ trait ClauseTrait
             $pref = empty($prefix) ? '' : ($prefix . $join);
             return $settings['seperator'] . $pref . join($seperator . $join, $clause);
         }
+    }
+
+    /**
+     * Build a generic clause
+     *
+     * @param  string $clauseName
+     * @param  string $clausePrefix
+     * @param  array $settings
+     * @param  array $clauseParts
+     * @return string
+     * @access protected
+     */
+    protected function buildClause(
+        /*# string */ $clauseName,
+        /*# string */ $clausePrefix,
+        array $settings,
+        array $clauseParts = []
+    )/*# string */ {
+        $clause = &$this->getClause($clauseName);
+        foreach ($clause as $alias => $field) {
+            $part =
+                $this->quoteItem($field[0], $settings, $field[1]) .
+                $this->quoteAlias($alias, $settings) .
+                (isset($field[2]) ? (' ' . $field[2]) : '');
+            $clauseParts[] = $part;
+        }
+        return $this->joinClause($clausePrefix, ',', $clauseParts, $settings);
     }
 
     /**

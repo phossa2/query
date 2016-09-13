@@ -159,48 +159,41 @@ trait ColTrait
     /**
      * Build fields
      *
+     * @param  strin $prefix prefix afront of the clause
      * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function buildCol(array $settings)/*# : string */
-    {
-        $result = [];
+    protected function buildCol(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
         $clause = &$this->getClause('COL');
-
-        if (empty($clause)) {
-            $result[] = '*';
-        } else {
-            foreach ($clause as $as => $col) {
-                $alias = $this->quoteAlias($as, $settings);
-                $field = $this->quoteItem($col[0], $settings, $col[1]);
-                $result[] = $field . $alias;
-            }
-        }
-
-        return $this->joinClause('', ',', $result, $settings);
+        $clauseParts = empty($clause) ? ['*'] : [];
+        return $this->buildClause('COL', '', $settings, $clauseParts);
     }
 
     /**
      * Build DISTINCT
      *
+     * @param  string $prefix
      * @param  array $settings
      * @return string
      * @access protected
      */
-    protected function buildDistinct(array $settings)/*# : string */
-    {
+    protected function buildDistinct(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
         return $this->is_distinct ? ' DISTINCT' : '';
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
-    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
+    abstract protected function buildClause(
+        /*# string */ $clauseName,
+        /*# string */ $clausePrefix,
+        array $settings,
+        array $clauseParts = []
+    )/*# string */;
 }

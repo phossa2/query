@@ -37,6 +37,11 @@ class Expression extends StatementAbstract implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
+    protected $configs = ['WHERE' => ''];
+
+    /**
+     * {@inheritDoc}
+     */
     public function __construct(BuilderInterface $builder)
     {
         parent::__construct($builder);
@@ -51,13 +56,5 @@ class Expression extends StatementAbstract implements ExpressionInterface
     protected function buildSql(array $settings)/*# : string */
     {
         return '(' . parent::buildSql($settings) . ')';
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getConfigs()/*# : array */
-    {
-        return ['WHERE', 'ON'];
     }
 }

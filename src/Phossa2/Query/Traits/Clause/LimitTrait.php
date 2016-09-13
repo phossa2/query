@@ -72,24 +72,28 @@ trait LimitTrait
     /**
      * Build LIMIT
      *
+     * @param  string $prefix
+     * @param  settings
      * @return array
      * @access protected
      */
-    protected function buildLimit(array $settings)/*# : string */
-    {
+    protected function buildLimit(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
         $result = [];
         $clause = &$this->getClause('LIMIT');
         if (!empty($clause)) {
             $res = [];
             if ($clause[0]) {
-                $res[] = 'LIMIT ' . $clause[0];
+                $res[] = $clause[0];
             }
             if ($clause[1]) {
                 $res[] = 'OFFSET ' . $clause[1];
             }
             $result[] = join(' ', $res);
         }
-        return $this->joinClause('', ' ', $result, $settings);
+        return $this->joinClause($prefix, ' ', $result, $settings);
     }
 
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;

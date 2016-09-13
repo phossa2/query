@@ -25,10 +25,11 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  * @see     SettingsInterface
  * @see     FromInterface
  * @see     ParameterAwareInterface
+ * @see     PreviousInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface BuilderInterface extends DialectAwareInterface, SettingsInterface, FromInterface, ParameterAwareInterface
+interface BuilderInterface extends DialectAwareInterface, SettingsInterface, FromInterface, ParameterAwareInterface, PreviousInterface
 {
     /**
      * Create an expression
