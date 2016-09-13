@@ -156,13 +156,10 @@ trait WhereTrait
             $this->multipleWhere($col, $logicAnd, $whereNot, $rawMode);
             return $this;
         }
-
         // fix raw mode
         $rawMode = $this->isRaw($col, $rawMode);
-
         // fix operator to '='
         $this->fixOperator($operator, $value, $rawMode);
-
         $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
         return $this;
     }
@@ -227,7 +224,7 @@ trait WhereTrait
         }
         foreach ($wheres as $idx => $where) {
             $cls = [];
-            // build AND|OR|NOT
+            // build AND part
             $this->buildAndOr($cls, $where, $idx);
             // build COL = VAL
             $result[] = $this->buildCondition($cls, $where, $settings);
