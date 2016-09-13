@@ -14,21 +14,18 @@
 
 namespace Phossa2\Query\Misc;
 
-use Phossa2\Query\Interfaces\RawInterface;
-use Phossa2\Query\Traits\StatementAbstract;
-use Phossa2\Query\Interfaces\BuilderInterface;
+use Phossa2\Query\Interfaces\OutputInterface;
 
 /**
- * Raw
+ * Raw string object
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     StatementAbstract
- * @see     RawInterface
+ * @see     OutputInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Raw extends StatementAbstract implements RawInterface
+class Raw implements OutputInterface
 {
     /**
      * raw string
@@ -42,22 +39,26 @@ class Raw extends StatementAbstract implements RawInterface
      * Constructor
      *
      * @param  string $rawSql
-     * @param  BuilderInterface $builder
      * @access public
      */
-    public function __construct(
-        /*# string */ $rawSql,
-        BuilderInterface $builder
-    ) {
-        parent::__construct($builder);
+    public function __construct(/*# string */ $rawSql)
+    {
         $this->raw_string = (string) $rawSql;
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function buildSql(array $settings)/*# : string */
+    public function getStatement(array $settings = [])/*# : string */
     {
         return $this->raw_string;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function __toString()/*# : string */
+    {
+        return $this->getStatement();
     }
 }

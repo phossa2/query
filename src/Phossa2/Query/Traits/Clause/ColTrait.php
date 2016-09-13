@@ -170,7 +170,7 @@ trait ColTrait
     )/*# : string */ {
         $clause = &$this->getClause('COL');
         $clauseParts = empty($clause) ? ['*'] : [];
-        return $this->buildClause('COL', '', $settings, $clauseParts);
+        return $this->buildClause('COL', $prefix, $settings, $clauseParts);
     }
 
     /**
@@ -185,7 +185,7 @@ trait ColTrait
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        return $this->is_distinct ? ' DISTINCT' : '';
+        return $this->is_distinct ? ' DISTINCT' : $prefix;
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;

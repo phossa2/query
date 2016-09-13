@@ -15,24 +15,31 @@
 namespace Phossa2\Query\Interfaces;
 
 /**
- * TemplateInterface
- *
- * Clause template interface
+ * OutputInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface TemplateInterface
+interface OutputInterface
 {
     /**
-     * Get output of the template base on settings
+     * Return the statement string
      *
-     * @param  array $settings
+     * @param  array $settings extra settings if any
      * @return string
      * @access public
      * @api
      */
-    public function getOutput(array $settings)/*# : string */;
+    public function getStatement(array $settings = [])/*# : string */;
+
+    /**
+     * Get the statement with positionedParam and namedParam FALSE
+     *
+     * @return string
+     * @access public
+     * @api
+     */
+    public function __toString()/*# : string */;
 }

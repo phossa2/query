@@ -105,7 +105,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function raw(/*# string */ $string)/*# : RawInterface */
+    public function raw(/*# string */ $string)/*# : OutputInterface */
     {
         // values found
         if (func_num_args() > 1) {
@@ -113,8 +113,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
             $string = $this->getParameter()
                 ->replaceQuestionMark($string, $values);
         }
-
-        return new Raw($string, $this);
+        return new Raw($string);
     }
 
     /**

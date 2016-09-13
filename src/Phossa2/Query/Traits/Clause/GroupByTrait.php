@@ -99,7 +99,7 @@ trait GroupByTrait
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        return $this->buildClause('GROUP BY', 'GROUP BY', $settings);
+        return $this->buildClause('GROUP BY', $prefix, $settings);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;

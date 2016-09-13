@@ -36,10 +36,6 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function test__construct()
     {
-        // TODO Auto-generated BuilderTest->test__construct()
-        $this->markTestIncomplete("__construct test not implemented");
-
-        $this->object->__construct(/* parameters */);
     }
 
     /**
@@ -53,7 +49,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
                 $this->object->expr()->where('id', '<', 20)->orWhere('id', '>', 100)
             )
         )->orWhere('name', 'Tester');
-        //$this->assertEquals($sql, $query->getStatement());
+        $this->assertEquals($sql, $query->getStatement());
     }
 
     /**

@@ -60,6 +60,6 @@ class Select extends StatementAbstract implements SelectStatementInterface
         'HAVING' => 'HAVING',
         'ORDERBY' => 'ORDER BY',
         'LIMIT' => 'LIMIT',
-        'UNION' => 'UNION',
+        'UNION' => '',
     ];
 }

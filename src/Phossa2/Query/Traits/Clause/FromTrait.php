@@ -86,7 +86,7 @@ trait FromTrait
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        return $this->buildClause('FROM', 'FROM', $settings);
+        return $this->buildClause('FROM', $prefix, $settings);
     }
 
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;

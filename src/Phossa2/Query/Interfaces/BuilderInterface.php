@@ -66,11 +66,11 @@ interface BuilderInterface extends DialectAwareInterface, SettingsInterface, Fro
      * ```
      *
      * @param  string $string
-     * @return RawInterface
+     * @return OutputInterface
      * @access public
      * @api
      */
-    public function raw(/*# string */ $string)/*# : RawInterface */;
+    public function raw(/*# string */ $string)/*# : OutputInterface */;
 
     /**
      * Build a SELECT statement

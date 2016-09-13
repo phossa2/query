@@ -22,21 +22,12 @@ namespace Phossa2\Query\Interfaces;
  * @see     SettingsInterface
  * @see     BuilderAwareInterface
  * @see     PreviousInterface
+ * @see     OutputInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface extends SettingsInterface, BuilderAwareInterface, PreviousInterface
+interface StatementInterface extends SettingsInterface, BuilderAwareInterface, PreviousInterface, OutputInterface
 {
-    /**
-     * Return the statement string
-     *
-     * @param  array $settings extra settings if any
-     * @return string
-     * @access public
-     * @api
-     */
-    public function getStatement(array $settings = [])/*# : string */;
-
     /**
      * Return binding values
      *
@@ -45,13 +36,4 @@ interface StatementInterface extends SettingsInterface, BuilderAwareInterface, P
      * @api
      */
     public function getBindings()/*# : array */;
-
-    /**
-     * Get the statement with positionedParam and namedParam FALSE
-     *
-     * @return string
-     * @access public
-     * @api
-     */
-    public function __toString()/*# : string */;
 }

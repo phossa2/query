@@ -115,7 +115,7 @@ trait OrderByTrait
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        return $this->buildClause('ORDER BY', 'ORDER BY', $settings);
+        return $this->buildClause('ORDER BY', $prefix, $settings);
     }
 
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;

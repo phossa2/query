@@ -48,7 +48,7 @@ trait WhereTrait
     {
         return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            'AND', '', true);
+            'AND', '');
     }
 
     /**
@@ -58,7 +58,7 @@ trait WhereTrait
     {
         return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            'OR', '', true);
+            'OR', '');
     }
 
     /**
@@ -157,9 +157,8 @@ trait WhereTrait
             return $this;
         }
 
-        $rawMode = $this->isRaw($col, $rawMode);
-
         // fix operator & value
+        $rawMode = $this->isRaw($col, $rawMode);
         if (!$rawMode && WhereInterface::NO_VALUE === $value) {
             $value = $operator;
             $operator = '=';
@@ -233,24 +232,18 @@ trait WhereTrait
      */
     protected function buildCondition(array $cls, array $where, array $settings)
     {
-        // col
         if (!empty($where[3])) {
             $cls[] = $this->quoteItem(
                 $where[3], $settings, $this->isRaw($where[3], $where[0])
             );
         }
-
-        // operator
         if (WhereInterface::NO_OPERATOR !== $where[4]) {
             $cls[] = $where[4];
         }
-
-        // value
         if (WhereInterface::NO_VALUE !== $where[5]) {
-            $cls[] = $this->processValue(
-                $where[5], $settings, (bool) preg_match('/\bbetween\b/i', $where[4]));
+            $cls[] = $this->processValue($where[5], $settings,
+                (bool) preg_match('/\bbetween\b/i', $where[4]));
         }
-
         return join(' ', $cls);
     }
 

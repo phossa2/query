@@ -15,7 +15,6 @@
 namespace Phossa2\Query\Misc;
 
 use Phossa2\Query\Traits\Clause\QuoteTrait;
-use Phossa2\Query\Interfaces\TemplateInterface;
 
 /**
  * Template
@@ -24,11 +23,11 @@ use Phossa2\Query\Interfaces\TemplateInterface;
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     TemplateInterface
+ * @see     Raw
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Template implements TemplateInterface
+class Template extends Raw
 {
     use QuoteTrait;
 
@@ -56,22 +55,21 @@ class Template implements TemplateInterface
     }
 
     /**
-     * Get output of the template base on settings
-     *
-     * @param  array $settings
-     * @return string
-     * @access public
-     * @api
+     * {@inheritDoc}
      */
-    public function getOutput(array $settings)/*# : string */
+    public function getStatement(array $settings= [])/*# : string */
     {
-        $quoted = [];
-        foreach ((array) $this->col as $c) {
-            $quoted[] = $this->quote(
-                $c,
-                $settings['quotePrefix'],
-                $settings['quoteSuffix']
-            );
+        if (!empty($settings)) {
+            $quoted = [];
+            foreach ((array) $this->col as $c) {
+                $quoted[] = $this->quote(
+                    $c,
+                    $settings['quotePrefix'],
+                    $settings['quoteSuffix']
+                );
+            }
+        } else {
+            $quoted = (array) $this->col;
         }
         return vsprintf($this->template, $quoted);
     }

@@ -67,10 +67,11 @@ trait UnionTrait
         if (!empty($clause)) {
             return $settings['seperator'] . $clause[0];
         } else {
-            return '';
+            return $prefix;
         }
     }
 
+    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract public function setPrevious(StatementInterface $previous = null);
     /**
      * Return the builder

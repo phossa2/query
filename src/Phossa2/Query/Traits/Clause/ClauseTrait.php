@@ -14,10 +14,9 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Interfaces\RawInterface;
+use Phossa2\Query\Interfaces\OutputInterface;
 use Phossa2\Query\Interfaces\ClauseInterface;
 use Phossa2\Query\Interfaces\BuilderInterface;
-use Phossa2\Query\Interfaces\TemplateInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
 
 /**
@@ -58,7 +57,7 @@ trait ClauseTrait
             return (bool) preg_match('/[^0-9a-zA-Z\$_.]/', $str);
         }
 
-        return is_object($str) && $str instanceof RawInterface;
+        return is_object($str);
     }
 
     /**
@@ -114,18 +113,14 @@ trait ClauseTrait
      */
     protected function quoteObject($object, $settings)/*# : string */
     {
-        if ($object instanceof RawInterface) {
-            return $object->getStatement($settings);
-        }
         if ($object instanceof StatementInterface) {
             $settings = array_replace(
                 $settings,
                 ['seperator' => ' ', 'indent' => '']
             );
-            return '(' . $object->getStatement($settings) . ')';
-        }
-        if ($object instanceof TemplateInterface) {
-            return $object->getOutput($settings);
+            return '(' . trim($object->getStatement($settings)) . ')';
+        } elseif ($object instanceof OutputInterface) {
+            return $object->getStatement($settings);
         }
         return (string) $object;
     }
