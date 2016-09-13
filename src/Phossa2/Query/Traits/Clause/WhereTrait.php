@@ -157,12 +157,11 @@ trait WhereTrait
             return $this;
         }
 
-        // fix operator & value
+        // fix raw mode
         $rawMode = $this->isRaw($col, $rawMode);
-        if (!$rawMode && WhereInterface::NO_VALUE === $value) {
-            $value = $operator;
-            $operator = '=';
-        }
+
+        // fix operator to '='
+        $this->fixOperator($operator, $value, $rawMode);
 
         $clause[] = [$rawMode, $whereNot, $logicAnd, $col, $operator, $value];
         return $this;
@@ -193,6 +192,22 @@ trait WhereTrait
     }
 
     /**
+     * Fix where('id', 18) to where('id', '=', 18)
+     *
+     * @param  mixed &$operator
+     * @param  mixed &$value
+     * @param  bool $rawMode
+     * @access protected
+     */
+    protected function fixOperator(&$operator, &$value, $rawMode)
+    {
+        if (!$rawMode && WhereInterface::NO_VALUE === $value) {
+            $value = $operator;
+            $operator = '=';
+        }
+    }
+
+    /**
      * Build WHERE
      *
      * @param  prefix
@@ -205,20 +220,39 @@ trait WhereTrait
         array $settings
     )/*# : string */ {
         $result = [];
-        $wheres = &$this->getClause('HAVING' == $prefix ? $prefix : 'WHERE');
+        if ('HAVING' === $prefix) {
+            $wheres = &$this->getClause($prefix);
+        } else {
+            $wheres = &$this->getClause('WHERE');
+        }
         foreach ($wheres as $idx => $where) {
             $cls = [];
-            // AND OR
-            if ($idx) {
-                $cls[] = $where[2];
-            }
-            // NOT
-            if ($where[1]) {
-                $cls[] = $where[1];
-            }
+            // build AND|OR|NOT
+            $this->buildAndOr($cls, $where, $idx);
+            // build COL = VAL
             $result[] = $this->buildCondition($cls, $where, $settings);
         }
         return $this->joinClause($prefix, '', $result, $settings);
+    }
+
+    /**
+     * build 'AND NOT' part of the clause part
+     *
+     * @param  array &$cls
+     * @param  array $where
+     * @param  int $idx
+     * @access protected
+     */
+    protected function buildAndOr(array &$cls, array $where, $idx)
+    {
+        // AND OR
+        if ($idx) {
+            $cls[] = $where[2];
+        }
+        // NOT
+        if ($where[1]) {
+            $cls[] = $where[1];
+        }
     }
 
     /**
