@@ -14,8 +14,8 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Interfaces\Clause\JoinInterface;
 use Phossa2\Query\Interfaces\ExpressionInterface;
+use Phossa2\Query\Interfaces\Clause\JoinInterface;
 
 /**
  * JoinTrait
@@ -80,10 +80,11 @@ trait JoinTrait
         $firstTable = '',
         /*# bool */ $rawMode = false
     ) {
+        $alias = 0; // no alias
+
         // totally raw
         if ($rawMode || '' === $onClause) {
             $rawMode = true;
-            $alias = 0; // no alias
         }
 
         // fix table, alias, on clause
@@ -91,10 +92,8 @@ trait JoinTrait
             $onClause = $this->fixOnClause($onClause);
             list($secondTable, $alias) = $this->fixJoinTable($secondTable);
         }
-
         $clause = &$this->getClause('JOIN');
         $clause[] = [$rawMode, $joinType, $secondTable, $alias, $onClause, $firstTable];
-
         return $this;
     }
 
@@ -239,6 +238,7 @@ trait JoinTrait
         return $alias . '.';
     }
 
+    abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function flatSettings(array $settings)/*# : array */;
