@@ -15,8 +15,8 @@
 namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Interfaces\BuilderInterface;
-use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Clause\UnionInterface;
+use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
  * UnionTrait
@@ -32,23 +32,61 @@ use Phossa2\Query\Interfaces\Clause\UnionInterface;
 trait UnionTrait
 {
     /**
+     * 0 NO, 1 YES, 2 UNION ALL
+     * @var    int
+     * @access protected
+     */
+    protected $is_union = UnionInterface::UNION_NOT;
+
+    /**
+     * Previous statement used in UNION/UNION ALL
+     *
+     * @var    SelectStatementInterface
+     * @access protected
+     */
+    protected $previous;
+
+    /**
      * {@inheritDoc}
      */
-    public function union()/*# : BuilderInterace */
+    public function union()/*# : SelectStatementInterface */
     {
-        $clause = &$this->getClause('UNION');
-        $clause[] = 'UNION';
-        return $this->getBuilder()->setPrevious($this);
+        $this->is_union = UnionInterface::UNION_YES;
+        return $this->getBuilder()->select()->table('')->setPrevious($this);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function unionAll()/*# : BuilderInterace */
+    public function unionAll()/*# : SelectStatementInterface */
     {
-        $clause = &$this->getClause('UNION');
-        $clause[] = 'UNION ALL';
-        return $this->getBuilder()->setPrevious($this);
+        $this->is_union = UnionInterface::UNION_ALL;
+        return $this->getBuilder()->select()->table('')->setPrevious($this);
+    }
+
+    /**
+     * Override `getStatement()` in StatementAbstract
+     *
+     * {@inheritDoc}
+     */
+    public function getStatement(array $settings = [])/*# : string */
+    {
+        // combine settings
+        $settings = $this->combineSettings($settings);
+
+        // statements
+        $sql = [];
+
+        // build previous statement
+        if ($this->hasPrevious()) {
+            $sql[] = $this->getPrevious()->getStatement($settings);
+        }
+
+        // build current sql
+        $sql[] = $this->buildSql($settings);
+
+        // replace with ?, :name or real values
+        return $this->bindValues(join($settings['seperator'], $sql), $settings);
     }
 
     /**
@@ -63,16 +101,51 @@ trait UnionTrait
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        $clause = &$this->getClause('UNION');
-        if (!empty($clause)) {
-            return $settings['seperator'] . $clause[0];
-        } else {
-            return $prefix;
+        switch ($this->is_union) {
+            case UnionInterface::UNION_YES :
+                return $settings['seperator'] . 'UNION';
+            case UnionInterface::UNION_ALL :
+                return $settings['seperator'] . 'UNION ALL';
+            default :
+                return $prefix;
         }
     }
 
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract public function setPrevious(StatementInterface $previous = null);
+    /**
+     * Set previous SELECT
+     *
+     * @param  SelectStatementInterface $select
+     * @return $this
+     * @access protected
+     */
+    protected function setPrevious(SelectStatementInterface $select)
+    {
+        $this->previous = $select;
+        return $this;
+    }
+
+    /**
+     * Has previous SELECT ?
+     *
+     * @return bool
+     * @access protected
+     */
+    protected function hasPrevious()/*# : bool */
+    {
+        return null !== $this->previous;
+    }
+
+    /**
+     * Get previous SELECT
+     *
+     * @return SelectStatementInterface
+     * @access protected
+     */
+    protected function getPrevious()/*# : SelectStatementInterface */
+    {
+        return $this->previous;
+    }
+
     /**
      * Return the builder
      *
@@ -80,4 +153,7 @@ trait UnionTrait
      * @access public
      */
     abstract public function getBuilder()/*# : BuilderInterface */;
+    abstract protected function combineSettings(array $settings)/*# : array */;
+    abstract protected function buildSql(array $settings)/*# : string */;
+    abstract protected function bindValues(/*# string */ $sql, array $settings)/*# : string */;
 }

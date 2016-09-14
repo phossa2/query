@@ -28,6 +28,10 @@ use Phossa2\Query\Interfaces\BuilderInterface;
  */
 interface UnionInterface extends ClauseInterface
 {
+    const UNION_NOT = 0;
+    const UNION_YES = 1;
+    const UNION_ALL = 2;
+
     /**
      * Union with another SELECT
      *

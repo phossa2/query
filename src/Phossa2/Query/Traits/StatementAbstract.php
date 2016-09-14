@@ -30,7 +30,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsTrait, BuilderAwareTrait, PreviousTrait;
+    use SettingsTrait, BuilderAwareTrait;
 
     /**
      * value bindings
@@ -75,19 +75,11 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
         // combine settings
         $settings = $this->combineSettings($settings);
 
-        // statements
-        $sql = [];
-
-        // build previous statement
-        if ($this->hasPrevious()) {
-            $sql[] = $this->getPrevious()->getStatement($settings);
-        }
-
         // build current sql
-        $sql[] = $this->buildSql($settings);
+        $sql = $this->buildSql($settings);
 
         // replace with ?, :name or real values
-        return $this->bindValues(join($settings['seperator'], $sql), $settings);
+        return $this->bindValues($sql, $settings);
     }
 
     /**
@@ -152,7 +144,7 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      * @return string
      * @access protected
      */
-    protected function bindValues(/*# string */ $sql, array $settings)
+    protected function bindValues(/*# string */ $sql, array $settings)/*# : string */
     {
         // init bindings
         $this->bindings = [];
@@ -160,18 +152,5 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
         // bind values
         return $this->getBuilder()->getParameter()
             ->bindValues($sql, $this->bindings, $settings);
-    }
-
-    /**
-     * Set previous statement
-     *
-     * @param  StatementInterface $stmt
-     * @return $this
-     * @access protected
-     */
-    protected function setPrevous(StatementInterface $stmt)
-    {
-        $this->previous = $stmt;
-        return $this;
     }
 }

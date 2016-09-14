@@ -19,7 +19,6 @@ use Phossa2\Query\Dialect\Mysql;
 use Phossa2\Query\Misc\Expression;
 use Phossa2\Shared\Base\ObjectAbstract;
 use Phossa2\Query\Traits\SettingsTrait;
-use Phossa2\Query\Traits\PreviousTrait;
 use Phossa2\Query\Traits\DialectAwareTrait;
 use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
@@ -41,7 +40,7 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Builder extends ObjectAbstract implements BuilderInterface
 {
-    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait, PreviousTrait;
+    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait;
 
     /**
      * tables
@@ -149,29 +148,8 @@ class Builder extends ObjectAbstract implements BuilderInterface
         /*# string */ $alias = ''
     )/*# : SelectStatementInterface */ {
         /* @var SelectStatementInterface $select */
-        $select = $this->getDialectStatement('select');
+        $select = $this->getDialect()->select($this);
         return $select->table($this->tables)->col($col, $alias);
-    }
-
-    /**
-     * Get the statement
-     *
-     * @param  string $name statement name, such as 'select'
-     * @access protected
-     */
-    protected function getDialectStatement(
-        /*# string */ $name
-    )/*# : StatementInterface */ {
-        /* @var StatementInterface $stmt */
-        $stmt = $this->getDialect()->{$name}($this);
-
-        // dealing with previous statement
-        if ($this->hasPrevious()) {
-            $stmt->setPrevious($this->getPrevious());
-            $this->setPrevious();
-        }
-
-        return $stmt;
     }
 
     /**

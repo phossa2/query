@@ -640,12 +640,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     {
         // union
         $sql = "SELECT * FROM `Users` UNION SELECT * FROM `newUsers`";
-        $query = $this->object->select()->union()->select()->table('newUsers');
+        $query = $this->object->select()->union()->table('newUsers');
         $this->assertEquals($sql, $query->getStatement());
 
         // uinon all
         $sql = "SELECT * FROM `Users` UNION ALL SELECT * FROM `newUsers`";
-        $query = $this->object->select()->unionAll()->select()->table('newUsers');
+        $query = $this->object->select()->unionAll()->table('newUsers');
         $this->assertEquals($sql, $query->getStatement());
     }
 }
