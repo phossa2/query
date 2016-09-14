@@ -70,26 +70,6 @@ interface JoinInterface extends ClauseInterface
     public function leftJoin($secondTable, $onClause = '', $firstTable = '');
 
     /**
-     * RIGHT JOIN
-     *
-     * ```php
-     * // RIGHT JOIN `Constacts` ON `Users`.`id` = `Contacts`.`id`
-     * $uesrs->rightJoin('Contacts', 'id')
-     *
-     * // RIGHT JOIN `Contacts` AS `c` ON `Users`.`user_id` = `Contacts`.`uid`
-     * $users->rightJoin(['Contacts', 'c'], ['user_id', 'uid']);
-     * ```
-     *
-     * @param  string|string[]|SelectStatementInterface $secondTable
-     * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
-     * @return $this
-     * @access public
-     * @api
-     */
-    public function rightJoin($secondTable, $onClause = '', $firstTable = '');
-
-    /**
      * Raw join
      *
      * ```php

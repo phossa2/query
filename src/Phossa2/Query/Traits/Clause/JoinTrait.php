@@ -49,14 +49,6 @@ trait JoinTrait
     /**
      * {@inheritDoc}
      */
-    public function rightJoin($secondTable, $onClause = '', $firstTable = '')
-    {
-        return $this->realJoin('RIGHT JOIN', $secondTable, $onClause, $firstTable);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function joinRaw(/*# string */ $joinType, /*# string */ $rawString)
     {
         return $this->realJoin($joinType, $rawString, '', '', true);
