@@ -46,6 +46,24 @@ interface GroupByInterface extends ClauseInterface
     public function groupBy($col);
 
     /**
+     * Generic GROUP BY DESC
+     *
+     * ```php
+     * // GROUP BY `year` DESC
+     * ->groupByDesc('year')
+     *
+     * // GROUP BY `year` DESC, `gender` DESC
+     * ->groupByDesc(['year', 'gender'])
+     * ```
+     *
+     * @param  string|string[] $col column[s]
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function groupByDesc($col);
+
+    /**
      * Generic GROUP BY template
      *
      * ```php

@@ -14,6 +14,8 @@
 
 namespace Phossa2\Query\Interfaces;
 
+use Phossa2\Query\Interfaces\Clause\ExtraInterface;
+
 /**
  * StatementInterface
  *
@@ -22,10 +24,11 @@ namespace Phossa2\Query\Interfaces;
  * @see     SettingsInterface
  * @see     BuilderAwareInterface
  * @see     OutputInterface
+ * @see     ExtraInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface extends SettingsInterface, BuilderAwareInterface, OutputInterface
+interface StatementInterface extends SettingsInterface, BuilderAwareInterface, OutputInterface, ExtraInterface
 {
     /**
      * Return binding values

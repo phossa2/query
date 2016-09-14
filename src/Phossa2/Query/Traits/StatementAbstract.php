@@ -15,6 +15,7 @@
 namespace Phossa2\Query\Traits;
 
 use Phossa2\Shared\Base\ObjectAbstract;
+use Phossa2\Query\Traits\Clause\ExtraTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
 
@@ -30,7 +31,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsTrait, BuilderAwareTrait;
+    use SettingsTrait, BuilderAwareTrait, ExtraTrait;
 
     /**
      * value bindings
@@ -129,9 +130,15 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     {
         $result = $this->type;
         $settings['join'] = $settings['seperator'] . $settings['indent'];
-        foreach ($this->configs as $clause => $prefix) {
-            $method = 'build' . ucfirst(strtolower($clause));
+        foreach ($this->configs as $pos => $prefix) {
+            // before
+            $result .= $this->buildBeforeAfter('BEFORE', $pos, $settings);
+
+            $method = 'build' . ucfirst(strtolower($pos));
             $result .= $this->{$method}($prefix, $settings);
+
+            // after
+            $result .= $this->buildBeforeAfter('AFTER', $pos, $settings);
         }
         return $result;
     }

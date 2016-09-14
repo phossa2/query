@@ -134,6 +134,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             $this->object->select()->limit(10)->getStatement()
         );
 
+        // Users.*
+        $sql = 'SELECT Users.* FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select('Users.*')->getStatement()
+        );
+
         // single col
         $sql = 'SELECT `u`.`user_name` FROM `Users`';
         $this->assertEquals(
@@ -318,6 +325,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(
             $sql,
             $this->object->select()->groupBy('last_name')->getStatement()
+        );
+
+        // group by
+        $sql = 'SELECT * FROM `Users` GROUP BY `last_name` DESC';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->groupByDesc('last_name')->getStatement()
         );
 
         // multiple groupby
@@ -688,6 +702,21 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->object->select()->leftJoin(
             [$this->object->select('uid')->table('oldUsers'), 'x'], 'uid'
         );
+        $this->assertEquals($sql, $query->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->before()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect91()
+    {
+        // before
+        $sql = 'SELECT SQL_CACHE * FROM `Users` INTO OUTFILE "test.txt"';
+        $query = $this->object->select()
+            ->before('col', 'SQL_CACHE')
+            ->after('limit', 'INTO OUTFILE "test.txt"');
         $this->assertEquals($sql, $query->getStatement());
     }
 }

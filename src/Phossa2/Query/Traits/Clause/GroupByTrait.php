@@ -43,9 +43,17 @@ trait GroupByTrait
     /**
      * {@inheritDoc}
      */
+    public function groupByDesc($col)
+    {
+        return $this->realGroupBy($col, 'DESC');
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function groupByTpl(/*# string */ $template, $col)
     {
-        return $this->realGroupBy(new Template($template, $col), true);
+        return $this->realGroupBy(new Template($template, $col), '', true);
     }
 
     /**
@@ -53,23 +61,31 @@ trait GroupByTrait
      */
     public function groupByRaw(/*# string */ $groupby)
     {
-        return $this->realGroupBy($groupby, true);
+        return $this->realGroupBy($groupby, '', true);
     }
 
     /**
      * real group by
      * @param  string|string[]|Template $col column[s]
+     * @param  string $suffix ''|ASC|DESC
      * @param  bool $rawMode
      * @return $this
      * @access protected
      */
-    protected function realGroupBy($col, /*# bool */ $rawMode = false)
+    protected function realGroupBy(
+        $col,
+        /*# sting */ $suffix = '',
+        /*# bool */ $rawMode = false)
     {
         if (is_array($col)) {
-            $this->multipleGroupBy($col);
+            $this->multipleGroupBy($col, $suffix);
         } else {
             $clause = &$this->getClause('GROUP BY');
-            $clause[] = [$col, $this->isRaw($col, $rawMode)];
+            $part = [$col, $this->isRaw($col, $rawMode)];
+            if (!empty($suffix)) {
+                $part[] = $suffix;
+            }
+            $clause[] = $part;
         }
         return $this;
     }
@@ -78,12 +94,13 @@ trait GroupByTrait
      * Multitple groupbys
      *
      * @param  array $cols
+     * @param  string $suffix
      * @access protected
      */
-    protected function multipleGroupBy(array $cols)
+    protected function multipleGroupBy(array $cols, /*# string */ $suffix)
     {
         foreach ($cols as $col) {
-            $this->realGroupBy($col);
+            $this->realGroupBy($col, $suffix);
         }
     }
 
