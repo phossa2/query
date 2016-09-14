@@ -31,18 +31,19 @@ trait QuoteTrait
      * - u.username to `u`.`username`
      *
      * @param  string $str
-     * @param  string $prefix
-     * @param  string $suffix
+     * @param  array $settings
      * @return string
      * @access protected
      */
     protected function quote(
         /*# string */ $str,
-        /*# string */ $prefix,
-        /*# string */ $suffix
+        array $settings
     )/*# : string */ {
         // pattern
         $pattern = '/^[a-zA-Z\$][0-9a-zA-Z_.\$]*+$/';
+        $prefix = $settings['quotePrefix'];
+        $suffix = $settings['quoteSuffix'];
+
         if (preg_match($pattern, $str)) {
             return preg_replace_callback(
                 '/\b([a-zA-Z\$][0-9a-zA-Z_\$]*+)\b/',

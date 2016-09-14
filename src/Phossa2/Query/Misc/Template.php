@@ -62,11 +62,7 @@ class Template extends Raw
         if (!empty($settings)) {
             $quoted = [];
             foreach ((array) $this->col as $c) {
-                $quoted[] = $this->quote(
-                    $c,
-                    $settings['quotePrefix'],
-                    $settings['quoteSuffix']
-                );
+                $quoted[] = $this->quote($c, $settings);
             }
         } else {
             $quoted = (array) $this->col;

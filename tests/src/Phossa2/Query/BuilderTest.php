@@ -648,4 +648,46 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $query = $this->object->select()->unionAll()->table('newUsers');
         $this->assertEquals($sql, $query->getStatement());
     }
+
+    /**
+     * Tests Builder->select()->join()
+     *
+     * @covers Phossa2\Query\Builder::select()
+     */
+    public function testSelect9()
+    {
+        // inner join
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` ON `Users`.`uid` = `Sales`.`uid`';
+        $query = $this->object->select()->join('Sales', 'uid');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // table alias
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`uid` = `s`.`uid`';
+        $query = $this->object->select()->join(['Sales', 's'], 'uid');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // different col
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`id` = `s`.`uid`';
+        $query = $this->object->select()->join(['Sales', 's'], ['id', 'uid']);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // use operator
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`id` <> `s`.`uid`';
+        $query = $this->object->select()->join(['Sales', 's'], ['id', '<>', 'uid']);
+        $this->assertEquals($sql, $query->getStatement());
+
+        // multiple joins
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`uid` = `s`.`uid` INNER JOIN `Orders` AS `o` ON `s`.`oid` = `o`.`oid`';
+        $query = $this->object->select()
+            ->join(['Sales', 's'], 'uid')
+            ->join(['Orders', 'o'], 'oid', 's');
+        $this->assertEquals($sql, $query->getStatement());
+
+        // subquery in join
+        $sql = 'SELECT * FROM `Users` LEFT JOIN (SELECT `uid` FROM `oldUsers`) AS `x` ON `Users`.`uid` = `x`.`uid`';
+        $query = $this->object->select()->leftJoin(
+            [$this->object->select('uid')->table('oldUsers'), 'x'], 'uid'
+        );
+        $this->assertEquals($sql, $query->getStatement());
+    }
 }

@@ -98,9 +98,7 @@ trait ClauseTrait
         }
 
         // is a string, quote with prefix and suffix
-        $prefix = $settings['quotePrefix'];
-        $suffix = $settings['quoteSuffix'];
-        return $rawMode ? $item : $this->quote($item, $prefix, $suffix);
+        return $rawMode ? $item : $this->quote($item, $settings);
     }
 
     /**
@@ -114,10 +112,7 @@ trait ClauseTrait
     protected function quoteObject($object, $settings)/*# : string */
     {
         if ($object instanceof StatementInterface) {
-            $settings = array_replace(
-                $settings,
-                ['seperator' => ' ', 'indent' => '']
-            );
+            $settings = $this->flatSettings($settings);
             return '(' . trim($object->getStatement($settings)) . ')';
         } elseif ($object instanceof OutputInterface) {
             return $object->getStatement($settings);
@@ -261,6 +256,21 @@ trait ClauseTrait
             $clauseParts[] = $part;
         }
         return $this->joinClause($clausePrefix, ',', $clauseParts, $settings);
+    }
+
+    /**
+     * Reset settings to print flat
+     *
+     * @param  array $settings
+     * @return array
+     * @access protected
+     */
+    protected function flatSettings(array $settings)/*# : array */
+    {
+        return array_replace(
+            $settings,
+            ['seperator' => ' ', 'indent' => '']
+        );
     }
 
     /**

@@ -16,6 +16,7 @@ namespace Phossa2\Query\Dialect\Common;
 
 use Phossa2\Query\Traits\Clause\ColTrait;
 use Phossa2\Query\Traits\Clause\FromTrait;
+use Phossa2\Query\Traits\Clause\JoinTrait;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\WhereTrait;
 use Phossa2\Query\Traits\Clause\LimitTrait;
@@ -40,7 +41,7 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Select extends StatementAbstract implements SelectStatementInterface
 {
-    use ClauseTrait, ColTrait, FromTrait, WhereTrait, GroupByTrait,
+    use ClauseTrait, ColTrait, FromTrait, WhereTrait, JoinTrait, GroupByTrait,
         HavingTrait, OrderByTrait, LimitTrait, UnionTrait;
 
     /**
@@ -55,6 +56,7 @@ class Select extends StatementAbstract implements SelectStatementInterface
         'DISTINCT' => '',
         'COL' => '',
         'FROM' => 'FROM',
+        'JOIN' => '',
         'WHERE' => 'WHERE',
         'GROUPBY' => 'GROUP BY',
         'HAVING' => 'HAVING',
