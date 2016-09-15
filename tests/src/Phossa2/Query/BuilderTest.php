@@ -719,4 +719,57 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             ->after('limit', 'INTO OUTFILE "test.txt"');
         $this->assertEquals($sql, $query->getStatement());
     }
+
+    /**
+     * Same result
+     *
+     * @covers Phossa2\Query\Builder::insert()
+     */
+    public function testInsert0()
+    {
+        // simple insert
+        $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa')";
+        $qry = $this->object->insert()->set('uid', 2)->set('uname', 'phossa');
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // same as above
+        $qry = $this->object->insert()->set(['uid' => 2, 'uname' => 'phossa']);
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // mulitple sets
+        $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa'), (3, 'test')";
+        $qry = $this->object->insert()
+            ->set(['uid' => 2, 'uname' => 'phossa'])
+            ->set(['uid' => 3, 'uname' => 'test']);
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // insert with default values
+        $sql = "INSERT INTO `Users` (`uid`, `uname`, `phone`) VALUES (2, 'phossa', DEFAULT), (3, 'test', '1234')";
+        $qry = $this->object->insert([
+            ['uid' => 2, 'uname' => 'phossa'],
+            ['uid' => 3, 'uname' => 'test', 'phone' => '1234']
+        ]);
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // insert NULL instead of default
+        $sql = "INSERT INTO `Users` (`uid`, `uname`, `phone`) VALUES (2, 'phossa', NULL), (3, 'test', '1234')";
+        $qry = $this->object->insert([
+            ['uid' => 2, 'uname' => 'phossa'],
+            ['uid' => 3, 'uname' => 'test', 'phone' => '1234']
+        ]);
+        $this->assertEquals($sql, $qry->getStatement([
+            'useNullAsDefault' => true
+        ]));
+
+        // insert ... select ...
+        $sql = "INSERT INTO `Users` (`uid`, `uname`) SELECT `user_id`, `user_name` FROM `oldUsers`";
+        $qry = $this->object->insert()->set(['uid', 'uname'])
+                ->select(['user_id', 'user_name'])
+                ->table('oldUsers');
+
+        // auto positionedParam => true
+        $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (?, ?)";
+        $qry = $this->object->insert()->set(['uid', 'uname']);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
 }

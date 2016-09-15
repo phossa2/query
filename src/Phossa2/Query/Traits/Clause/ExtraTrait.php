@@ -72,4 +72,6 @@ trait ExtraTrait
             return '';
         }
     }
+
+    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
 }

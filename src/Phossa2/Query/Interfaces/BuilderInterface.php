@@ -14,7 +14,8 @@
 
 namespace Phossa2\Query\Interfaces;
 
-use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
+use Phossa2\Query\Interfaces\Clause\SelectInterface;
+use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 
 /**
  * BuilderInterface
@@ -23,12 +24,13 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  * @author  Hong Zhang <phossa@126.com>
  * @see     DialectAwareInterface
  * @see     SettingsInterface
+ * @see     SelectInterface
  * @see     FromInterface
  * @see     ParameterAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface BuilderInterface extends DialectAwareInterface, SettingsInterface, FromInterface, ParameterAwareInterface
+interface BuilderInterface extends DialectAwareInterface, SettingsInterface, SelectInterface, FromInterface, ParameterAwareInterface
 {
     /**
      * Create an expression
@@ -36,11 +38,13 @@ interface BuilderInterface extends DialectAwareInterface, SettingsInterface, Fro
      * ```php
      * $users = new Builder('Users', new Mysql());
      *
-     * // SELECT *
-     * //     FROM Users
-     * //     WHERE
-     * //         (age < 18 OR gender = 'female') OR
-     * //         (age > 60 OR (age > 55 AND gender = 'female'))
+     * // SELECT
+     *        *
+     * // FROM
+     *        Users
+     * // WHERE
+     * //     (age < 18 OR gender = 'female') OR
+     * //     (age > 60 OR (age > 55 AND gender = 'female'))
      * $users->select()
      *   ->where(
      *     $users->expr()->where('age', '<', 18)->orWhere('gender', 'female')
@@ -72,36 +76,11 @@ interface BuilderInterface extends DialectAwareInterface, SettingsInterface, Fro
     public function raw(/*# string */ $string)/*# : OutputInterface */;
 
     /**
-     * Build a SELECT statement
+     * Build an INSERT statement
      *
-     * Add col[s] to SELECT query.
-     *
-     * ```php
-     * // SELECT DISTINCT
-     * ->select()->distinct()
-     *
-     * // SELECT `user_name`
-     * ->select('user_name')
-     *
-     * // SELECT `user_name` AS `n`
-     * ->select('user_name', 'n')
-     *
-     * // SELECT `user_id`, `user_name`
-     * ->select(['user_id', 'user_name'])
-     *
-     * // SELECT `user_id`, `user_name` AS `n`
-     * ->select(['user_id', 'user_name' => 'n'])
-     * ```
-     *
-     * @param  string|array $col column specification[s]
-     * @param  string $alias alias name for $col
-     * @return SelectStatementInterface
+     * @param  array $values
+     * @return InsertStatementInterface
      * @access public
-     * @throws BadMethodCallException if not supported
-     * @api
      */
-    public function select(
-        $col = '',
-        /*# string */ $alias = ''
-    )/*# : SelectStatementInterface */;
+    public function insert(array $values = [])/*# : InsertStatementInterface */;
 }

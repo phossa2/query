@@ -16,10 +16,10 @@ namespace Phossa2\Query\Dialect\Mysql;
 
 use Phossa2\Query\Traits\Clause\PartitionTrait;
 use Phossa2\Query\Interfaces\Clause\PartitionInterface;
-use Phossa2\Query\Dialect\Common\Select as CommonSelect;
+use Phossa2\Query\Dialect\Common\Insert as CommonInsert;
 
 /**
- * Mysql Select
+ * Mysql Insert
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -27,7 +27,7 @@ use Phossa2\Query\Dialect\Common\Select as CommonSelect;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Select extends CommonSelect implements PartitionInterface
+class Insert extends CommonInsert implements PartitionInterface
 {
     use PartitionTrait;
 
@@ -35,16 +35,9 @@ class Select extends CommonSelect implements PartitionInterface
      * {@inheritDoc}
      */
     protected $configs = [
-        'DISTINCT' => '',
-        'COL' => '',
-        'FROM' => 'FROM',
-        'JOIN' => '',
-        'PARTITION' => 'PARTITION', // added partition here
-        'WHERE' => 'WHERE',
-        'GROUPBY' => 'GROUP BY',
-        'HAVING' => 'HAVING',
-        'ORDERBY' => 'ORDER BY',
-        'LIMIT' => 'LIMIT',
-        'UNION' => '',
+        'INTO' => 'INTO',
+        'PARTITION' => 'PARTITION',
+        'SET' => '',
+        'VALUES' => 'VALUES',
     ];
 }

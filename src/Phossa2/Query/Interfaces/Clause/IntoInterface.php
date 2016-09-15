@@ -1,0 +1,38 @@
+<?php
+/**
+ * Phossa Project
+ *
+ * PHP version 5.4
+ *
+ * @category  Library
+ * @package   Phossa2\Query
+ * @copyright Copyright (c) 2016 phossa.com
+ * @license   http://mit-license.org/ MIT License
+ * @link      http://www.phossa.com/
+ */
+/*# declare(strict_types=1); */
+
+namespace Phossa2\Query\Interfaces\Clause;
+
+/**
+ * IntoInterface
+ *
+ * Used in INSERT INTO
+ *
+ * @package Phossa2\Query
+ * @author  Hong Zhang <phossa@126.com>
+ * @version 2.0.0
+ * @since   2.0.0 added
+ */
+interface IntoInterface
+{
+    /**
+     * insert into table
+     *
+     * @param  string $table
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function into(/*# string */ $table);
+}

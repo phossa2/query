@@ -49,4 +49,12 @@ class Expression extends StatementAbstract implements ExpressionInterface
         // force flat notation
         $this->setSettings(['seperator' => ' ', 'indent' => '']);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getType()/*# : string */
+    {
+        return '';
+    }
 }

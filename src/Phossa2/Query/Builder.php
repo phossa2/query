@@ -25,6 +25,7 @@ use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
+use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 
 /**
  * Builder
@@ -35,6 +36,7 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  * @see     BuilderInterface
  * @see     StatementInterface
  * @see     SelectStatementInterface
+ * @see     InsertStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
@@ -150,6 +152,16 @@ class Builder extends ObjectAbstract implements BuilderInterface
         /* @var SelectStatementInterface $select */
         $select = $this->getDialect()->select($this);
         return $select->table($this->tables)->col($col, $alias);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function insert(array $values = [])/*# : InsertStatementInterface */
+    {
+        /* @var SelectStatementInterface $insert */
+        $insert = $this->getDialect()->insert($this);
+        return $insert->into(current($this->tables))->set($values);
     }
 
     /**

@@ -31,7 +31,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsTrait, BuilderAwareTrait, ExtraTrait;
+    use SettingsTrait, BuilderAwareTrait, ExtraTrait, PreviousTrait;
 
     /**
      * value bindings
@@ -40,14 +40,6 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      * @access protected
      */
     protected $bindings;
-
-    /**
-     * Statement type, 'SELECT' etc.
-     *
-     * @var    string
-     * @access protected
-     */
-    protected $type = '';
 
     /**
      * clause configs,[name => prefix]
@@ -128,7 +120,7 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      */
     protected function buildSql(array $settings)/*# : string */
     {
-        $result = $this->type;
+        $result = $this->getType();
         $settings['join'] = $settings['seperator'] . $settings['indent'];
         foreach ($this->configs as $pos => $prefix) {
             // before
@@ -160,4 +152,12 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
         return $this->getBuilder()->getParameter()
             ->bindValues($sql, $this->bindings, $settings);
     }
+
+    /**
+     * Get current statement type. e.g. 'SELECT' etc.
+     *
+     * @return string
+     * @access protected
+     */
+    abstract protected function getType()/*# : string */;
 }

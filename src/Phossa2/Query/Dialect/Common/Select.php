@@ -41,13 +41,8 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Select extends StatementAbstract implements SelectStatementInterface
 {
-    use ClauseTrait, ColTrait, FromTrait, WhereTrait, JoinTrait, GroupByTrait,
-        HavingTrait, OrderByTrait, LimitTrait, UnionTrait;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $type = 'SELECT';
+    use ClauseTrait, ColTrait, FromTrait, WhereTrait, JoinTrait,
+        GroupByTrait, HavingTrait, OrderByTrait, LimitTrait, UnionTrait;
 
     /**
      * {@inheritDoc}
@@ -64,4 +59,12 @@ class Select extends StatementAbstract implements SelectStatementInterface
         'LIMIT' => 'LIMIT',
         'UNION' => '',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getType()/*# : string */
+    {
+        return 'SELECT';
+    }
 }

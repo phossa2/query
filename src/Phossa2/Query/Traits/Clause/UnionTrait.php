@@ -16,7 +16,6 @@ namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\Clause\UnionInterface;
-use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
  * UnionTrait
@@ -37,14 +36,6 @@ trait UnionTrait
      * @access protected
      */
     protected $is_union = UnionInterface::UNION_NOT;
-
-    /**
-     * Previous statement used in UNION/UNION ALL
-     *
-     * @var    SelectStatementInterface
-     * @access protected
-     */
-    protected $previous;
 
     /**
      * {@inheritDoc}
@@ -111,41 +102,8 @@ trait UnionTrait
         }
     }
 
-    /**
-     * Set previous SELECT
-     *
-     * @param  SelectStatementInterface $select
-     * @return $this
-     * @access protected
-     */
-    protected function setPrevious(SelectStatementInterface $select)
-    {
-        $this->previous = $select;
-        return $this;
-    }
-
-    /**
-     * Has previous SELECT ?
-     *
-     * @return bool
-     * @access protected
-     */
-    protected function hasPrevious()/*# : bool */
-    {
-        return null !== $this->previous;
-    }
-
-    /**
-     * Get previous SELECT
-     *
-     * @return SelectStatementInterface
-     * @access protected
-     */
-    protected function getPrevious()/*# : SelectStatementInterface */
-    {
-        return $this->previous;
-    }
-
+    abstract protected function hasPrevious()/*# : bool */;
+    abstract protected function getPrevious()/*# : StatementInterface */;
     /**
      * Return the builder
      *
