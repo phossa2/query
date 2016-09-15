@@ -18,7 +18,7 @@ use Phossa2\Query\Misc\Raw;
 use Phossa2\Query\Dialect\Mysql;
 use Phossa2\Query\Misc\Expression;
 use Phossa2\Shared\Base\ObjectAbstract;
-use Phossa2\Query\Traits\SettingsTrait;
+use Phossa2\Query\Traits\SettingsAwareTrait;
 use Phossa2\Query\Traits\DialectAwareTrait;
 use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
@@ -42,7 +42,7 @@ use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
  */
 class Builder extends ObjectAbstract implements BuilderInterface
 {
-    use DialectAwareTrait, SettingsTrait, ParameterAwareTrait;
+    use DialectAwareTrait, SettingsAwareTrait, ParameterAwareTrait;
 
     /**
      * tables
@@ -145,13 +145,11 @@ class Builder extends ObjectAbstract implements BuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function select(
-        $col = '',
-        /*# string */ $alias = ''
-    )/*# : SelectStatementInterface */ {
+    public function select()/*# : SelectStatementInterface */
+    {
         /* @var SelectStatementInterface $select */
         $select = $this->getDialect()->select($this);
-        return $select->table($this->tables)->col($col, $alias);
+        return $select->table($this->tables)->col(func_get_args());
     }
 
     /**

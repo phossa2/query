@@ -44,16 +44,18 @@ interface ColInterface extends ClauseInterface
      * ->col(['user_id', 'user_name' => 'n'])
      * ```
      *
-     * @param  mixed $col column/field specification[s]
+     * @param  string|string[] $col column/field specification[s]
      * @param  string $alias column alias name
      * @return $this
      * @access public
      * @api
      */
-    public function col($col, /*# string */ $alias = '');
+    public function col($col = '', /*# string */ $alias = '');
 
     /**
      * DISTINCT
+     *
+     * With variable col names
      *
      * ```php
      * // SELECT DISTINCT `user_name`
@@ -62,20 +64,15 @@ interface ColInterface extends ClauseInterface
      * // SELECT DISTINCT `user_name`
      * ->distinct('user_name')
      *
-     * // SELECT DISTINCT `user_name` AS `n`
-     * ->distinct('user_name', 'n')
-     *
-     * // SELECT DISTINCT `user_id`, `user_name` AS `n`
-     * ->distinct(['user_id', 'user_name' => 'n'])
+     * // SELECT DISTINCT `user_id`, `user_name`
+     * ->distinct('user_id', 'user_name')
      * ```
      *
-     * @param  mixed $col column/field specification[s] if any
-     * @param  string $alias column alias name
      * @return $this
      * @access public
      * @api
      */
-    public function distinct($col = '', /*# string */ $alias = '');
+    public function distinct();
 
     /**
      * COUNT()

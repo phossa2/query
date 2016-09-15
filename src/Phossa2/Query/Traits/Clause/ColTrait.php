@@ -39,7 +39,7 @@ trait ColTrait
     /**
      * {@inheritDoc}
      */
-    public function col($col, /*# string */ $alias = '')
+    public function col($col = '', /*# string */ $alias = '')
     {
         return $this->realCol($col, $alias);
     }
@@ -47,10 +47,10 @@ trait ColTrait
     /**
      * {@inheritDoc}
      */
-    public function distinct($col = '', /*# string */ $alias = '')
+    public function distinct()
     {
         $this->is_distinct = true;
-        return empty($col) ? $this : $this->col($col, $alias);
+        return $this->col(func_get_args());
     }
 
     /**

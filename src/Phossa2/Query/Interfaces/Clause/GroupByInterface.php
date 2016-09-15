@@ -30,6 +30,8 @@ interface GroupByInterface extends ClauseInterface
     /**
      * Generic GROUP BY
      *
+     * Support variable parameters
+     *
      * ```php
      * // GROUP BY `year`
      * ->groupBy('year')

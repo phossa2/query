@@ -50,11 +50,11 @@ class Insert extends StatementAbstract implements InsertStatementInterface
      *
      * {@inheritDoc}
      */
-    public function select(
-        $col = '',
-        /*# string */ $alias = ''
-    )/*# : SelectStatementInterface */ {
-        return $this->getBuilder()->select($col, $alias)->table('')->setPrevious($this);
+    public function select()/*# : SelectStatementInterface */ {
+        return $this->getBuilder()->select()
+            ->setPrevious($this)    // previous stmt is INSERT
+            ->col(func_get_args())  // cols from select()
+            ->table('');            // clear table list
     }
 
     /**

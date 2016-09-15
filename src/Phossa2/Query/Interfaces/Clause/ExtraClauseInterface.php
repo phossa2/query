@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * ExtraInterface
+ * ExtraClauseInterface
  *
  * Add extra raw string before/after one clause
  *
@@ -27,7 +27,7 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface ExtraInterface extends ClauseInterface
+interface ExtraClauseInterface extends ClauseInterface
 {
     /**
      * Add before anther $clause

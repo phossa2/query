@@ -14,18 +14,18 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Interfaces\Clause\ExtraInterface;
+use Phossa2\Query\Interfaces\Clause\ExtraClauseInterface;
 
 /**
- * ExtraTrait
+ * ExtraClauseTrait
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     ExtraInterface
+ * @see     ExtraClauseInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait ExtraTrait
+trait ExtraClauseTrait
 {
     /**
      * {@inheritDoc}

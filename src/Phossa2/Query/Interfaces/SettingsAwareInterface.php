@@ -15,7 +15,7 @@
 namespace Phossa2\Query\Interfaces;
 
 /**
- * SettingsInterface
+ * SettingsAwareInterface
  *
  * Used in BuilderInterface and StatementInterface
  *
@@ -24,7 +24,7 @@ namespace Phossa2\Query\Interfaces;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface SettingsInterface
+interface SettingsAwareInterface
 {
     /**
      * Set settings

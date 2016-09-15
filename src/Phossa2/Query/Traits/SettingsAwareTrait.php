@@ -14,20 +14,20 @@
 
 namespace Phossa2\Query\Traits;
 
-use Phossa2\Query\Interfaces\SettingsInterface;
+use Phossa2\Query\Interfaces\SettingsAwareInterface;
 
 /**
- * SettingsTrait
+ * SettingsAwareTrait
  *
- * Implementation of SettingsInterface
+ * Implementation of SettingsAwareInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     SettingsInterface
+ * @see     SettingsAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait SettingsTrait
+trait SettingsAwareTrait
 {
     /**
      * settings

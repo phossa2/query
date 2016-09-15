@@ -14,7 +14,6 @@
 
 namespace Phossa2\Query\Interfaces;
 
-use Phossa2\Query\Interfaces\Clause\SelectInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 
 /**
@@ -23,17 +22,17 @@ use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     DialectAwareInterface
- * @see     SettingsInterface
+ * @see     SettingsAwareInterface
  * @see     SelectInterface
  * @see     FromInterface
  * @see     ParameterAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface BuilderInterface extends DialectAwareInterface, SettingsInterface, SelectInterface, FromInterface, ParameterAwareInterface
+interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface, SelectInterface, FromInterface, ParameterAwareInterface
 {
     /**
-     * Create an expression
+     * Create a complex expression
      *
      * ```php
      * $users = new Builder('Users', new Mysql());
@@ -62,9 +61,10 @@ interface BuilderInterface extends DialectAwareInterface, SettingsInterface, Sel
     public function expr()/*# : ExpressionInterface */;
 
     /**
-     * Pass as raw, do NOT quote
+     * Raw string with variable placeholders
      *
      * ```php
+     * // with variable placeholders
      * $builder->select()->col($builder->raw('RANGE(?, ?)', 1, 10));
      * ```
      *
@@ -78,9 +78,10 @@ interface BuilderInterface extends DialectAwareInterface, SettingsInterface, Sel
     /**
      * Build an INSERT statement
      *
-     * @param  array $values
+     * @param  array $values colname and value pairs
      * @return InsertStatementInterface
      * @access public
+     * @api
      */
     public function insert(array $values = [])/*# : InsertStatementInterface */;
 }

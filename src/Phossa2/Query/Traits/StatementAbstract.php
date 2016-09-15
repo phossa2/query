@@ -15,7 +15,7 @@
 namespace Phossa2\Query\Traits;
 
 use Phossa2\Shared\Base\ObjectAbstract;
-use Phossa2\Query\Traits\Clause\ExtraTrait;
+use Phossa2\Query\Traits\Clause\ExtraClauseTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
 
@@ -31,7 +31,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsTrait, BuilderAwareTrait, ExtraTrait, PreviousTrait;
+    use SettingsAwareTrait, BuilderAwareTrait, ExtraClauseTrait, PreviousTrait;
 
     /**
      * value bindings
