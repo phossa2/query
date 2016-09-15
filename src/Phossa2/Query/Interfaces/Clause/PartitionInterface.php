@@ -28,7 +28,7 @@ use Phossa2\Query\Interfaces\ClauseInterface;
 interface PartitionInterface extends ClauseInterface
 {
     /**
-     * Specify partitions
+     * Specify partitions, accepting variable parameters
      *
      * @param  string|string[] $partitionNames
      * @return $this

@@ -157,7 +157,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
      */
     public function insert(array $values = [])/*# : InsertStatementInterface */
     {
-        /* @var SelectStatementInterface $insert */
+        /* @var InsertStatementInterface $insert */
         $insert = $this->getDialect()->insert($this);
         return $insert->into(current($this->tables))->set($values);
     }

@@ -35,7 +35,13 @@ trait PartitionTrait
     public function partition($partitionNames)
     {
         $clause = &$this->getClause('PARTITION');
-        $clause = (array) $partitionNames;
+        if (is_array($partitionNames)) {
+            $clause = array_merge($clause, $partitionNames);
+        } elseif (func_num_args() > 1) {
+            $clause = array_merge($clause, func_get_args());
+        } else {
+            $clause[] = $partitionNames;
+        }
         return $this;
     }
 
@@ -59,4 +65,6 @@ trait PartitionTrait
             return $sepr . $prefix . ' (' . join(', ', $clause) . ')';
         }
     }
+
+    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
 }

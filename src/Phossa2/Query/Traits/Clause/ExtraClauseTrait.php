@@ -32,10 +32,7 @@ trait ExtraClauseTrait
      */
     public function before(/*# string */ $position, /*# string */ $rawString)
     {
-        $clause = &$this->getClause('BEFORE');
-        $pos = strtoupper($position);
-        $clause[$pos][] = $rawString;
-        return $this;
+        return $this->beforeAfter('BEFORE', $position, $rawString);
     }
 
     /**
@@ -43,7 +40,22 @@ trait ExtraClauseTrait
      */
     public function after(/*# string */ $position, /*# string */ $rawString)
     {
-        $clause = &$this->getClause('AFTER');
+        return $this->beforeAfter('AFTER', $position, $rawString);
+    }
+
+    /**
+     * @param  string $type
+     * @param  string $position
+     * @param  string $rawString
+     * @return $this
+     * @access protected
+     */
+    protected function beforeAfter(
+        /*# string */ $type,
+        /*# string */ $position,
+        /*# string */ $rawString
+    ) {
+        $clause = &$this->getClause($type);
         $pos = strtoupper($position);
         $clause[$pos][] = $rawString;
         return $this;

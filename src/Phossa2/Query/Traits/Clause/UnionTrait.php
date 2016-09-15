@@ -93,11 +93,11 @@ trait UnionTrait
         array $settings
     )/*# : string */ {
         switch ($this->is_union) {
-            case UnionInterface::UNION_YES :
+            case UnionInterface::UNION_YES:
                 return $settings['seperator'] . 'UNION';
-            case UnionInterface::UNION_ALL :
+            case UnionInterface::UNION_ALL:
                 return $settings['seperator'] . 'UNION ALL';
-            default :
+            default:
                 return $prefix;
         }
     }

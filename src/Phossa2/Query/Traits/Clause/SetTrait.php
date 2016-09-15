@@ -196,6 +196,7 @@ trait SetTrait
         return $settings['useNullAsDefault'] ? 'NULL' : 'DEFAULT';
     }
 
+    abstract public function setSettings(array $settings);
     abstract protected function getType()/*# : string */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function processValue($value, array $settings, /*# bool */ $between = false)/*# : string */;

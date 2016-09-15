@@ -44,7 +44,7 @@ interface ColInterface extends ClauseInterface
      * ->col(['user_id', 'user_name' => 'n'])
      * ```
      *
-     * @param  string|string[] $col column/field specification[s]
+     * @param  string|array $col column/field specification[s]
      * @param  string $alias column alias name
      * @return $this
      * @access public

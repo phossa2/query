@@ -676,8 +676,24 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         // after
         $sql = 'SELECT * FROM `Users` INTO OUTFILE "test.txt"';
-        $query = $this->object->select()
+        $qry = $this->object->select()
             ->after('from', 'INTO OUTFILE "test.txt"');
-        $this->assertEquals($sql, $query->getStatement());
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->partition()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Select::partition()
+     */
+    public function testPartition()
+    {
+        // after
+        $sql = 'SELECT * FROM `Users` PARTITION (p0, p1, p2, p3) WHERE uid > 10';
+        $qry = $this->object->select()
+            ->partition('p0')->partition(['p1'])
+            ->partition('p2', 'p3')
+            ->whereRaw('uid > ?', [10]);
+        $this->assertEquals($sql, $qry->getStatement());
     }
 }

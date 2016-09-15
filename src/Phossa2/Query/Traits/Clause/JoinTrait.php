@@ -73,14 +73,10 @@ trait JoinTrait
         /*# bool */ $rawMode = false
     ) {
         $alias = 0; // no alias
-
-        // totally raw
-        if ($rawMode || '' === $onClause) {
+        if ($rawMode || '' === $onClause) { // raw mode
             $rawMode = true;
         }
-
-        // fix table, alias, on clause
-        if (!$rawMode) {
+        if (!$rawMode) { // fix table/alias/on
             $onClause = $this->fixOnClause($onClause);
             list($secondTable, $alias) = $this->fixJoinTable($secondTable);
         }
