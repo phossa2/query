@@ -119,4 +119,28 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->insert(['uid' => 2, 'uname' => 'phossa']);
         $this->assertEquals($sql, $qry->getStatement());
     }
+
+    /**
+     * Tests Builder->union()
+     *
+     * @covers Phossa2\Query\Builder::union()
+     */
+    public function testUnion()
+    {
+        $sel1 = $this->object->select();
+        $sel2 = $this->object->select()->table('oldUsers');
+
+        $sql = "(SELECT * FROM `Users`) UNION (SELECT * FROM `oldUsers`) ORDER BY `user_id` ASC LIMIT 10";
+
+        // second union is a CLAUSE !!
+        $qry = $this->object->union($sel1)->union($sel2)
+            ->orderBy('user_id')->limit(10);
+
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // variable argument
+        $qry = $this->object->union($sel1, $sel2)
+            ->orderBy('user_id')->limit(10);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
 }

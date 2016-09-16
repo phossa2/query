@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Interfaces;
 
+use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 
 /**
@@ -84,4 +85,21 @@ interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface
      * @api
      */
     public function insert(array $values = [])/*# : InsertStatementInterface */;
+
+    /**
+     * Builder level union, takes variable parameters.
+     *
+     * ```php
+     * // (SELECT * FROM `Users`) UNION (SELECT * FROM `oldUsers`) ORDER BY ...
+     * $builder->union(
+     *    $builder->select()->table('Users'),
+     *    $builder->select()->table('oldUsers')
+     * )->orderBy('user_id')->limit(10);
+     * ```
+     *
+     * @return UnionStatementInterface
+     * @access public
+     * @api
+     */
+    public function union()/*# : UnionStatementInterface */;
 }

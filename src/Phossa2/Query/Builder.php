@@ -163,6 +163,22 @@ class Builder extends ObjectAbstract implements BuilderInterface
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function union()/*# : UnionStatementInterface */
+    {
+        /* @var UnionStatementInterface $union */
+        $union = $this->getDialect()->union($this);
+        if (func_num_args() > 0) { // acception variable parameters
+            $args = func_get_args();
+            foreach ($args as $arg) {
+                $union->union($arg);
+            }
+        }
+        return $union;
+    }
+
+    /**
      * Convert to [$table => alias] or [$table]
      *
      * @param  string|string[] $table
