@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\Clause\WhereInterface;
  */
 trait WhereTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -279,22 +281,4 @@ trait WhereTrait
         }
         return join(' ', $cls);
     }
-
-    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function processValue($value, array $settings, /*# bool */ $between = false)/*# : string */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function quoteItem($item, array $settings, /*# bool */ $rawMode = false)/*# : string */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
-    /**
-     * Return the builder
-     *
-     * @return BuilderInterface
-     * @access public
-     */
-    abstract public function getBuilder()/*# : BuilderInterface */;
 }

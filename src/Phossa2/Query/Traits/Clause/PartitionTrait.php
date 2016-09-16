@@ -29,6 +29,8 @@ use Phossa2\Query\Interfaces\Clause\PartitionInterface;
  */
 trait PartitionTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -65,6 +67,4 @@ trait PartitionTrait
             return $sepr . $prefix . ' (' . join(', ', $clause) . ')';
         }
     }
-
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
 }

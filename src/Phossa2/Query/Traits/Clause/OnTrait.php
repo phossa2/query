@@ -29,4 +29,5 @@ use Phossa2\Query\Interfaces\Clause\OnInterface;
  */
 trait OnTrait
 {
+    use AbstractTrait;
 }

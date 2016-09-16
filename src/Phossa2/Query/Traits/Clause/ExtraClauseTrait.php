@@ -27,6 +27,8 @@ use Phossa2\Query\Interfaces\Clause\ExtraClauseInterface;
  */
 trait ExtraClauseTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -92,7 +94,4 @@ trait ExtraClauseTrait
             return '';
         }
     }
-
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
 }

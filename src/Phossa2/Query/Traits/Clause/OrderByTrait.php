@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\Clause\OrderByInterface;
  */
 trait OrderByTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -121,14 +123,4 @@ trait OrderByTrait
     )/*# : string */ {
         return $this->buildClause('ORDER BY', $prefix, $settings);
     }
-
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function buildClause(
-        /*# string */ $clauseName,
-        /*# string */ $clausePrefix,
-        array $settings,
-        array $clauseParts = []
-    )/*# string */;
 }

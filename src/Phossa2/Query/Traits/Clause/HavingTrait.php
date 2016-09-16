@@ -32,6 +32,8 @@ use Phossa2\Query\Interfaces\Clause\HavingInterface;
  */
 trait HavingTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -81,6 +83,7 @@ trait HavingTrait
         return $this->buildWhere($prefix, $settings);
     }
 
+    // in WhereTrait
     abstract protected function buildWhere(
         /*# string */ $prefix,
         array $settings
@@ -94,11 +97,4 @@ trait HavingTrait
         /*# bool */ $rawMode  = false,
         /*# string */ $clause = 'WHERE'
     );
-    /**
-     * Return the builder
-     *
-     * @return BuilderInterface
-     * @access public
-     */
-    abstract public function getBuilder()/*# : BuilderInterface */;
 }

@@ -28,6 +28,8 @@ use Phossa2\Query\Interfaces\Clause\GroupByInterface;
  */
 trait GroupByTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -122,14 +124,4 @@ trait GroupByTrait
     )/*# : string */ {
         return $this->buildClause('GROUP BY', $prefix, $settings);
     }
-
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function buildClause(
-        /*# string */ $clauseName,
-        /*# string */ $clausePrefix,
-        array $settings,
-        array $clauseParts = []
-    )/*# string */;
 }

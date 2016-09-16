@@ -229,22 +229,4 @@ trait JoinTrait
         }
         return $alias . '.';
     }
-
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
-    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function flatSettings(array $settings)/*# : array */;
-    abstract protected function quoteItem(
-        $item,
-        array $settings,
-        /*# bool */ $rawMode = false
-    )/*# : string */;
-    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
 }

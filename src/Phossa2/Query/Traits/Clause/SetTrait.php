@@ -95,7 +95,6 @@ trait SetTrait
      * Batch SET
      *
      * @param  array $data
-     * @param  bool $rawMode
      * @return $this
      * @access protected
      */

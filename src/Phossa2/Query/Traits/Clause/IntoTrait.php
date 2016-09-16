@@ -29,6 +29,8 @@ use Phossa2\Query\Interfaces\Clause\IntoInterface;
  */
 trait IntoTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -53,13 +55,4 @@ trait IntoTrait
     )/*# : string */ {
         return $this->buildClause('INTO', $prefix, $settings);
     }
-
-    abstract protected function getType()/*# : string */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function buildClause(
-        /*# string */ $clauseName,
-        /*# string */ $clausePrefix,
-        array $settings,
-        array $clauseParts = []
-    )/*# string */;
 }

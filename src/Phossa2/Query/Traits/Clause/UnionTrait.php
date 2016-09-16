@@ -14,7 +14,6 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\Clause\UnionInterface;
 
 /**
@@ -30,6 +29,8 @@ use Phossa2\Query\Interfaces\Clause\UnionInterface;
  */
 trait UnionTrait
 {
+    use AbstractTrait;
+
     /**
      * 0 NO, 1 YES, 2 UNION ALL
      * @var    int
@@ -101,17 +102,4 @@ trait UnionTrait
                 return $prefix;
         }
     }
-
-    abstract protected function hasPrevious()/*# : bool */;
-    abstract protected function getPrevious()/*# : StatementInterface */;
-    /**
-     * Return the builder
-     *
-     * @return BuilderInterface
-     * @access public
-     */
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function combineSettings(array $settings)/*# : array */;
-    abstract protected function buildSql(array $settings)/*# : string */;
-    abstract protected function bindValues(/*# string */ $sql, array $settings)/*# : string */;
 }

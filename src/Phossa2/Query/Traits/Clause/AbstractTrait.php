@@ -26,9 +26,27 @@ namespace Phossa2\Query\Traits\Clause;
  */
 trait AbstractTrait
 {
+    // in BuilderAwareTrait
     abstract public function getBuilder()/*# : BuilderInterface */;
+
+    // in SettingsAwareTrait
     abstract public function setSettings(array $settings);
+
+    // in StatementAbstract
     abstract protected function getType()/*# : string */;
+    abstract protected function combineSettings(array $settings)/*# : array */;
+    abstract protected function buildSql(array $settings)/*# : string */;
+    abstract protected function bindValues(/*# string */ $sql, array $settings)/*# : string */;
+
+    // in QuoteTrait
+    abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
+
+    // in PreviousTrait
+    abstract protected function hasPrevious()/*# : bool */;
+    abstract protected function getPrevious()/*# : StatementInterface */;
+
+    // in ClauseTrait
+    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function processValue($value, array $settings, /*# bool */ $between = false)/*# : string */;
     abstract protected function joinClause(
@@ -37,5 +55,17 @@ trait AbstractTrait
         array $clause,
         array $settings
     )/*# : string */;
-    abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
+    abstract protected function buildClause(
+        /*# string */ $clauseName,
+        /*# string */ $clausePrefix,
+        array $settings,
+        array $clauseParts = []
+    )/*# string */;
+    abstract protected function flatSettings(array $settings)/*# : array */;
+    abstract protected function quoteItem(
+        $item,
+        array $settings,
+        /*# bool */ $rawMode = false
+    )/*# : string */;
+    abstract protected function quoteAlias($alias, array $settings)/*# : string */;
 }

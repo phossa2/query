@@ -97,6 +97,4 @@ trait LimitTrait
         }
         return $this->joinClause($prefix, ' ', $result, $settings);
     }
-
-
 }

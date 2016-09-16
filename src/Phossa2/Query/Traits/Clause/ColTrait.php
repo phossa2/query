@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\Clause\ColInterface;
  */
 trait ColTrait
 {
+    use AbstractTrait;
+
     /**
      * @var    bool
      * @access protected
@@ -191,14 +193,4 @@ trait ColTrait
     )/*# : string */ {
         return $this->is_distinct ? ' DISTINCT' : $prefix;
     }
-
-    abstract public function getBuilder()/*# : BuilderInterface */;
-    abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function buildClause(
-        /*# string */ $clauseName,
-        /*# string */ $clausePrefix,
-        array $settings,
-        array $clauseParts = []
-    )/*# string */;
 }

@@ -29,6 +29,8 @@ use Phossa2\Query\Interfaces\Clause\FromInterface;
  */
 trait FromTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -88,12 +90,4 @@ trait FromTrait
     )/*# : string */ {
         return $this->buildClause('FROM', $prefix, $settings);
     }
-
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function buildClause(
-        /*# string */ $clauseName,
-        /*# string */ $clausePrefix,
-        array $settings,
-        array $clauseParts = []
-    )/*# string */;
 }
