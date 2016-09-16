@@ -72,9 +72,14 @@ interface JoinInterface extends ClauseInterface
     /**
      * Raw join
      *
+     * Support third param as positioned param
+     *
      * ```php
      * // INNER JOIN Constacts c ON Users.id = c.id
      * $uesrs->joinRaw('INNER JOIN', 'Constacts c ON Users.id = c.id')
+     *
+     * // INNER JOIN Constracts c ON Users.id = 10
+     * $users->joinRaw('INNER JOIN', 'Constracts c ON Users.id = ?', [10])
      * ```
      *
      * @param  string $joinType 'INNER JOIN' etc.

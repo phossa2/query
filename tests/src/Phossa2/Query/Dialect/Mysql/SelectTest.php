@@ -166,7 +166,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT SUM(DISTINCT `score`) AS `s` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->colRaw('SUM(DISTINCT `score`)', 's')
+            $this->object->select()->colRaw('SUM(DISTINCT `score`) AS `s`')
+            ->getStatement()
+        );
+
+        // positioned param
+        $sql = 'SELECT SUM(DISTINCT `score`) + 10 AS `s` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->colRaw('SUM(DISTINCT `score`) + ? AS `s`', [10])
             ->getStatement()
         );
     }
@@ -300,6 +308,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->select('group_id')
             ->groupBy('group_id')->groupByRaw('group_name ASC');
         $this->assertEquals($sql, $qry->getStatement());
+
+        // positioned param
+        $sql = 'SELECT * FROM `Users` GROUP BY group_id + 10';
+        $qry = $this->object->select()->groupByRaw('group_id + ?', [10]);
+        $this->assertEquals($sql, $qry->getStatement());
     }
 
     /**
@@ -400,6 +413,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM `Users` ORDER BY col NULLS LAST DESC';
         $qry = $this->object->select()->orderByRaw('col NULLS LAST DESC');
         $this->assertEquals($sql, $qry->getStatement());
+
+        // positioned param
+        $sql = 'SELECT * FROM `Users` ORDER BY age + 10';
+        $qry = $this->object->select()->orderByRaw('age + ?', [10]);
+        $this->assertEquals($sql, $qry->getStatement());
     }
 
     /**
@@ -462,6 +480,15 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             $sql,
             $this->object->select()
                 ->where(['age' => ['>', 18], 'gender' => ['<>', 'male']])->getStatement()
+        );
+
+        // subquery as value
+        $sql = "SELECT * FROM `Users` WHERE `age` = (SELECT MAX(`age`) FROM `oldUsers`)";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()
+                ->where('age', $this->object->select()->max('age')->table('oldUsers'))
+                ->getStatement()
         );
     }
 
@@ -601,7 +628,7 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->select()->having('age', 18);
         $this->assertEquals($sql, $qry->getStatement());
 
-        // having raw
+        // having raw with positioned param
         $sql = "SELECT * FROM `Users` HAVING age = 18";
         $qry = $this->object->select()->havingRaw('age = ?', [18]);
         $this->assertEquals($sql, $qry->getStatement());
@@ -673,6 +700,19 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Builder->select()->joinRaw()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Select::joinRaw()
+     */
+    public function testJoinRaw()
+    {
+        // positioned param
+        $sql = 'SELECT * FROM `Users` INNER JOIN Sales ON Users.uid = 10';
+        $qry = $this->object->select()->joinRaw('INNER JOIN', 'Sales ON Users.uid = ?', [10]);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
      * Tests Builder->select()->before()
      *
      * @covers Phossa2\Query\Dialect\Mysql\Select::before()
@@ -693,9 +733,14 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     public function testAfter()
     {
         // after
-        $sql = 'SELECT * FROM `Users` INTO OUTFILE "test.txt"';
+        $sql = "SELECT * FROM `Users` INTO OUTFILE 'test.txt'";
         $qry = $this->object->select()
-            ->after('from', 'INTO OUTFILE "test.txt"');
+            ->after('from', "INTO OUTFILE 'test.txt'");
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // positioned param
+        $qry = $this->object->select()
+            ->after('from', "INTO OUTFILE ?", ['test.txt']);
         $this->assertEquals($sql, $qry->getStatement());
     }
 

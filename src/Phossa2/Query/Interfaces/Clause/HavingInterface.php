@@ -70,6 +70,7 @@ interface HavingInterface extends ClauseInterface
     /**
      * Raw mode Having
      *
+     * Support second param as positioned param
      * ```php
      * // HAVNIG count = 10
      * ->havingRaw('count = ?', [10])

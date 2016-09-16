@@ -59,9 +59,13 @@ trait GroupByTrait
     /**
      * {@inheritDoc}
      */
-    public function groupByRaw(/*# string */ $groupby)
+    public function groupByRaw(/*# string */ $rawString)
     {
-        return $this->realGroupBy($groupby, '', true);
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(1));
+        }
+        return $this->realGroupBy($rawString, '', true);
     }
 
     /**

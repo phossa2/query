@@ -51,6 +51,10 @@ trait JoinTrait
      */
     public function joinRaw(/*# string */ $joinType, /*# string */ $rawString)
     {
+        if (func_num_args() > 2) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(2));
+        }
         return $this->realJoin($joinType, $rawString, '', '', true);
     }
 

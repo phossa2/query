@@ -173,16 +173,19 @@ interface ColInterface extends ClauseInterface
     /**
      * Raw mode col
      *
+     * Support second param as positioned param
      * ```php
-     * // SELECT COUNT(user_id) AS `cnt`
-     * ->colRaw('COUNT(user_id)', 'cnt')
+     * // SELECT COUNT(user_id) AS cnt
+     * ->colRaw('COUNT(user_id) AS cnt')
+     *
+     * // SELECT SUM(score + 10)
+     * ->colRaw('SUM(score + ?)', [10])
      * ```
      *
      * @param  string $rawString
-     * @param  string $alias
      * @return $this
      * @access public
      * @api
      */
-    public function colRaw(/*# string */ $rawString, /*# string */ $alias = '');
+    public function colRaw(/*# string */ $rawString);
 }

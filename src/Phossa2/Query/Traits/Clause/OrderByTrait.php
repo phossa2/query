@@ -59,6 +59,10 @@ trait OrderByTrait
      */
     public function orderByRaw(/*# string */ $rawString)
     {
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(1));
+        }
         return $this->realOrderBy($rawString, '',  true);
     }
 

@@ -107,9 +107,13 @@ trait ColTrait
     /**
      * {@inheritDoc}
      */
-    public function colRaw($rawString, /*# string */ $alias = '')
+    public function colRaw(/*# string */ $rawString)
     {
-        return $this->realCol($rawString, $alias, true);
+        if (func_num_args() > 1) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(1));
+        }
+        return $this->realCol($rawString, '', true);
     }
 
     /**

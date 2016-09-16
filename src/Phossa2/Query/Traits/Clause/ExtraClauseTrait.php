@@ -32,6 +32,10 @@ trait ExtraClauseTrait
      */
     public function before(/*# string */ $position, /*# string */ $rawString)
     {
+        if (func_num_args() > 2) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(2));
+        }
         return $this->beforeAfter('BEFORE', $position, $rawString);
     }
 
@@ -40,6 +44,10 @@ trait ExtraClauseTrait
      */
     public function after(/*# string */ $position, /*# string */ $rawString)
     {
+        if (func_num_args() > 2) {
+            $rawString = $this->getBuilder()
+                ->raw($rawString, (array) func_get_arg(2));
+        }
         return $this->beforeAfter('AFTER', $position, $rawString);
     }
 

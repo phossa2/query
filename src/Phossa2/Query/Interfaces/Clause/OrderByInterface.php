@@ -82,9 +82,13 @@ interface OrderByInterface extends ClauseInterface
     /**
      * Raw mode ORDER BY
      *
+     * Support second param as positioned param
      * ```php
      * // ORDER BY col NULLS LAST DESC
      * ->orderByRaw('col NULLS LAST DESC')
+     *
+     * // ORDER BY age + 10
+     * ->orderByRaw('age + ?', [10])
      * ```
      *
      * @param  string $rawString

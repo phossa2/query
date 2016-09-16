@@ -84,15 +84,20 @@ interface GroupByInterface extends ClauseInterface
     /**
      * Generic GROUP BY Raw mode
      *
+     * Support second parameter as positioned param
+     *
      * ```php
      * // GROUP BY year WITH ROLLUP
      * ->groupByRaw('year WITH ROLLUP')
+     *
+     * // GROUP BY year + 10
+     * ->groupByRaw('year + ?', [10])
      * ```
      *
-     * @param  string $groupby
+     * @param  string $rawString
      * @return $this
      * @access public
      * @api
      */
-    public function groupByRaw(/*# string */ $groupby);
+    public function groupByRaw(/*# string */ $rawString);
 }

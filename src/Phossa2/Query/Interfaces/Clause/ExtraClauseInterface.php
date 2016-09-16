@@ -32,9 +32,14 @@ interface ExtraClauseInterface extends ClauseInterface
     /**
      * Add before anther $clause
      *
+     * Support third param as positioned param
+     *
      * ```php
      * // insert PARTITION before WHERE
      * ->before('where', 'PARTITION (part1, part2)')
+     *
+     * // INTO OUTFILE 'test.txt'
+     * ->after('limit', 'INTO OUTFILE ?', ['test.txt'])
      * ```
      *
      * @param  string $position such as 'COL', 'FROM'
