@@ -20,6 +20,7 @@ use Phossa2\Query\Traits\Clause\ClauseTrait;
 use Phossa2\Query\Traits\Clause\OrderByTrait;
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
+use Phossa2\Query\Interfaces\BuilderInterface;
 
 /**
  * Union
@@ -43,6 +44,15 @@ class Union extends StatementAbstract implements UnionStatementInterface
         'ORDERBY' => 'ORDER BY',
         'LIMIT' => 'LIMIT',
     ];
+
+    /**
+     * @param  BuilderInterface $builder
+     * @access public
+     */
+    public function __construct(BuilderInterface $builder)
+    {
+        parent::__construct($builder);
+    }
 
     /**
      * {@inheritDoc}
@@ -82,7 +92,7 @@ class Union extends StatementAbstract implements UnionStatementInterface
             }
             $parts[] = $this->quoteItem($field[0], $flat);
         }
-        return trim($this->joinClause($prefix, '', $parts, $settings));
+        return ltrim($this->joinClause($prefix, '', $parts, $settings));
     }
 
     /**

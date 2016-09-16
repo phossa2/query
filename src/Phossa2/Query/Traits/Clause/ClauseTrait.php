@@ -113,7 +113,7 @@ trait ClauseTrait
     {
         if ($object instanceof StatementInterface) {
             $settings = $this->flatSettings($settings);
-            return '(' . trim($object->getStatement($settings)) . ')';
+            return '(' . ltrim($object->getStatement($settings)) . ')';
         } elseif ($object instanceof OutputInterface) {
             return $object->getStatement($settings);
         }

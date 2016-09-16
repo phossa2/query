@@ -93,6 +93,24 @@ class SelectTest extends \PHPUnit_Framework_TestCase
             $this->object->select()->col(['user_id', 'user_name' => 'n'])
                 ->getStatement()
         );
+
+        // space in alias
+        $sql = 'SELECT `user_name` AS `first name` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->col('user_name', 'first name')
+            ->getStatement()
+        );
+
+        // subquery in col
+        $sql = 'SELECT (SELECT MAX(`user_id`) FROM `oldUsers`) AS `maxId` FROM `Users`';
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->col(
+                $this->object->select()->max('user_id')->table('oldUsers'),
+                'maxId'
+            )->getStatement()
+        );
     }
 
     /**

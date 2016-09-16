@@ -24,6 +24,7 @@ use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
+use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 
@@ -37,6 +38,7 @@ use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
  * @see     StatementInterface
  * @see     SelectStatementInterface
  * @see     InsertStatementInterface
+ * @see     UnionStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
