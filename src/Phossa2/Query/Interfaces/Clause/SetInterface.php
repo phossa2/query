@@ -34,10 +34,23 @@ interface SetInterface extends ClauseInterface
      * Insert into table
      *
      * @param  string|array $col
-     * @param  mixed scalar or SelectStatementInterface
+     * @param  mixed $value scalar or SelectStatementInterface
      * @return $this
      * @access public
      * @api
      */
     public function set($col, $value = ClauseInterface::NO_VALUE);
+
+    /**
+     * SET, but do NOT quote the value
+     *
+     * Accept third parameter as positioned param
+     *
+     * @param  string|array $col
+     * @param  string $value
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function setRaw($col, $value = ClauseInterface::NO_VALUE);
 }

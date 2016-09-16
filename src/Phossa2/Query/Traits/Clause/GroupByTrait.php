@@ -123,6 +123,7 @@ trait GroupByTrait
         return $this->buildClause('GROUP BY', $prefix, $settings);
     }
 
+    abstract public function getBuilder()/*# : BuilderInterface */;
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function buildClause(

@@ -93,5 +93,6 @@ trait ExtraClauseTrait
         }
     }
 
+    abstract public function getBuilder()/*# : BuilderInterface */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
 }

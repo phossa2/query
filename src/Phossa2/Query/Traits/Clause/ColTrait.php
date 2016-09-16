@@ -192,6 +192,7 @@ trait ColTrait
         return $this->is_distinct ? ' DISTINCT' : $prefix;
     }
 
+    abstract public function getBuilder()/*# : BuilderInterface */;
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
     abstract protected function buildClause(

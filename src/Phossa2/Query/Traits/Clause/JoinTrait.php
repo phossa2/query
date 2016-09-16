@@ -230,6 +230,7 @@ trait JoinTrait
         return $alias . '.';
     }
 
+    abstract public function getBuilder()/*# : BuilderInterface */;
     abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
     abstract protected function isRaw($str, /*# bool */ $rawMode)/*# : bool */;
     abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;

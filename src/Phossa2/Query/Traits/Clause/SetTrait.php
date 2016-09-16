@@ -74,6 +74,22 @@ trait SetTrait
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setRaw($col, $value = ClauseInterface::NO_VALUE)
+    {
+        if (ClauseInterface::NO_VALUE !== $value) {
+            if (func_num_args() > 2) {
+                $value = $this->getBuilder()
+                    ->raw($value, (array) func_get_arg(2));
+            } else {
+                $value = $this->getBuilder()->raw($value);
+            }
+        }
+        return $this->set($col, $value);
+    }
+
+    /**
      * Batch SET
      *
      * @param  array $data
