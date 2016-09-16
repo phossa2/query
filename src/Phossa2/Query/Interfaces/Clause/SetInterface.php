@@ -53,4 +53,16 @@ interface SetInterface extends ClauseInterface
      * @api
      */
     public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE);
+
+    /**
+     * SET with template, used to set with functions
+     *
+     * @param  string $col
+     * @param  string $template
+     * @param  string|string[] $field
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function setTpl(/*# string */ $col, /*# string */ $template, $field);
 }

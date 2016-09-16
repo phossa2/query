@@ -16,6 +16,7 @@ namespace Phossa2\Query\Interfaces;
 
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
+use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
 
 /**
  * BuilderInterface
@@ -85,6 +86,16 @@ interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface
      * @api
      */
     public function insert(array $values = [])/*# : InsertStatementInterface */;
+
+    /**
+     * Build an UPDATE statement
+     *
+     * @param  array $values colname and value pairs
+     * @return UpdateStatementInterface
+     * @access public
+     * @api
+     */
+    public function update(array $values = [])/*# : UpdateStatementInterface */;
 
     /**
      * Builder level union, takes variable parameters.

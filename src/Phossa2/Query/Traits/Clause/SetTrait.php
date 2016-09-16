@@ -16,6 +16,7 @@ namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Interfaces\ClauseInterface;
 use Phossa2\Query\Interfaces\Clause\SetInterface;
+use Phossa2\Query\Misc\Template;
 
 /**
  * SetTrait
@@ -67,10 +68,6 @@ trait SetTrait
         if (!isset($this->set_col[$col])) { // save col names
             $this->set_col[$col] = true;
         }
-        if (ClauseInterface::NO_VALUE === $value) { // auto positionedParam
-            $this->setSettings(['positionedParam' => true]);
-        }
-
         $this->set_data[$this->set_row][$col] = $value;
         return $this;
     }
@@ -92,6 +89,18 @@ trait SetTrait
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function setTpl(/*# string */ $col, /*# string */ $template, $field)
+    {
+        if (func_num_args() > 3) {
+            $template = $this->getBuilder()
+                ->raw($template, (array) func_get_arg(3));
+        }
+        return $this->set($col, new Template($template, $field));
+    }
+
+    /**
      * Batch SET
      *
      * @param  array $data
@@ -104,7 +113,7 @@ trait SetTrait
             foreach ($data as $row) {
                 $this->set($row);
             }
-        } else { // multiple values
+        } elseif (!empty($data)) { // multiple values
             foreach ($data as $col => $val) {
                 $this->set($col, $val);
             }
@@ -170,8 +179,12 @@ trait SetTrait
     )/*# : string */ {
         $result = [];
         foreach ($this->set_data[0] as $col => $val) {
-            $result[] = $this->quote($col, $settings) . ' = ' .
-                $this->processValue($val, $settings);
+            if (ClauseInterface::NO_VALUE === $val) {
+                $result[] = $col;
+            } else {
+                $result[] = $this->quote($col, $settings) . ' = ' .
+                    $this->processValue($val, $settings);
+            }
         }
         return $this->joinClause($prefix, ',', $result, $settings);
     }

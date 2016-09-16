@@ -165,6 +165,7 @@ interface ColInterface extends ClauseInterface
      * @param  string $template
      * @param  string|string[] $col column[s]
      * @param  string $alias
+     * @return $this
      * @access public
      * @api
      */

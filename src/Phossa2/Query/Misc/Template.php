@@ -44,6 +44,8 @@ class Template extends Raw
     protected $col;
 
     /**
+     * Constructor
+     *
      * @param  string $template
      * @param  string|string[] $col column[s]
      * @access public

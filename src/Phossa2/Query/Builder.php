@@ -27,6 +27,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
+use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
 
 /**
  * Builder
@@ -39,6 +40,7 @@ use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
  * @see     SelectStatementInterface
  * @see     InsertStatementInterface
  * @see     UnionStatementInterface
+ * @see     UpdateStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
@@ -162,6 +164,16 @@ class Builder extends ObjectAbstract implements BuilderInterface
         /* @var InsertStatementInterface $insert */
         $insert = $this->getDialect()->insert($this);
         return $insert->into(current($this->tables))->set($values);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function update(array $values = [])/*# : UpdateStatementInterface */
+    {
+        /* @var UpdateStatementInterface $update */
+        $update = $this->getDialect()->update($this);
+        return $update->from(current($this->tables))->set($values);
     }
 
     /**

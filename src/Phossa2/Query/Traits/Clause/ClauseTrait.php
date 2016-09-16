@@ -173,10 +173,8 @@ trait ClauseTrait
             return $this->quoteObject($value, $settings);
         } elseif (is_array($value)) {
             return $this->processValueArray($value, $settings, $between);
-        } elseif (is_null($value)) {
-            return 'NULL';
         } else {
-            return $this->getBuilder()->getParameter()->getPlaceholder($value);
+            return $this->processValueScalar($value);
         }
     }
 
@@ -203,6 +201,26 @@ trait ClauseTrait
                 $result[] = $this->processValue($val, $settings);
             }
             return '(' . join(', ', $result) . ')';
+        }
+    }
+
+    /**
+     * Process scalar value
+     *
+     * @param  mixed $value
+     * @return string
+     * @access protected
+     */
+    protected function processValueScalar($value)/*# : string */
+    {
+        if (ClauseInterface::NO_VALUE == $value) {
+            return '?';
+        } elseif (is_null($value)) {
+            return 'NULL';
+        } elseif (is_bool($value)) {
+            return $value ? 'TRUE' : 'FALSE';
+        } else {
+            return $this->getBuilder()->getParameter()->getPlaceholder($value);
         }
     }
 
