@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\Clause\SetInterface;
  */
 trait SetTrait
 {
+    use AbstractTrait;
+
     /**
      * data storage
      *
@@ -76,7 +78,7 @@ trait SetTrait
     /**
      * {@inheritDoc}
      */
-    public function setRaw($col, $value = ClauseInterface::NO_VALUE)
+    public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE)
     {
         if (ClauseInterface::NO_VALUE !== $value) {
             if (func_num_args() > 2) {
@@ -86,13 +88,14 @@ trait SetTrait
                 $value = $this->getBuilder()->raw($value);
             }
         }
-        return $this->set($col, $value);
+        return $this->set((string) $col, $value);
     }
 
     /**
      * Batch SET
      *
      * @param  array $data
+     * @param  bool $rawMode
      * @return $this
      * @access protected
      */
@@ -211,16 +214,4 @@ trait SetTrait
     {
         return $settings['useNullAsDefault'] ? 'NULL' : 'DEFAULT';
     }
-
-    abstract public function setSettings(array $settings);
-    abstract protected function getType()/*# : string */;
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function processValue($value, array $settings, /*# bool */ $between = false)/*# : string */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
-    abstract protected function quote(/*# string */ $str, array $settings)/*# : string */;
 }

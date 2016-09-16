@@ -46,11 +46,11 @@ interface SetInterface extends ClauseInterface
      *
      * Accept third parameter as positioned param
      *
-     * @param  string|array $col
+     * @param  string $col
      * @param  string $value
      * @return $this
      * @access public
      * @api
      */
-    public function setRaw($col, $value = ClauseInterface::NO_VALUE);
+    public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE);
 }

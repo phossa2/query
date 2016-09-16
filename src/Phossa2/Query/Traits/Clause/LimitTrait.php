@@ -29,6 +29,8 @@ use Phossa2\Query\Interfaces\Clause\LimitInterface;
  */
 trait LimitTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
@@ -96,11 +98,5 @@ trait LimitTrait
         return $this->joinClause($prefix, ' ', $result, $settings);
     }
 
-    abstract protected function &getClause(/*# string */ $clauseName)/*# : array */;
-    abstract protected function joinClause(
-        /*# : string */ $prefix,
-        /*# : string */ $seperator,
-        array $clause,
-        array $settings
-    )/*# : string */;
+
 }

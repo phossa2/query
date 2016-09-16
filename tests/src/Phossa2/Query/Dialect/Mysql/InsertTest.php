@@ -83,4 +83,17 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->insert()->set(['uid', 'uname']);
         $this->assertEquals($sql, $qry->getStatement());
     }
+
+    /**
+     * Tests Builder->insert()->setRaw()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Insert::setRaw()
+     */
+    public function testSetRaw()
+    {
+        // set raw with positioned param
+        $sql = "INSERT INTO `Users` (`ctime`, `uname`) VALUES (NOW() + 10, 'phossa')";
+        $qry = $this->object->insert()->setRaw('ctime', 'NOW() + ?', [10])->set('uname', 'phossa');
+        $this->assertEquals($sql, $qry->getStatement());
+    }
 }
