@@ -30,6 +30,8 @@ use Phossa2\Query\Interfaces\Clause\JoinInterface;
  */
 trait JoinTrait
 {
+    use AbstractTrait;
+
     /**
      * {@inheritDoc}
      */
