@@ -17,7 +17,7 @@ namespace Phossa2\Query\Dialect\Mysql;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\LimitTrait;
 use Phossa2\Query\Traits\Clause\ClauseTrait;
-use Phossa2\Query\Traits\Clause\OrderByTrait;
+use Phossa2\Query\Traits\Clause\OrderTrait;
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 use Phossa2\Query\Interfaces\BuilderInterface;
@@ -34,16 +34,7 @@ use Phossa2\Query\Interfaces\BuilderInterface;
  */
 class Union extends StatementAbstract implements UnionStatementInterface
 {
-    use ClauseTrait, OrderByTrait, LimitTrait;
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $configs = [
-        'UNION' => '',
-        'ORDERBY' => 'ORDER BY',
-        'LIMIT' => 'LIMIT',
-    ];
+    use ClauseTrait, OrderTrait, LimitTrait;
 
     /**
      * @param  BuilderInterface $builder
@@ -108,6 +99,18 @@ class Union extends StatementAbstract implements UnionStatementInterface
         $clause = &$this->getClause('UNION');
         $clause[] = [$select, $type];
         return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getConfigs()/*# : array */
+    {
+        return [
+            'UNION' => '',
+            'ORDER' => 'ORDER BY',
+            'LIMIT' => 'LIMIT',
+        ];
     }
 
     /**

@@ -15,59 +15,56 @@
 namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Misc\Template;
-use Phossa2\Query\Interfaces\Clause\GroupByInterface;
+use Phossa2\Query\Interfaces\Clause\GroupInterface;
 
 /**
- * GroupByTrait
+ * GroupTrait
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     GroupByInterface
+ * @see     GroupInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait GroupByTrait
+trait GroupTrait
 {
     use AbstractTrait;
 
     /**
      * {@inheritDoc}
      */
-    public function groupBy($col)
+    public function group($col)
     {
         // support multiple group by
         if (func_num_args() > 1) {
             $col = func_get_args();
         }
-        return $this->realGroupBy($col);
+        return $this->realGroup($col);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function groupByDesc($col)
+    public function groupDesc($col)
     {
-        return $this->realGroupBy($col, 'DESC');
+        return $this->realGroup($col, 'DESC');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function groupByTpl(/*# string */ $template, $col)
+    public function groupTpl(/*# string */ $template, $col)
     {
-        return $this->realGroupBy(new Template($template, $col), '', true);
+        return $this->realGroup(new Template($template, $col), '', true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function groupByRaw(/*# string */ $rawString)
+    public function groupRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
-        return $this->realGroupBy($rawString, '', true);
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        return $this->realGroup($rawString, '', true);
     }
 
     /**
@@ -78,13 +75,13 @@ trait GroupByTrait
      * @return $this
      * @access protected
      */
-    protected function realGroupBy(
+    protected function realGroup(
         $col,
         /*# sting */ $suffix = '',
         /*# bool */ $rawMode = false)
     {
         if (is_array($col)) {
-            $this->multipleGroupBy($col, $suffix);
+            $this->multipleGroup($col, $suffix);
         } else {
             $clause = &$this->getClause('GROUP BY');
             $part = [$col, $this->isRaw($col, $rawMode)];
@@ -103,10 +100,10 @@ trait GroupByTrait
      * @param  string $suffix
      * @access protected
      */
-    protected function multipleGroupBy(array $cols, /*# string */ $suffix)
+    protected function multipleGroup(array $cols, /*# string */ $suffix)
     {
         foreach ($cols as $col) {
-            $this->realGroupBy($col, $suffix);
+            $this->realGroup($col, $suffix);
         }
     }
 
@@ -118,7 +115,7 @@ trait GroupByTrait
      * @return string
      * @access protected
      */
-    protected function buildGroupby(
+    protected function buildGroup(
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {

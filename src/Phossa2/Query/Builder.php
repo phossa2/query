@@ -28,6 +28,7 @@ use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
+use Phossa2\Query\Interfaces\Statement\DeleteStatementInterface;
 
 /**
  * Builder
@@ -41,6 +42,7 @@ use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
  * @see     InsertStatementInterface
  * @see     UnionStatementInterface
  * @see     UpdateStatementInterface
+ * @see     DeleteStatementInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
@@ -110,13 +112,12 @@ class Builder extends ObjectAbstract implements BuilderInterface
     /**
      * {@inheritDoc}
      */
-    public function raw(/*# string */ $string)/*# : OutputInterface */
-    {
-        // values found
-        if (func_num_args() > 1) {
-            $values = func_get_arg(1);
-            $string = $this->getParameter()
-                ->replaceQuestionMark($string, $values);
+    public function raw(
+        /*# string */ $string,
+        array $values = []
+    )/*# : OutputInterface */ {
+        if (!empty($values)) {
+            $string = $this->getParameter()->replaceQuestionMark($string, $values);
         }
         return new Raw($string);
     }
@@ -169,11 +170,31 @@ class Builder extends ObjectAbstract implements BuilderInterface
     /**
      * {@inheritDoc}
      */
+    public function replace(array $values = [])/*# : InsertStatementInterface */
+    {
+        /* @var InsertStatementInterface $insert */
+        $replace = $this->getDialect()->replace($this);
+        return $replace->into(current($this->tables))->set($values);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function update(array $values = [])/*# : UpdateStatementInterface */
     {
         /* @var UpdateStatementInterface $update */
         $update = $this->getDialect()->update($this);
         return $update->from(current($this->tables))->set($values);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function delete()/*# : DeleteStatementInterface */
+    {
+        /* @var DeleteStatementInterface $delete */
+        $delete = $this->getDialect()->delete($this);
+        return $delete->from(current($this->tables))->col(func_get_args());
     }
 
     /**

@@ -16,7 +16,7 @@ namespace Phossa2\Query\Interfaces\Statement;
 
 use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Clause\SetInterface;
-use Phossa2\Query\Interfaces\Clause\IntoInterface;
+use Phossa2\Query\Interfaces\Clause\TableInterface;
 use Phossa2\Query\Interfaces\Clause\SelectInterface;
 
 /**
@@ -46,6 +46,14 @@ use Phossa2\Query\Interfaces\Clause\SelectInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface InsertStatementInterface extends StatementInterface, IntoInterface, SetInterface, SelectInterface
+interface InsertStatementInterface extends StatementInterface, TableInterface, SetInterface, SelectInterface
 {
+    /**
+     * Table name
+     *
+     * @param  string $table [schema.]table
+     * @access public
+     * @api
+     */
+    public function into(/*# string */ $table);
 }

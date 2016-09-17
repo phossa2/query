@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * GroupByInterface
+ * GroupInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -25,7 +25,7 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface GroupByInterface extends ClauseInterface
+interface GroupInterface extends ClauseInterface
 {
     /**
      * Generic GROUP BY
@@ -34,10 +34,10 @@ interface GroupByInterface extends ClauseInterface
      *
      * ```php
      * // GROUP BY `year`
-     * ->groupBy('year')
+     * ->group('year')
      *
      * // GROUP BY `year`, `gender`
-     * ->groupBy(['year', 'gender'])
+     * ->group(['year', 'gender'])
      * ```
      *
      * @param  string|string[] $col column[s]
@@ -45,17 +45,17 @@ interface GroupByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function groupBy($col);
+    public function group($col);
 
     /**
      * Generic GROUP BY DESC
      *
      * ```php
      * // GROUP BY `year` DESC
-     * ->groupByDesc('year')
+     * ->groupDesc('year')
      *
      * // GROUP BY `year` DESC, `gender` DESC
-     * ->groupByDesc(['year', 'gender'])
+     * ->groupDesc(['year', 'gender'])
      * ```
      *
      * @param  string|string[] $col column[s]
@@ -63,14 +63,14 @@ interface GroupByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function groupByDesc($col);
+    public function groupDesc($col);
 
     /**
      * Generic GROUP BY template
      *
      * ```php
      * // GROUP BY `year` WITH ROLLUP
-     * ->groupByTpl('%s WITH ROLLUP', 'year')
+     * ->groupTpl('%s WITH ROLLUP', 'year')
      * ```
      *
      * @param  string $template
@@ -79,7 +79,7 @@ interface GroupByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function groupByTpl(/*# string */ $template, $col);
+    public function groupTpl(/*# string */ $template, $col);
 
     /**
      * Generic GROUP BY Raw mode
@@ -88,10 +88,10 @@ interface GroupByInterface extends ClauseInterface
      *
      * ```php
      * // GROUP BY year WITH ROLLUP
-     * ->groupByRaw('year WITH ROLLUP')
+     * ->groupRaw('year WITH ROLLUP')
      *
      * // GROUP BY year + 10
-     * ->groupByRaw('year + ?', [10])
+     * ->groupRaw('year + ?', [10])
      * ```
      *
      * @param  string $rawString
@@ -99,5 +99,5 @@ interface GroupByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function groupByRaw(/*# string */ $rawString);
+    public function groupRaw(/*# string */ $rawString);
 }

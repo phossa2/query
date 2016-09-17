@@ -14,20 +14,20 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Interfaces\Clause\FromInterface;
+use Phossa2\Query\Interfaces\Clause\TableInterface;
 
 /**
- * FromTrait
+ * TableTrait
  *
- * Implementation of FromInterface
+ * Implementation of TableInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     FromInterface
+ * @see     TableInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait FromTrait
+trait TableTrait
 {
     use AbstractTrait;
 
@@ -38,8 +38,8 @@ trait FromTrait
     {
         if (is_array($table)) {
             $this->multipleFrom($table);
-        } else {
-            $clause = &$this->getClause('FROM');
+        } elseif (!empty($table)) {
+            $clause = &$this->getClause('TABLE');
             if (empty($alias)) {
                 $clause[] = [$table, false];
             } else {
@@ -54,7 +54,7 @@ trait FromTrait
      */
     public function table($table, /*# string */ $alias = '')
     {
-        $clause = &$this->getClause('FROM');
+        $clause = &$this->getClause('TABLE');
         $clause = [];
         return $this->from($table, $alias);
     }
@@ -77,17 +77,17 @@ trait FromTrait
     }
 
     /**
-     * Build FROM
+     * Build TABLE
      *
      * @param  string $prefix
      * @param  array $settings
      * @return array
      * @access protected
      */
-    protected function buildFrom(
+    protected function buildTable(
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {
-        return $this->buildClause('FROM', $prefix, $settings);
+        return $this->buildClause('TABLE', $prefix, $settings);
     }
 }

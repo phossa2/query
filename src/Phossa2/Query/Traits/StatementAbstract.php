@@ -120,9 +120,11 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      */
     protected function buildSql(array $settings)/*# : string */
     {
-        $result = $this->getType();
+        $result = $this->getType(); // type
+        $result .= $this->buildBeforeAfter('AFTER', 'TYPE', $settings); // hint
         $settings['join'] = $settings['seperator'] . $settings['indent'];
-        foreach ($this->configs as $pos => $prefix) {
+
+        foreach ($this->getConfigs() as $pos => $prefix) {
             // before
             $result .= $this->buildBeforeAfter('BEFORE', $pos, $settings);
 
@@ -132,6 +134,8 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
             // after
             $result .= $this->buildBeforeAfter('AFTER', $pos, $settings);
         }
+
+        $result .= $this->buildBeforeAfter('AFTER', 'STMT', $settings);
         return $result;
     }
 
@@ -152,6 +156,14 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
         return $this->getBuilder()->getParameter()
             ->bindValues($sql, $this->bindings, $settings);
     }
+
+    /**
+     * Clause configs ['name' => 'prefix']
+     *
+     * @return array
+     * @access protected
+     */
+    abstract protected function getConfigs()/*# : array */;
 
     /**
      * Get current statement type. e.g. 'SELECT' etc.

@@ -14,7 +14,6 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
-use Phossa2\Query\Misc\Raw;
 use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\WhereInterface;
 use Phossa2\Query\Interfaces\Clause\HavingInterface;
@@ -60,10 +59,7 @@ trait HavingTrait
      */
     public function havingRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, true, false, true, 'HAVING');
     }

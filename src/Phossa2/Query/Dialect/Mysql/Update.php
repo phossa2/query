@@ -15,9 +15,9 @@
 namespace Phossa2\Query\Dialect\Mysql;
 
 use Phossa2\Query\Traits\Clause\LimitTrait;
-use Phossa2\Query\Traits\Clause\OrderByTrait;
+use Phossa2\Query\Traits\Clause\OrderTrait;
 use Phossa2\Query\Interfaces\Clause\LimitInterface;
-use Phossa2\Query\Interfaces\Clause\OrderByInterface;
+use Phossa2\Query\Interfaces\Clause\OrderInterface;
 use Phossa2\Query\Dialect\Common\Update as CommonUpdate;
 
 /**
@@ -26,23 +26,26 @@ use Phossa2\Query\Dialect\Common\Update as CommonUpdate;
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     CommonUpdate
- * @see     OrderByInterface
+ * @see     OrderInterface
  * @see     LimitInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Update extends CommonUpdate implements OrderByInterface, LimitInterface
+class Update extends CommonUpdate implements OrderInterface, LimitInterface
 {
-    use OrderByTrait, LimitTrait;
+    use OrderTrait, LimitTrait;
 
     /**
      * {@inheritDoc}
      */
-    protected $configs = [
-        'FROM' => '',
-        'SET' => 'SET',
-        'WHERE' => 'WHERE',
-        'ORDERBY' => 'ORDER BY',
-        'LIMIT' => 'LIMIT',
-    ];
+    protected function getConfigs()/*# : array */
+    {
+        return [
+            'TABLE' => '',
+            'SET' => 'SET',
+            'WHERE' => 'WHERE',
+            'ORDER' => 'ORDER BY',
+            'LIMIT' => 'LIMIT',
+        ];
+    }
 }

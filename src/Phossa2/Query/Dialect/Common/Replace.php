@@ -12,27 +12,23 @@
  */
 /*# declare(strict_types=1); */
 
-namespace Phossa2\Query\Interfaces\Clause;
+namespace Phossa2\Query\Dialect\Common;
 
 /**
- * IntoInterface
- *
- * Used in INSERT INTO
+ * Replace
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface IntoInterface
+class Replace extends Insert
 {
     /**
-     * insert into table
-     *
-     * @param  string $table
-     * @return $this
-     * @access public
-     * @api
+     * {@inheritDoc}
      */
-    public function into(/*# string */ $table);
+    protected function getType()/*# : string */
+    {
+        return 'REPLACE';
+    }
 }

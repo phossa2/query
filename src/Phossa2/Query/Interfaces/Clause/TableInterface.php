@@ -15,18 +15,18 @@
 namespace Phossa2\Query\Interfaces\Clause;
 
 use Phossa2\Query\Interfaces\ClauseInterface;
-use Phossa2\Query\Interfaces\FromInterface as BuilderFromInterface;
+use Phossa2\Query\Interfaces\TableInterface as BuilderTableInterface;
 
 /**
- * FromInterface
+ * TableInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     ClauseInterface
- * @see     BuilderFromInterface
+ * @see     BuilderTableInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FromInterface extends BuilderFromInterface, ClauseInterface
+interface TableInterface extends BuilderTableInterface, ClauseInterface
 {
 }

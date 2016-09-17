@@ -42,7 +42,7 @@ interface ExtraClauseInterface extends ClauseInterface
      * ->after('limit', 'INTO OUTFILE ?', ['test.txt'])
      * ```
      *
-     * @param  string $position such as 'COL', 'FROM'
+     * @param  string $position such as 'COL', 'TABLE'
      * @param  string $rawString
      * @return $this
      * @access public
@@ -58,11 +58,39 @@ interface ExtraClauseInterface extends ClauseInterface
      * ->after('limit', 'FOR UPDATE');
      * ```
      *
-     * @param  string $position such as 'COL', 'FROM'
+     * @param  string $position such as 'COL', 'TABLE'
      * @param  string $rawString
      * @return $this
      * @access public
      * @api
      */
     public function after(/*# string */ $position, /*# string */ $rawString);
+
+    /**
+     * Hint follows the statement. e.g. 'INSERT DELAYED'
+     *
+     * ```php
+     * $builder->insert()->hint('DELAYED')->set(...)
+     * ```
+     *
+     * @param  string $hintString
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function hint(/*# string */ $hintString);
+
+    /**
+     * String at the statement end
+     *
+     * ```php
+     * // SELECT ... FOR UPDATE
+     * $builder->select()->option('FOR UPDATE');
+     *
+     * @param  string $optionString
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function option(/*# string */ $optionString);
 }

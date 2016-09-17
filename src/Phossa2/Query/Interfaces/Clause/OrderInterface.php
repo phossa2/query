@@ -17,7 +17,7 @@ namespace Phossa2\Query\Interfaces\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 
 /**
- * OrderByInterface
+ * OrderInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -25,17 +25,17 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface OrderByInterface extends ClauseInterface
+interface OrderInterface extends ClauseInterface
 {
     /**
      * Generic ORDER BY ASC
      *
      * ```php
      * // ORDER BY `year` ASC, `month` ASC
-     * ->orderBy('year')->orderBy('month')
+     * ->order('year')->order('month')
      *
      * // ORDER BY `year` ASC, `month` ASC
-     * ->orderBy(['year', 'month'])
+     * ->order(['year', 'month'])
      * ```
      *
      * @param  string|string[] $col
@@ -43,17 +43,17 @@ interface OrderByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function orderBy($col);
+    public function order($col);
 
     /**
      * Generic ORDER BY DESC
      *
      * ```php
      * // ORDER BY `year` DESC
-     * ->orderByDesc('year')
+     * ->orderDesc('year')
      *
      * // ORDER BY `year` DESC, `month` DESC
-     * ->orderByDesc(['year', 'month'])
+     * ->orderDesc(['year', 'month'])
      * ```
      *
      * @param  string|string[] $col
@@ -61,14 +61,14 @@ interface OrderByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function orderByDesc($col);
+    public function orderDesc($col);
 
     /**
      * ORDER BY template
      *
      * ```php
      * // ORDER BY `col` NULLS LAST DESC
-     * ->orderByTpl('%s NULLS LAST DESC', 'col')
+     * ->orderTpl('%s NULLS LAST DESC', 'col')
      * ```
      *
      * @param  string $template
@@ -77,7 +77,7 @@ interface OrderByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function orderByTpl(/*# string */ $template, $col);
+    public function orderTpl(/*# string */ $template, $col);
 
     /**
      * Raw mode ORDER BY
@@ -85,10 +85,10 @@ interface OrderByInterface extends ClauseInterface
      * Support second param as positioned param
      * ```php
      * // ORDER BY col NULLS LAST DESC
-     * ->orderByRaw('col NULLS LAST DESC')
+     * ->orderRaw('col NULLS LAST DESC')
      *
      * // ORDER BY age + 10
-     * ->orderByRaw('age + ?', [10])
+     * ->orderRaw('age + ?', [10])
      * ```
      *
      * @param  string $rawString
@@ -96,5 +96,5 @@ interface OrderByInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function orderByRaw(/*# string */ $rawString);
+    public function orderRaw(/*# string */ $rawString);
 }

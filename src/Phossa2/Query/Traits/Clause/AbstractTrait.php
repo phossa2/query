@@ -68,4 +68,9 @@ trait AbstractTrait
         /*# bool */ $rawMode = false
     )/*# : string */;
     abstract protected function quoteAlias($alias, array $settings)/*# : string */;
+    abstract protected function positionedParam(
+        /*# string */ $rawString,
+        array $args,
+        /*# string */ $num
+    )/*# : string */;
 }

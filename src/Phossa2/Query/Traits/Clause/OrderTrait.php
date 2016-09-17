@@ -15,57 +15,54 @@
 namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Misc\Template;
-use Phossa2\Query\Interfaces\Clause\OrderByInterface;
+use Phossa2\Query\Interfaces\Clause\OrderInterface;
 
 /**
- * OrderByTrait
+ * OrderTrait
  *
- * Implementation of OrderByInterface
+ * Implementation of OrderInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     OrderByInterface
+ * @see     OrderInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-trait OrderByTrait
+trait OrderTrait
 {
     use AbstractTrait;
 
     /**
      * {@inheritDoc}
      */
-    public function orderBy($col)
+    public function order($col)
     {
-        return $this->realOrderBy($col, 'ASC');
+        return $this->realOrder($col, 'ASC');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function orderByDesc($col)
+    public function orderDesc($col)
     {
-        return $this->realOrderBy($col, 'DESC');
+        return $this->realOrder($col, 'DESC');
     }
 
     /**
      * {@inheritDoc}
      */
-    public function orderByTpl(/*# string */ $template, $col)
+    public function orderTpl(/*# string */ $template, $col)
     {
-        return $this->realOrderBy(new Template($template, $col), '', true);
+        return $this->realOrder(new Template($template, $col), '', true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function orderByRaw(/*# string */ $rawString)
+    public function orderRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
-        return $this->realOrderBy($rawString, '',  true);
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        return $this->realOrder($rawString, '',  true);
     }
 
     /**
@@ -77,13 +74,13 @@ trait OrderByTrait
      * @return $this
      * @access protected
      */
-    protected function realOrderBy(
+    protected function realOrder(
         $col,
         /*# sting */ $suffix = 'ASC',
         /*# bool */ $rawMode = false
     ) {
         if (is_array($col)) {
-            $this->multipleOrderBy($col, $suffix);
+            $this->multipleOrder($col, $suffix);
         } else {
             $clause = &$this->getClause('ORDER BY');
             $part = [$col, $this->isRaw($col, $rawMode)];
@@ -102,10 +99,10 @@ trait OrderByTrait
      * @param  string $suffix 'ASC' or 'DESC'
      * @access protected
      */
-    protected function multipleOrderBy(array $cols, /*# sting */ $suffix)
+    protected function multipleOrder(array $cols, /*# sting */ $suffix)
     {
         foreach ($cols as $col) {
-            $this->realOrderBy($col, $suffix);
+            $this->realOrder($col, $suffix);
         }
     }
 
@@ -117,7 +114,7 @@ trait OrderByTrait
      * @return string
      * @access protected
      */
-    protected function buildOrderby(
+    protected function buildOrder(
         /*# string */ $prefix,
         array $settings
     )/*# : string */ {

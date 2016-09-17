@@ -14,7 +14,7 @@
 
 namespace Phossa2\Query\Dialect\Common;
 
-use Phossa2\Query\Traits\Clause\FromTrait;
+use Phossa2\Query\Traits\Clause\TableTrait;
 use Phossa2\Query\Traits\Clause\WhereTrait;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\ClauseTrait;
@@ -33,16 +33,19 @@ use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
  */
 class Update extends StatementAbstract implements UpdateStatementInterface
 {
-    use ClauseTrait, UpdateTrait, FromTrait, WhereTrait;
+    use ClauseTrait, UpdateTrait, TableTrait, WhereTrait;
 
     /**
      * {@inheritDoc}
      */
-    protected $configs = [
-        'FROM' => '',
-        'SET' => 'SET',
-        'WHERE' => 'WHERE',
-    ];
+    protected function getConfigs()/*# : array */
+    {
+        return [
+            'TABLE' => '',
+            'SET' => 'SET',
+            'WHERE' => 'WHERE',
+        ];
+    }
 
     /**
      * {@inheritDoc}

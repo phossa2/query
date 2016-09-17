@@ -292,6 +292,25 @@ trait ClauseTrait
     }
 
     /**
+     * Dealing with positioned parameters
+     *
+     * e.g. havingRaw('id > ?', [10]) turns into  havingRaw('id > 10')
+     *
+     * @param  string $rawString
+     * @param  array $args
+     * @param  int $num
+     * @access protected
+     */
+    protected function positionedParam(
+        /*# string */ $rawString,
+        array $args,
+        /*# string */ $num
+    )/*# : string */ {
+        $values = sizeof($args) > $num ? (array) $args[$num] : [];
+        return $this->getBuilder()->raw($rawString, $values);
+    }
+
+    /**
      * Return the builder
      *
      * @return BuilderInterface

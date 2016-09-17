@@ -192,15 +192,15 @@ Usage
 
     ```php
     // SELECT `group_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `group_id`
-    $query = $users->select()->col('group_id')->count('*', 'cnt')->groupBy('group_id');
+    $query = $users->select()->col('group_id')->count('*', 'cnt')->group('group_id');
     ```
 
-    Multiple `groupBy()` and `groupByRaw()`,
+    Multiple `group()` and `groupRaw()`,
 
     ```php
     // SELECT `group_id`, `age`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `group_id`, age ASC
     $query = $users->select()->col('group_id')->col('age')->count('*', 'cnt')
-        ->groupBy('group_id')->groupByRaw('age ASC');
+        ->group('group_id')->groupRaw('age ASC');
     ```
 
   - Join
@@ -293,14 +293,14 @@ Usage
 
     ```php
     // SELECT * FROM `Users` ORDER BY `age` ASC, `score` DESC
-    $query = $users->select()->orderBy('age')->orderByDesc('score');
+    $query = $users->select()->order('age')->orderDesc('score');
     ```
 
     Or raw mode
 
     ```php
     // SELECT * FROM `Users` ORDER BY age ASC, score DESC
-    $query = $users->select()->orderByRaw('age ASC, score DESC');
+    $query = $users->select()->orderRaw('age ASC, score DESC');
     ```
 
   - Where

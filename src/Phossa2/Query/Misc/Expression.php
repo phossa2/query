@@ -37,17 +37,20 @@ class Expression extends StatementAbstract implements ExpressionInterface
     /**
      * {@inheritDoc}
      */
-    protected $configs = ['WHERE' => ''];
-
-    /**
-     * {@inheritDoc}
-     */
     public function __construct(BuilderInterface $builder)
     {
         parent::__construct($builder);
 
         // force flat notation
         $this->setSettings(['seperator' => ' ', 'indent' => '']);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getConfigs()/*# : array */
+    {
+        return ['WHERE' => ''];
     }
 
     /**

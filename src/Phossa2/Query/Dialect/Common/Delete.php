@@ -12,24 +12,27 @@
  */
 /*# declare(strict_types=1); */
 
-namespace Phossa2\Query\Dialect\Mysql;
+namespace Phossa2\Query\Dialect\Common;
 
-use Phossa2\Query\Traits\Clause\PartitionTrait;
-use Phossa2\Query\Interfaces\Clause\PartitionInterface;
-use Phossa2\Query\Dialect\Common\Select as CommonSelect;
+use Phossa2\Query\Traits\StatementAbstract;
+use Phossa2\Query\Traits\Clause\TableTrait;
+use Phossa2\Query\Traits\Clause\WhereTrait;
+use Phossa2\Query\Traits\Clause\OrderTrait;
+use Phossa2\Query\Traits\Clause\LimitTrait;
+use Phossa2\Query\Traits\Clause\ClauseTrait;
+use Phossa2\Query\Interfaces\Statement\DeleteStatementInterface;
 
 /**
- * Mysql Select
+ * Delete
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
- * @see     PartitionInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Select extends CommonSelect implements PartitionInterface
+class Delete extends StatementAbstract implements DeleteStatementInterface
 {
-    use PartitionTrait;
+    use ClauseTrait, TableTrait, WhereTrait, OrderTrait, LimitTrait;
 
     /**
      * {@inheritDoc}
@@ -37,17 +40,18 @@ class Select extends CommonSelect implements PartitionInterface
     protected function getConfigs()/*# : array */
     {
         return [
-            'DISTINCT' => '',
-            'COL' => '',
             'TABLE' => 'FROM',
-            'JOIN' => '',
-            'PARTITION' => 'PARTITION', // added partition here
             'WHERE' => 'WHERE',
-            'GROUP' => 'GROUP BY',
-            'HAVING' => 'HAVING',
             'ORDER' => 'ORDER BY',
             'LIMIT' => 'LIMIT',
-            'UNION' => '',
         ];
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getType()/*# : string */
+    {
+        return 'DELETE';
     }
 }

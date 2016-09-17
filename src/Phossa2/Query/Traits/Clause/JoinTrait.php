@@ -53,10 +53,7 @@ trait JoinTrait
      */
     public function joinRaw(/*# string */ $joinType, /*# string */ $rawString)
     {
-        if (func_num_args() > 2) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(2));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
         return $this->realJoin($joinType, $rawString, '', '', true);
     }
 
@@ -209,7 +206,7 @@ trait JoinTrait
         if (!empty($cls[5])) {
             return $cls[5] . '.';
         } else {
-            $tables = &$this->getClause('FROM');
+            $tables = &$this->getClause('TABLE');
             reset($tables);
             $alias = key($tables);
             return (is_int($alias) ? $tables[$alias][0] : $alias) . '.';

@@ -121,6 +121,52 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Builder->update()
+     *
+     * @covers Phossa2\Query\Builder::update()
+     */
+    public function testUpdate()
+    {
+        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = FALSE WHERE `user_id` = 3";
+        $qry = $this->object->update()
+            ->set('user_name','phossa')
+            ->set('user_addr', false)
+            ->where('user_id', 3);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
+     * Tests Builder->replace()
+     *
+     * @covers Phossa2\Query\Builder::replace()
+     */
+    public function testReplace()
+    {
+        $sql = "REPLACE INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa')";
+        $qry = $this->object->replace(['uid' => 2, 'uname' => 'phossa']);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
+     * Tests Builder->delete()
+     *
+     * @covers Phossa2\Query\Builder::delete()
+     */
+    public function testDelete()
+    {
+        // default table
+        $sql = "DELETE FROM `Users`";
+        $qry = $this->object->delete();
+        $this->assertEquals($sql, $qry->getStatement());
+
+        // no default table
+        $sql = "DELETE FROM `Accounts`";
+        $obj = new Builder();
+        $qry = $obj->delete()->from('Accounts');
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
      * Tests Builder->union()
      *
      * @covers Phossa2\Query\Builder::union()
@@ -134,13 +180,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
 
         // second union is a CLAUSE !!
         $qry = $this->object->union($sel1)->union($sel2)
-            ->orderBy('user_id')->limit(10);
+            ->order('user_id')->limit(10);
 
         $this->assertEquals($sql, $qry->getStatement());
 
         // variable argument
         $qry = $this->object->union($sel1, $sel2)
-            ->orderBy('user_id')->limit(10);
+            ->order('user_id')->limit(10);
         $this->assertEquals($sql, $qry->getStatement());
     }
 }

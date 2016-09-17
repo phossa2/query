@@ -111,10 +111,7 @@ trait ColTrait
      */
     public function colRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
         return $this->realCol($rawString, '', true);
     }
 
@@ -175,7 +172,11 @@ trait ColTrait
         array $settings
     )/*# : string */ {
         $clause = &$this->getClause('COL');
-        $clauseParts = empty($clause) ? ['*'] : [];
+        if ('SELECT' === $this->getType() && empty($clause)) {
+            $clauseParts = ['*'];
+        } else {
+            $clauseParts = [];
+        }
         return $this->buildClause('COL', $prefix, $settings, $clauseParts);
     }
 

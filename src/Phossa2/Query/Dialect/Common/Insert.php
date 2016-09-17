@@ -15,11 +15,12 @@
 namespace Phossa2\Query\Dialect\Common;
 
 use Phossa2\Query\Traits\Clause\SetTrait;
-use Phossa2\Query\Traits\Clause\IntoTrait;
+use Phossa2\Query\Traits\Clause\TableTrait;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\ClauseTrait;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
+
 
 /**
  * Insert
@@ -34,16 +35,15 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Insert extends StatementAbstract implements InsertStatementInterface
 {
-    use ClauseTrait, IntoTrait, SetTrait;
+    use ClauseTrait, TableTrait, SetTrait;
 
     /**
      * {@inheritDoc}
      */
-    protected $configs = [
-        'INTO' => 'INTO',
-        'SET' => '',
-        'VALUES' => 'VALUES',
-    ];
+    public function into(/*# string */ $table)
+    {
+        return $this->table($table);
+    }
 
     /**
      * INSERT ... SELECT
@@ -55,6 +55,18 @@ class Insert extends StatementAbstract implements InsertStatementInterface
             ->setPrevious($this)    // previous stmt is INSERT
             ->col(func_get_args())  // cols from select()
             ->table('');            // clear table list
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getConfigs()/*# : array */
+    {
+        return [
+            'TABLE' => 'INTO',
+            'SET' => '',
+            'VALUES' => 'VALUES',
+        ];
     }
 
     /**

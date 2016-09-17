@@ -15,7 +15,7 @@
 namespace Phossa2\Query\Dialect\Common;
 
 use Phossa2\Query\Traits\Clause\ColTrait;
-use Phossa2\Query\Traits\Clause\FromTrait;
+use Phossa2\Query\Traits\Clause\TableTrait;
 use Phossa2\Query\Traits\Clause\JoinTrait;
 use Phossa2\Query\Traits\StatementAbstract;
 use Phossa2\Query\Traits\Clause\WhereTrait;
@@ -23,8 +23,8 @@ use Phossa2\Query\Traits\Clause\LimitTrait;
 use Phossa2\Query\Traits\Clause\UnionTrait;
 use Phossa2\Query\Traits\Clause\ClauseTrait;
 use Phossa2\Query\Traits\Clause\HavingTrait;
-use Phossa2\Query\Traits\Clause\GroupByTrait;
-use Phossa2\Query\Traits\Clause\OrderByTrait;
+use Phossa2\Query\Traits\Clause\GroupTrait;
+use Phossa2\Query\Traits\Clause\OrderTrait;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
@@ -41,24 +41,27 @@ use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
  */
 class Select extends StatementAbstract implements SelectStatementInterface
 {
-    use ClauseTrait, ColTrait, FromTrait, WhereTrait, JoinTrait,
-        GroupByTrait, HavingTrait, OrderByTrait, LimitTrait, UnionTrait;
+    use ClauseTrait, ColTrait, TableTrait, WhereTrait, JoinTrait,
+        GroupTrait, HavingTrait, OrderTrait, LimitTrait, UnionTrait;
 
     /**
      * {@inheritDoc}
      */
-    protected $configs = [
-        'DISTINCT' => '',
-        'COL' => '',
-        'FROM' => 'FROM',
-        'JOIN' => '',
-        'WHERE' => 'WHERE',
-        'GROUPBY' => 'GROUP BY',
-        'HAVING' => 'HAVING',
-        'ORDERBY' => 'ORDER BY',
-        'LIMIT' => 'LIMIT',
-        'UNION' => '',
-    ];
+    protected function getConfigs()/*# : array */
+    {
+        return [
+            'DISTINCT' => '',
+            'COL' => '',
+            'TABLE' => 'FROM',
+            'JOIN' => '',
+            'WHERE' => 'WHERE',
+            'GROUP' => 'GROUP BY',
+            'HAVING' => 'HAVING',
+            'ORDER' => 'ORDER BY',
+            'LIMIT' => 'LIMIT',
+            'UNION' => '',
+        ];
+    }
 
     /**
      * {@inheritDoc}

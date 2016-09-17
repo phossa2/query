@@ -15,14 +15,14 @@
 namespace Phossa2\Query\Interfaces;
 
 /**
- * FromInterface
+ * TableInterface
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface FromInterface
+interface TableInterface
 {
     /**
      * FROM clause, APPEND to existing table lists

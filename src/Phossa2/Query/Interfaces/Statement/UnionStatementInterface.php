@@ -16,7 +16,7 @@ namespace Phossa2\Query\Interfaces\Statement;
 
 use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Clause\LimitInterface;
-use Phossa2\Query\Interfaces\Clause\OrderByInterface;
+use Phossa2\Query\Interfaces\Clause\OrderInterface;
 
 /**
  * UnionStatementInterface
@@ -27,12 +27,12 @@ use Phossa2\Query\Interfaces\Clause\OrderByInterface;
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     StatementInterface
- * @see     OrderByInterface
+ * @see     OrderInterface
  * @see     LimitInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface UnionStatementInterface extends StatementInterface, OrderByInterface, LimitInterface
+interface UnionStatementInterface extends StatementInterface, OrderInterface, LimitInterface
 {
     /**
      * Add a SELECT to union. takes variable arguments

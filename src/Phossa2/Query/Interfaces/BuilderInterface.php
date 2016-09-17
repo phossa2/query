@@ -17,6 +17,7 @@ namespace Phossa2\Query\Interfaces;
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
+use Phossa2\Query\Interfaces\Statement\DeleteStatementInterface;
 
 /**
  * BuilderInterface
@@ -26,12 +27,12 @@ use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
  * @see     DialectAwareInterface
  * @see     SettingsAwareInterface
  * @see     SelectInterface
- * @see     FromInterface
+ * @see     TableInterface
  * @see     ParameterAwareInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface, SelectInterface, FromInterface, ParameterAwareInterface
+interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface, SelectInterface, TableInterface, ParameterAwareInterface
 {
     /**
      * Create a complex expression
@@ -63,19 +64,23 @@ interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface
     public function expr()/*# : ExpressionInterface */;
 
     /**
-     * Raw string with variable placeholders
+     * Raw string with placeholders
      *
      * ```php
-     * // with variable placeholders
-     * $builder->select()->col($builder->raw('RANGE(?, ?)', 1, 10));
+     * // with placeholders
+     * $builder->select()->col($builder->raw('RANGE(?, ?)', [1, 10]));
      * ```
      *
      * @param  string $string
+     * @param  array $values
      * @return OutputInterface
      * @access public
      * @api
      */
-    public function raw(/*# string */ $string)/*# : OutputInterface */;
+    public function raw(
+        /*# string */ $string,
+        array $values = []
+    )/*# : OutputInterface */;
 
     /**
      * Build an INSERT statement
@@ -98,6 +103,31 @@ interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface
     public function update(array $values = [])/*# : UpdateStatementInterface */;
 
     /**
+     * Build a REPLACE statement
+     *
+     * @param  array $values colname and value pairs
+     * @return InsertStatementInterface
+     * @access public
+     * @api
+     */
+    public function replace(array $values = [])/*# : InsertStatementInterface */;
+
+    /**
+     * Build a DELETE statement
+     *
+     * ```php
+     * // DELETE `u`, `a` FROM `Users` AS `u` INNER JOIN `Accounts` AS `a` ON ...
+     * $users->delete('u', 'a')->table('Users', 'u')
+     *     ->join(['Accounts' => 'a'], 'id')->where()
+     * ```
+     *
+     * @return DeleteStatementInterface
+     * @access public
+     * @api
+     */
+    public function delete()/*# : DeleteStatementInterface */;
+
+    /**
      * Builder level union, takes variable parameters.
      *
      * ```php
@@ -105,7 +135,7 @@ interface BuilderInterface extends DialectAwareInterface, SettingsAwareInterface
      * $builder->union(
      *    $builder->select()->table('Users'),
      *    $builder->select()->table('oldUsers')
-     * )->orderBy('user_id')->limit(10);
+     * )->order('user_id')->limit(10);
      * ```
      *
      * @return UnionStatementInterface

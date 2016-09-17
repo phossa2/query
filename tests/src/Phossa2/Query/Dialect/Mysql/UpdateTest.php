@@ -38,14 +38,6 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
      */
     public function testSet()
     {
-        // set data
-        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = FALSE WHERE `user_id` = 3";
-        $qry = $this->object->update()
-            ->set('user_name','phossa')
-            ->set('user_addr', false)
-            ->where('user_id', 3);
-        $this->assertEquals($sql, $qry->getStatement());
-
         // set subquery
         $sql = "UPDATE `Users` SET `age` = (SELECT MAX(`age`) FROM `oldUsers`)";
         $qry = $this->object->update()

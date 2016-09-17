@@ -259,79 +259,79 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Builder->select()->groupBy()
+     * Tests Builder->select()->group()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::groupBy()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::group()
      */
-    public function testGroupBy()
+    public function testGroup()
     {
         // group by
         $sql = 'SELECT * FROM `Users` GROUP BY `last_name`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->groupBy('last_name')->getStatement()
+            $this->object->select()->group('last_name')->getStatement()
         );
 
         // group by desc
         $sql = 'SELECT * FROM `Users` GROUP BY `last_name` DESC';
         $this->assertEquals(
             $sql,
-            $this->object->select()->groupByDesc('last_name')->getStatement()
+            $this->object->select()->groupDesc('last_name')->getStatement()
         );
 
         // multiple groupby
         $sql = 'SELECT * FROM `Users` GROUP BY `last_name`, `first_name`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->groupBy('last_name')->groupBy('first_name')
+            $this->object->select()->group('last_name')->group('first_name')
                 ->getStatement()
         );
         $this->assertEquals(
             $sql,
-            $this->object->select()->groupBy('last_name', 'first_name')->getStatement()
+            $this->object->select()->group('last_name', 'first_name')->getStatement()
         );
         $this->assertEquals(
             $sql,
-            $this->object->select()->groupBy(['last_name', 'first_name'])->getStatement()
+            $this->object->select()->group(['last_name', 'first_name'])->getStatement()
         );
     }
 
     /**
-     * Tests Builder->select()->groupByRaw()
+     * Tests Builder->select()->groupRaw()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::groupByRaw()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::groupRaw()
      */
-    public function testGroupByRaw()
+    public function testGroupRaw()
     {
         // raw groupby
         $sql = 'SELECT `group_id` FROM `Users` GROUP BY `group_id`, group_name ASC';
         $qry = $this->object->select('group_id')
-            ->groupBy('group_id')->groupByRaw('group_name ASC');
+            ->group('group_id')->groupRaw('group_name ASC');
         $this->assertEquals($sql, $qry->getStatement());
 
         // positioned param
         $sql = 'SELECT * FROM `Users` GROUP BY group_id + 10';
-        $qry = $this->object->select()->groupByRaw('group_id + ?', [10]);
+        $qry = $this->object->select()->groupRaw('group_id + ?', [10]);
         $this->assertEquals($sql, $qry->getStatement());
     }
 
     /**
-     * Tests Builder->select()->groupByTpl()
+     * Tests Builder->select()->groupTpl()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::groupByTpl()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::groupTpl()
      */
-    public function testGroupByTpl()
+    public function testGroupTpl()
     {
         // single
         $sql = 'SELECT COUNT(*) AS `cnt` FROM `Users` GROUP BY `age` DESC';
         $qry = $this->object->select()->count('*', 'cnt')
-            ->groupByTpl('%s DESC', 'age');
+            ->groupTpl('%s DESC', 'age');
         $this->assertEquals($sql, $qry->getStatement());
 
         // multiple
         $sql = 'SELECT COUNT(*) AS `cnt` FROM `Users` GROUP BY `age`, `group_id`';
         $qry = $this->object->select()->count('*', 'cnt')
-            ->groupByTpl('%s, %s', ['age', 'group_id']);
+            ->groupTpl('%s, %s', ['age', 'group_id']);
         $this->assertEquals($sql, $qry->getStatement());
     }
 
@@ -385,56 +385,56 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Builder->select()->orderBy()
+     * Tests Builder->select()->order()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::orderBy()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::order()
      */
-    public function testOrderBy()
+    public function testOrder()
     {
         // ASC and DESC
         $sql = 'SELECT * FROM `Users` ORDER BY `age` ASC, `score` DESC';
-        $qry = $this->object->select()->orderBy('age')->orderByDesc('score');
+        $qry = $this->object->select()->order('age')->orderDesc('score');
         $this->assertEquals($sql, $qry->getStatement());
 
         // multiple
         $sql = 'SELECT * FROM `Users` ORDER BY `age` ASC, `score` ASC';
-        $qry = $this->object->select()->orderBy(['age', 'score']);
+        $qry = $this->object->select()->order(['age', 'score']);
         $this->assertEquals($sql, $qry->getStatement());
     }
 
     /**
-     * Tests Builder->select()->orderByRaw()
+     * Tests Builder->select()->orderRaw()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::orderByRaw()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::orderRaw()
      */
-    public function testOrderByRaw()
+    public function testOrderRaw()
     {
         // raw order by
         $sql = 'SELECT * FROM `Users` ORDER BY col NULLS LAST DESC';
-        $qry = $this->object->select()->orderByRaw('col NULLS LAST DESC');
+        $qry = $this->object->select()->orderRaw('col NULLS LAST DESC');
         $this->assertEquals($sql, $qry->getStatement());
 
         // positioned param
         $sql = 'SELECT * FROM `Users` ORDER BY age + 10';
-        $qry = $this->object->select()->orderByRaw('age + ?', [10]);
+        $qry = $this->object->select()->orderRaw('age + ?', [10]);
         $this->assertEquals($sql, $qry->getStatement());
     }
 
     /**
-     * Tests Builder->select()->orderByTpl()
+     * Tests Builder->select()->orderTpl()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::orderByTpl()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::orderTpl()
      */
-    public function testOrderByTpl()
+    public function testOrderTpl()
     {
         // order by template
         $sql = 'SELECT * FROM `Users` ORDER BY `col` NULLS LAST DESC';
-        $qry = $this->object->select()->orderByTpl('%s NULLS LAST DESC', 'col');
+        $qry = $this->object->select()->orderTpl('%s NULLS LAST DESC', 'col');
         $this->assertEquals($sql, $qry->getStatement());
 
         // multiple
         $sql = 'SELECT * FROM `Users` ORDER BY `col` NULLS LAST DESC, `uid` ASC';
-        $qry = $this->object->select()->orderByTpl('%s NULLS LAST DESC, %s ASC', ['col', 'uid']);
+        $qry = $this->object->select()->orderTpl('%s NULLS LAST DESC, %s ASC', ['col', 'uid']);
         $this->assertEquals($sql, $qry->getStatement());
     }
 
@@ -735,12 +735,38 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         // after
         $sql = "SELECT * FROM `Users` INTO OUTFILE 'test.txt'";
         $qry = $this->object->select()
-            ->after('from', "INTO OUTFILE 'test.txt'");
+            ->after('table', "INTO OUTFILE 'test.txt'");
         $this->assertEquals($sql, $qry->getStatement());
 
         // positioned param
         $qry = $this->object->select()
-            ->after('from', "INTO OUTFILE ?", ['test.txt']);
+            ->after('table', "INTO OUTFILE ?", ['test.txt']);
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->hint()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Select::hint()
+     */
+    public function testHint()
+    {
+        // before
+        $sql = 'SELECT SQL_CACHE * FROM `Users`';
+        $qry = $this->object->select()->hint('SQL_CACHE');
+        $this->assertEquals($sql, $qry->getStatement());
+    }
+
+    /**
+     * Tests Builder->select()->option()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Select::option()
+     */
+    public function testOption()
+    {
+        // before
+        $sql = 'SELECT * FROM `Users` FOR UPDATE';
+        $qry = $this->object->select()->option('FOR UPDATE');
         $this->assertEquals($sql, $qry->getStatement());
     }
 

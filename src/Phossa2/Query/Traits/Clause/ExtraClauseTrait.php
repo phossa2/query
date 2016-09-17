@@ -34,10 +34,7 @@ trait ExtraClauseTrait
      */
     public function before(/*# string */ $position, /*# string */ $rawString)
     {
-        if (func_num_args() > 2) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(2));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
         return $this->beforeAfter('BEFORE', $position, $rawString);
     }
 
@@ -46,11 +43,24 @@ trait ExtraClauseTrait
      */
     public function after(/*# string */ $position, /*# string */ $rawString)
     {
-        if (func_num_args() > 2) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(2));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
         return $this->beforeAfter('AFTER', $position, $rawString);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hint(/*# string */ $hintString)
+    {
+        return $this->beforeAfter('AFTER', 'TYPE', $hintString);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function option(/*# string */ $optionString)
+    {
+        return $this->beforeAfter('AFTER', 'STMT', $optionString);
     }
 
     /**

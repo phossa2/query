@@ -62,6 +62,9 @@ trait SetTrait
      */
     public function set($col, $value = ClauseInterface::NO_VALUE)
     {
+        if (empty($col)) { // nothing
+            return $this;
+        }
         if (is_array($col)) { // array provided
             return $this->setWithArrayData($col);
         }
@@ -78,12 +81,7 @@ trait SetTrait
     public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE)
     {
         if (ClauseInterface::NO_VALUE !== $value) {
-            if (func_num_args() > 2) {
-                $value = $this->getBuilder()
-                    ->raw($value, (array) func_get_arg(2));
-            } else {
-                $value = $this->getBuilder()->raw($value);
-            }
+            $value = $this->positionedParam($value, func_get_args(), 2);
         }
         return $this->set((string) $col, $value);
     }
@@ -93,10 +91,7 @@ trait SetTrait
      */
     public function setTpl(/*# string */ $col, /*# string */ $template, $field)
     {
-        if (func_num_args() > 3) {
-            $template = $this->getBuilder()
-                ->raw($template, (array) func_get_arg(3));
-        }
+        $template = $this->positionedParam($template, func_get_args(), 3);
         return $this->set($col, new Template($template, $field));
     }
 
@@ -113,7 +108,7 @@ trait SetTrait
             foreach ($data as $row) {
                 $this->set($row);
             }
-        } elseif (!empty($data)) { // multiple values
+        } else { // multiple values
             foreach ($data as $col => $val) {
                 $this->set($col, $val);
             }

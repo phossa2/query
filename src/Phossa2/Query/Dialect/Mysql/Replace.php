@@ -16,10 +16,10 @@ namespace Phossa2\Query\Dialect\Mysql;
 
 use Phossa2\Query\Traits\Clause\PartitionTrait;
 use Phossa2\Query\Interfaces\Clause\PartitionInterface;
-use Phossa2\Query\Dialect\Common\Insert as CommonInsert;
+use Phossa2\Query\Dialect\Common\Replace as CommonReplace;
 
 /**
- * Mysql Insert
+ * Mysql Replace
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -27,7 +27,7 @@ use Phossa2\Query\Dialect\Common\Insert as CommonInsert;
  * @version 2.0.0
  * @since   2.0.0 added
  */
-class Insert extends CommonInsert implements PartitionInterface
+class Replace extends CommonReplace implements PartitionInterface
 {
     use PartitionTrait;
 

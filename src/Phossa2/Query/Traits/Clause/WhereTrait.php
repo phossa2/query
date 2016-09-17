@@ -68,10 +68,7 @@ trait WhereTrait
      */
     public function whereRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'AND', '', true);
     }
@@ -81,10 +78,7 @@ trait WhereTrait
      */
     public function orWhereRaw(/*# string */ $rawString)
     {
-        if (func_num_args() > 1) {
-            $rawString = $this->getBuilder()
-                ->raw($rawString, (array) func_get_arg(1));
-        }
+        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'OR', '', true);
     }

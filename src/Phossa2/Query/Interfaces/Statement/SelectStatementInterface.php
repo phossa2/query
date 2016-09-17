@@ -16,12 +16,12 @@ namespace Phossa2\Query\Interfaces\Statement;
 
 use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\Clause\ColInterface;
-use Phossa2\Query\Interfaces\Clause\FromInterface;
+use Phossa2\Query\Interfaces\Clause\TableInterface;
 use Phossa2\Query\Interfaces\Clause\WhereInterface;
 use Phossa2\Query\Interfaces\Clause\LimitInterface;
 use Phossa2\Query\Interfaces\Clause\HavingInterface;
-use Phossa2\Query\Interfaces\Clause\GroupByInterface;
-use Phossa2\Query\Interfaces\Clause\OrderByInterface;
+use Phossa2\Query\Interfaces\Clause\GroupInterface;
+use Phossa2\Query\Interfaces\Clause\OrderInterface;
 
 /**
  * SelectStatementInterface
@@ -30,15 +30,15 @@ use Phossa2\Query\Interfaces\Clause\OrderByInterface;
  * @author  Hong Zhang <phossa@126.com>
  * @see     StatementInterface
  * @see     ColInterface
- * @see     FromInterface
+ * @see     TableInterface
  * @see     WhereInterface
- * @see     GroupByInterface
+ * @see     GroupInterface
  * @see     HavingInterface
- * @see     OrderByInterface
+ * @see     OrderInterface
  * @see     LimitInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface SelectStatementInterface extends StatementInterface, ColInterface, FromInterface, WhereInterface, GroupByInterface, HavingInterface, OrderByInterface, LimitInterface
+interface SelectStatementInterface extends StatementInterface, ColInterface, TableInterface, WhereInterface, GroupInterface, HavingInterface, OrderInterface, LimitInterface
 {
 }
