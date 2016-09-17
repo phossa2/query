@@ -24,6 +24,7 @@ use Phossa2\Query\Traits\ParameterAwareTrait;
 use Phossa2\Query\Interfaces\BuilderInterface;
 use Phossa2\Query\Interfaces\DialectInterface;
 use Phossa2\Query\Interfaces\StatementInterface;
+use Phossa2\Query\Interfaces\Clause\ColInterface;
 use Phossa2\Query\Interfaces\Statement\UnionStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
@@ -193,8 +194,12 @@ class Builder extends ObjectAbstract implements BuilderInterface
     public function delete()/*# : DeleteStatementInterface */
     {
         /* @var DeleteStatementInterface $delete */
-        $delete = $this->getDialect()->delete($this);
-        return $delete->from(current($this->tables))->col(func_get_args());
+        $delete = $this->getDialect()->delete($this)->from(current($this->tables));
+
+        if ($delete instanceof ColInterface) { // multiple table deletion
+            $delete->col(func_get_args());
+        }
+        return $delete;
     }
 
     /**

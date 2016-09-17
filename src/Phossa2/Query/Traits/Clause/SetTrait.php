@@ -17,6 +17,7 @@ namespace Phossa2\Query\Traits\Clause;
 use Phossa2\Query\Interfaces\ClauseInterface;
 use Phossa2\Query\Interfaces\Clause\SetInterface;
 use Phossa2\Query\Misc\Template;
+use Phossa2\Query\Interfaces\Statement\UpdateStatementInterface;
 
 /**
  * SetTrait
@@ -129,7 +130,7 @@ trait SetTrait
         /*# string */ $prefix,
         array $settings
     )/*# : array */ {
-        if ('UPDATE' === $this->getType()) {
+        if ($this instanceof UpdateStatementInterface) {
             return $this->buildUpdateSet($prefix, $settings);
         } else {
             return $this->buildInsertSet($prefix, $settings);

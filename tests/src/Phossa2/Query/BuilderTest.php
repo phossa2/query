@@ -127,7 +127,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdate()
     {
-        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = FALSE WHERE `user_id` = 3";
+        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = false WHERE `user_id` = 3";
         $qry = $this->object->update()
             ->set('user_name','phossa')
             ->set('user_addr', false)

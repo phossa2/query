@@ -16,6 +16,7 @@ namespace Phossa2\Query\Traits\Clause;
 
 use Phossa2\Query\Misc\Template;
 use Phossa2\Query\Interfaces\Clause\ColInterface;
+use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
 /**
  * ColTrait
@@ -172,7 +173,7 @@ trait ColTrait
         array $settings
     )/*# : string */ {
         $clause = &$this->getClause('COL');
-        if ('SELECT' === $this->getType() && empty($clause)) {
+        if ($this instanceof SelectStatementInterface && empty($clause)) {
             $clauseParts = ['*'];
         } else {
             $clauseParts = [];

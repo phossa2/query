@@ -172,9 +172,9 @@ trait ClauseTrait
         if (is_object($value)) {
             return $this->quoteObject($value, $settings);
         } elseif (is_array($value)) {
-            return $this->processValueArray($value, $settings, $between);
+            return $this->processArrayValue($value, $settings, $between);
         } else {
-            return $this->processValueScalar($value);
+            return $this->processScalarValue($value);
         }
     }
 
@@ -186,7 +186,7 @@ trait ClauseTrait
      * @return string
      * @access protected
      */
-    protected function processValueArray(
+    protected function processArrayValue(
         array $value,
         array $settings,
         /*# bool */ $between = false
@@ -211,14 +211,12 @@ trait ClauseTrait
      * @return string
      * @access protected
      */
-    protected function processValueScalar($value)/*# : string */
+    protected function processScalarValue($value)/*# : string */
     {
         if (ClauseInterface::NO_VALUE == $value) {
             return '?';
-        } elseif (is_null($value)) {
-            return 'NULL';
-        } elseif (is_bool($value)) {
-            return $value ? 'TRUE' : 'FALSE';
+        } elseif (is_null($value) || is_bool($value)) {
+            return var_export($value, true);
         } else {
             return $this->getBuilder()->getParameter()->getPlaceholder($value);
         }
