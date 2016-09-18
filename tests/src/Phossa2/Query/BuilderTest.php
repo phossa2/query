@@ -43,13 +43,25 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testExpr()
     {
+        // where
         $sql = "SELECT * FROM `Users` WHERE (`id` = 1 OR (`id` < 20 OR `id` > 100)) OR `name` = 'Tester'";
-        $query = $this->object->select()->where(
+        $qry = $this->object->select()->where(
             $this->object->expr()->where('id', 1)->orWhere(
                 $this->object->expr()->where('id', '<', 20)->orWhere('id', '>', 100)
             )
         )->orWhere('name', 'Tester');
-        $this->assertEquals($sql, $query->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
+
+        // on
+        $sql = "SELECT * FROM `Users` AS `u` INNER JOIN `Accounts` AS `a` ON (`u`.`uid` = `a`.`uid` OR (`u`.`uid` = `a`.`oid` OR `u`.`uid` = `a`.`xid`))";
+        $qry = $this->object->select()->table('Users', 'u')
+            ->join(
+                ['Accounts', 'a'],
+                $this->object->expr()->on('u.uid', 'a.uid')
+                    ->orOn($this->object->expr()->on('u.uid', 'a.oid')
+                        ->orOn('u.uid', 'a.xid'))
+            );
+            $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -68,7 +80,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM `Orders` AS `o`, `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->table(['Orders' => 'o', 'Users'])->select()->getStatement()
+            $this->object->table(['Orders' => 'o', 'Users'])->select()->getSql()
         );
 
         // reset tables in query
@@ -76,7 +88,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM `Sales` AS `s` WHERE `user_id` = 12';
         $this->assertEquals(
             $sql,
-            $sales->select()->where('user_id', 12)->getStatement()
+            $sales->select()->where('user_id', 12)->getSql()
         );
     }
 
@@ -89,7 +101,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM `Users`, `Orders` AS `o`';
         $this->assertEquals(
             $sql,
-            $this->object->from('Orders', 'o')->select()->getStatement()
+            $this->object->from('Orders', 'o')->select()->getSql()
         );
     }
 
@@ -103,7 +115,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT `user_id`, `user_name` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select('user_id', 'user_name')->getStatement()
+            $this->object->select('user_id', 'user_name')->getSql()
         );
     }
 
@@ -117,7 +129,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         // simple insert
         $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa')";
         $qry = $this->object->insert(['uid' => 2, 'uname' => 'phossa']);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -127,12 +139,12 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testUpdate()
     {
-        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = false WHERE `user_id` = 3";
+        $sql = "UPDATE `Users` SET `user_name` = 'phossa', `user_addr` = FALSE WHERE `user_id` = 3";
         $qry = $this->object->update()
             ->set('user_name','phossa')
             ->set('user_addr', false)
             ->where('user_id', 3);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -144,7 +156,7 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
     {
         $sql = "REPLACE INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa')";
         $qry = $this->object->replace(['uid' => 2, 'uname' => 'phossa']);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -157,13 +169,13 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         // default table
         $sql = "DELETE FROM `Users`";
         $qry = $this->object->delete();
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // no default table
         $sql = "DELETE FROM `Accounts`";
         $obj = new Builder();
         $qry = $obj->delete()->from('Accounts');
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -182,11 +194,11 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->union($sel1)->union($sel2)
             ->order('user_id')->limit(10);
 
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // variable argument
         $qry = $this->object->union($sel1, $sel2)
             ->order('user_id')->limit(10);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 }

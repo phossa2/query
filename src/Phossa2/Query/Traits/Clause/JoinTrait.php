@@ -14,6 +14,7 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Interfaces\StatementInterface;
 use Phossa2\Query\Interfaces\ExpressionInterface;
 use Phossa2\Query\Interfaces\Clause\JoinInterface;
 
@@ -35,26 +36,69 @@ trait JoinTrait
     /**
      * {@inheritDoc}
      */
-    public function join($secondTable, $onClause = '', $firstTable = '')
+    public function join($secondTable, $onClause = '')
     {
-        return $this->realJoin('INNER JOIN', $secondTable, $onClause, $firstTable);
+        return $this->realJoin('INNER JOIN', $secondTable, $onClause);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function leftJoin($secondTable, $onClause = '', $firstTable = '')
+    public function leftJoin($secondTable, $onClause = '')
     {
-        return $this->realJoin('LEFT JOIN', $secondTable, $onClause, $firstTable);
+        return $this->realJoin('LEFT JOIN', $secondTable, $onClause);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function joinRaw(/*# string */ $joinType, /*# string */ $rawString)
+    public function leftOuterJoin($secondTable, $onClause = '')
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
-        return $this->realJoin($joinType, $rawString, '', '', true);
+        return $this->realJoin('LEFT OUTER JOIN', $secondTable, $onClause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rightJoin($secondTable, $onClause = '')
+    {
+        return $this->realJoin('RIGHT JOIN', $secondTable, $onClause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rightOuterJoin($secondTable, $onClause = '')
+    {
+        return $this->realJoin('RIGHT OUTER JOIN', $secondTable, $onClause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function outerJoin($secondTable, $onClause = '')
+    {
+        return $this->realJoin('OUTER JOIN', $secondTable, $onClause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function crossJoin($secondTable, $onClause = '')
+    {
+        return $this->realJoin('CROSS JOIN', $secondTable, $onClause);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function joinRaw(
+        /*# string */ $joinType,
+        /*# string */ $rawString,
+        array $params = [])
+    {
+        $rawString = $this->positionedParam($rawString, $params);
+        return $this->realJoin(strtoupper($joinType), $rawString, '', true);
     }
 
     /**
@@ -63,7 +107,6 @@ trait JoinTrait
      * @param  string $joinType
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable
      * @param  bool $rawMode
      * @return $this
      * @access protected
@@ -72,19 +115,18 @@ trait JoinTrait
         /*# string */ $joinType,
         $secondTable,
         $onClause = '',
-        $firstTable = '',
         /*# bool */ $rawMode = false
     ) {
         $alias = 0; // no alias
-        if ($rawMode || '' === $onClause) { // raw mode
+        list($secondTable, $alias) = $this->fixJoinTable($secondTable);
+
+        if ($rawMode || '' === $onClause || $this->isRaw($onClause, false)) {
             $rawMode = true;
-        }
-        if (!$rawMode) { // fix table/alias/on
+        } else {
             $onClause = $this->fixOnClause($onClause);
-            list($secondTable, $alias) = $this->fixJoinTable($secondTable);
         }
         $clause = &$this->getClause('JOIN');
-        $clause[] = [$rawMode, $joinType, $secondTable, $alias, $onClause, $firstTable];
+        $clause[] = [$rawMode, $joinType, $secondTable, $alias, $onClause];
         return $this;
     }
 
@@ -97,12 +139,12 @@ trait JoinTrait
      */
     protected function fixJoinTable($table)
     {
-        if (is_object($table)) {
-            return [$table, uniqid()]; // need an alias
-        } elseif (is_string($table)) {
-            return [$table, 0]; // alias set 0
+        if (is_array($table)) {
+            return $table;
+        } elseif (is_object($table) && $table instanceof StatementInterface) {
+            return [$table, uniqid()];
         } else {
-            return $table; // array
+            return [$table, 0]; // alias set 0
         }
     }
 
@@ -141,10 +183,8 @@ trait JoinTrait
         foreach ($clause as $cls) {
             $result = [];
             $prefix = $cls[1]; // join type
-            if ($cls[0]) { // raw mode
-                $result[] = $cls[2];
-            } else {
-                $result[] = $this->buildJoinTable($cls, $settings);
+            $result[] = $this->buildJoinTable($cls, $settings); // join table
+            if (!empty($cls[4])) {
                 $result[] = $this->buildJoinOn($cls, $settings);
             }
             $string .= $this->joinClause($prefix, '', $result, $settings);
@@ -177,18 +217,18 @@ trait JoinTrait
      */
     protected function buildJoinOn(array $cls, array $settings)/*# : string */
     {
-        $on = $cls[4];
         $res = ['ON'];
-
-        if (is_object($on)) {
-            $res[] = $on->getStatement($settings);
-        } else {
-            // first
-            $res[] = $this->quote($this->getFirstTableAlias($cls) . $on[0], $settings);
-            // operator
-            $res[] = $on[1];
-            // second
-            $res[] = $this->quote($this->getSecondTableAlias($cls) . $on[2], $settings);
+        $on = $cls[4];
+        if (is_string($on)) { // ON string
+            $res[] = $on;
+        } elseif (is_object($on)) { // ON is an object
+            $res[] = $this->quoteItem($on, $settings);
+        } else { // common on
+            $res[] = $this->quote( // left
+                $this->getFirstTableAlias($cls, $on[0]) . $on[0], $settings);
+            $res[] = $on[1]; // operator
+            $res[] = $this->quote( // right
+                $this->getSecondTableAlias($cls, $on[2]) . $on[2], $settings);
         }
         return join(' ', $res);
     }
@@ -197,15 +237,17 @@ trait JoinTrait
      * Get first table alias
      *
      * @param  array $cls
+     * @param  string $left left part of eq
      * @return string
      * @access protected
      */
-    protected function getFirstTableAlias(array $cls)/*# : string */
-    {
-        // first table specified
-        if (!empty($cls[5])) {
-            return $cls[5] . '.';
-        } else {
+    protected function getFirstTableAlias(
+        array $cls,
+        /*# string */ $left
+    )/*# : string */ {
+        if (false !== strpos($left, '.')) { // alias exists
+            return '';
+        } else { // prepend first table alias
             $tables = &$this->getClause('TABLE');
             reset($tables);
             $alias = key($tables);
@@ -217,15 +259,22 @@ trait JoinTrait
      * Get second table alias
      *
      * @param  array $cls
+     * @param  string $right right part of eq
      * @return string
      * @access protected
      */
-    protected function getSecondTableAlias(array $cls)/*# : string */
-    {
-        $alias = $cls[3];
-        if (!is_string($alias)) {
-            $alias = $cls[2];
+    protected function getSecondTableAlias(
+        array $cls,
+        /*# string */ $right
+    )/*# : string */ {
+        if (false !== strpos($right, '.')) {
+            return '';
+        } else {
+            $alias = $cls[3];
+            if (!is_string($alias)) {
+                $alias = $cls[2];
+            }
+            return $alias . '.';
         }
-        return $alias . '.';
     }
 }

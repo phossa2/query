@@ -248,7 +248,7 @@ class Builder extends ObjectAbstract implements BuilderInterface
     {
         return [
             'autoQuote' => true,
-            'positionedParam' => false,
+            'positionedParam' => true,
             'namedParam' => false,
             'seperator' => ' ',
             'indent' => '',

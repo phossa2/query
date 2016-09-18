@@ -184,9 +184,10 @@ interface ColInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function colRaw(/*# string */ $rawString);
+    public function colRaw(/*# string */ $rawString, array $params = []);
 }

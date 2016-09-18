@@ -41,18 +41,18 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         // multiple set()
         $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa')";
         $qry = $this->object->insert()->set('uid', 2)->set('uname', 'phossa');
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // set() with data array
         $qry = $this->object->insert()->set(['uid' => 2, 'uname' => 'phossa']);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // mulitple data rows
         $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (2, 'phossa'), (3, 'test')";
         $qry = $this->object->insert()
             ->set(['uid' => 2, 'uname' => 'phossa'])
             ->set(['uid' => 3, 'uname' => 'test']);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // default values
         $sql = "INSERT INTO `Users` (`uid`, `uname`, `phone`) VALUES (2, 'phossa', DEFAULT), (3, 'test', '1234')";
@@ -60,7 +60,7 @@ class InsertTest extends \PHPUnit_Framework_TestCase
             ['uid' => 2, 'uname' => 'phossa'],
             ['uid' => 3, 'uname' => 'test', 'phone' => '1234']
         ]);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
 
         // insert NULL instead of default
         $sql = "INSERT INTO `Users` (`uid`, `uname`, `phone`) VALUES (2, 'phossa', NULL), (3, 'test', '1234')";
@@ -68,7 +68,7 @@ class InsertTest extends \PHPUnit_Framework_TestCase
             ['uid' => 2, 'uname' => 'phossa'],
             ['uid' => 3, 'uname' => 'test', 'phone' => '1234']
         ]);
-        $this->assertEquals($sql, $qry->getStatement([
+        $this->assertEquals($sql, $qry->getSql([
             'useNullAsDefault' => true
         ]));
 
@@ -81,7 +81,7 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         // auto positionedParam => true
         $sql = "INSERT INTO `Users` (`uid`, `uname`) VALUES (?, ?)";
         $qry = $this->object->insert()->set(['uid', 'uname']);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -94,6 +94,6 @@ class InsertTest extends \PHPUnit_Framework_TestCase
         // set raw with positioned param
         $sql = "INSERT INTO `Users` (`ctime`, `uname`) VALUES (NOW() + 10, 'phossa')";
         $qry = $this->object->insert()->setRaw('ctime', 'NOW() + ?', [10])->set('uname', 'phossa');
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 }

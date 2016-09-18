@@ -70,12 +70,13 @@ interface WhereInterface extends ClauseInterface
      *
      * @param  string $template
      * @param  string|string[] $col
+     * @param  array $params
      * @return $this
      * @see    self::where()
      * @access public
      * @api
      */
-    public function whereTpl(/*# string */ $template, $col);
+    public function whereTpl(/*# string */ $template, $col, array $params = []);
 
     /**
      * WHERE template with 'OR' logic
@@ -87,12 +88,13 @@ interface WhereInterface extends ClauseInterface
      *
      * @param  string $template
      * @param  string|string[] $col
+     * @param  array $params
      * @return $this
      * @see    self::where()
      * @access public
      * @api
      */
-    public function orWhereTpl(/*# string */ $template, $col);
+    public function orWhereTpl(/*# string */ $template, $col, array $params = []);
 
     /**
      * Raw mode WHERE
@@ -106,12 +108,13 @@ interface WhereInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @see    self::where()
      * @access public
      * @api
      */
-    public function whereRaw(/*# string */ $rawString);
+    public function whereRaw(/*# string */ $rawString, array $params = []);
 
     /**
      * Raw mode WHERE with 'OR' logic
@@ -125,12 +128,13 @@ interface WhereInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @see    self::where()
      * @access public
      * @api
      */
-    public function orWhereRaw(/*# string */ $rawString);
+    public function orWhereRaw(/*# string */ $rawString, array $params = []);
 
     /**
      * AND logic in WHERE

@@ -216,7 +216,7 @@ trait ClauseTrait
         if (ClauseInterface::NO_VALUE == $value) {
             return '?';
         } elseif (is_null($value) || is_bool($value)) {
-            return var_export($value, true);
+            return strtoupper(var_export($value, true));
         } else {
             return $this->getBuilder()->getParameter()->getPlaceholder($value);
         }
@@ -295,16 +295,13 @@ trait ClauseTrait
      * e.g. havingRaw('id > ?', [10]) turns into  havingRaw('id > 10')
      *
      * @param  string $rawString
-     * @param  array $args
-     * @param  int $num
+     * @param  array $values
      * @access protected
      */
     protected function positionedParam(
         /*# string */ $rawString,
-        array $args,
-        /*# string */ $num
+        array $values
     )/*# : string */ {
-        $values = sizeof($args) > $num ? (array) $args[$num] : [];
         return $this->getBuilder()->raw($rawString, $values);
     }
 

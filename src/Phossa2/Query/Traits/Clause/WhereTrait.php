@@ -46,8 +46,9 @@ trait WhereTrait
     /**
      * {@inheritDoc}
      */
-    public function whereTpl(/*# string */ $template, $col)
+    public function whereTpl(/*# string */ $template, $col, array $params = [])
     {
+        $template = $this->positionedParam($template, $params);
         return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
             'AND', '');
@@ -56,8 +57,9 @@ trait WhereTrait
     /**
      * {@inheritDoc}
      */
-    public function orWhereTpl(/*# string */ $template, $col)
+    public function orWhereTpl(/*# string */ $template, $col, array $params = [])
     {
+        $template = $this->positionedParam($template, $params);
         return $this->realWhere(new Template($template, $col),
             WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
             'OR', '');
@@ -66,9 +68,9 @@ trait WhereTrait
     /**
      * {@inheritDoc}
      */
-    public function whereRaw(/*# string */ $rawString)
+    public function whereRaw(/*# string */ $rawString, array $params = [])
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        $rawString = $this->positionedParam($rawString, $params);
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'AND', '', true);
     }
@@ -76,9 +78,9 @@ trait WhereTrait
     /**
      * {@inheritDoc}
      */
-    public function orWhereRaw(/*# string */ $rawString)
+    public function orWhereRaw(/*# string */ $rawString, array $params = [])
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        $rawString = $this->positionedParam($rawString, $params);
         return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
             WhereInterface::NO_VALUE, 'OR', '', true);
     }

@@ -31,6 +31,16 @@ use Phossa2\Query\Interfaces\Clause\ExtraClauseInterface;
 interface StatementInterface extends SettingsAwareInterface, BuilderAwareInterface, OutputInterface, ExtraClauseInterface
 {
     /**
+     * Return the sql string (with parameter replaced)
+     *
+     * @param  array $settings extra settings if any
+     * @return string
+     * @access public
+     * @api
+     */
+    public function getSql(array $settings = [])/*# : string */;
+
+    /**
      * Return binding values
      *
      * @return array

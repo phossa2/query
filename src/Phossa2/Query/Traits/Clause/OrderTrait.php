@@ -51,17 +51,18 @@ trait OrderTrait
     /**
      * {@inheritDoc}
      */
-    public function orderTpl(/*# string */ $template, $col)
+    public function orderTpl(/*# string */ $template, $col, array $params = [])
     {
+        $template = $this->positionedParam($template, $params);
         return $this->realOrder(new Template($template, $col), '', true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function orderRaw(/*# string */ $rawString)
+    public function orderRaw(/*# string */ $rawString, array $params = [])
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        $rawString = $this->positionedParam($rawString, $params);
         return $this->realOrder($rawString, '',  true);
     }
 

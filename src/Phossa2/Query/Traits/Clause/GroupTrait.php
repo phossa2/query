@@ -53,17 +53,18 @@ trait GroupTrait
     /**
      * {@inheritDoc}
      */
-    public function groupTpl(/*# string */ $template, $col)
+    public function groupTpl(/*# string */ $template, $col, array $params = [])
     {
+        $template = $this->positionedParam($template, $params);
         return $this->realGroup(new Template($template, $col), '', true);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function groupRaw(/*# string */ $rawString)
+    public function groupRaw(/*# string */ $rawString, array $params = [])
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        $rawString = $this->positionedParam($rawString, $params);
         return $this->realGroup($rawString, '', true);
     }
 

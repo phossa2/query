@@ -15,6 +15,7 @@
 namespace Phossa2\Query\Misc;
 
 use Phossa2\Query\Traits\Clause\QuoteTrait;
+use Phossa2\Query\Interfaces\OutputInterface;
 
 /**
  * Template
@@ -46,13 +47,13 @@ class Template extends Raw
     /**
      * Constructor
      *
-     * @param  string $template
+     * @param  string|OutputInterface $template
      * @param  string|string[] $col column[s]
      * @access public
      */
-    public function __construct(/*# string */ $template, $col)
+    public function __construct($template, $col)
     {
-        $this->template = $template;
+        $this->template = (string) $template;
         $this->col = $col;
     }
 

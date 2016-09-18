@@ -32,19 +32,23 @@ trait ExtraClauseTrait
     /**
      * {@inheritDoc}
      */
-    public function before(/*# string */ $position, /*# string */ $rawString)
-    {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
-        return $this->beforeAfter('BEFORE', $position, $rawString);
+    public function before(
+        /*# string */ $position,
+        /*# string */ $rawString,
+        array $params = []
+    ) {
+        return $this->beforeAfter('BEFORE', $position, $rawString, $params);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function after(/*# string */ $position, /*# string */ $rawString)
-    {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 2);
-        return $this->beforeAfter('AFTER', $position, $rawString);
+    public function after(
+        /*# string */ $position,
+        /*# string */ $rawString,
+        array $params = []
+    ) {
+        return $this->beforeAfter('AFTER', $position, $rawString, $params);
     }
 
     /**
@@ -67,17 +71,19 @@ trait ExtraClauseTrait
      * @param  string $type
      * @param  string $position
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access protected
      */
     protected function beforeAfter(
         /*# string */ $type,
         /*# string */ $position,
-        /*# string */ $rawString
+        /*# string */ $rawString,
+        array $params = []
     ) {
         $clause = &$this->getClause($type);
         $pos = strtoupper($position);
-        $clause[$pos][] = $rawString;
+        $clause[$pos][] = $this->positionedParam($rawString, $params);
         return $this;
     }
 

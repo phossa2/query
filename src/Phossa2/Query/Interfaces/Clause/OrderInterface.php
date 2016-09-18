@@ -73,11 +73,12 @@ interface OrderInterface extends ClauseInterface
      *
      * @param  string $template
      * @param  string|string[] $col column[s]
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function orderTpl(/*# string */ $template, $col);
+    public function orderTpl(/*# string */ $template, $col, array $params = []);
 
     /**
      * Raw mode ORDER BY
@@ -92,9 +93,10 @@ interface OrderInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function orderRaw(/*# string */ $rawString);
+    public function orderRaw(/*# string */ $rawString, array $params = []);
 }

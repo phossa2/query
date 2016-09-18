@@ -15,9 +15,12 @@
 namespace Phossa2\Query\Interfaces\Clause;
 
 use Phossa2\Query\Interfaces\ClauseInterface;
+use Phossa2\Query\Interfaces\ExpressionInterface;
 
 /**
  * OnInterface
+ *
+ * Used in Expression
  *
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
@@ -27,4 +30,57 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  */
 interface OnInterface extends ClauseInterface
 {
+    /**
+     * ON
+     *
+     * @param  string|ExpressionInterface $firstTableCol
+     * @param  string $operator
+     * @param  string $secondTableCol
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function on(
+        $firstTableCol,
+        /*# string */ $operator = ClauseInterface::NO_OPERATOR,
+        /*# string */ $secondTableCol = ClauseInterface::NO_VALUE
+    );
+
+    /**
+     * OR ON
+     *
+     * @param  string|ExpressionInterface $firstTableCol
+     * @param  string $operator
+     * @param  string $secondTableCol
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function orOn(
+        $firstTableCol,
+        /*# string */ $operator = ClauseInterface::NO_OPERATOR,
+        /*# string */ $secondTableCol = ClauseInterface::NO_VALUE
+    );
+
+    /**
+     * Raw mode ON
+     *
+     * @param  string $rawString
+     * @param  array $params
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function onRaw(/*# string */ $rawString, array $params = []);
+
+    /**
+     * Raw mode OR ON
+     *
+     * @param  string $rawString
+     * @param  array $params
+     * @return $this
+     * @access public
+     * @api
+     */
+    public function orOnRaw(/*# string */ $rawString, array $params = []);
 }

@@ -110,9 +110,9 @@ trait ColTrait
     /**
      * {@inheritDoc}
      */
-    public function colRaw(/*# string */ $rawString)
+    public function colRaw(/*# string */ $rawString, array $params = [])
     {
-        $rawString = $this->positionedParam($rawString, func_get_args(), 1);
+        $rawString = $this->positionedParam($rawString, $params);
         return $this->realCol($rawString, '', true);
     }
 

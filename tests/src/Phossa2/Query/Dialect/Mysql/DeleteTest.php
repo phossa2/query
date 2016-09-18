@@ -42,7 +42,7 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $sql = "DELETE IGNORE FROM `Users` PARTITION (p1) WHERE `user_id` > 10 ORDER BY `user_id` ASC LIMIT 10";
         $qry = $this->object->delete()->hint('IGNORE')->partition('p1')
             ->where('user_id', '>', 10)->order('user_id')->limit(10);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -57,6 +57,6 @@ class DeleteTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->delete('u', 'a')->table('Users', 'u')
             ->leftJoin(['Accounts', 'a'], 'user_id')
             ->where('a.money', 'IS', null);
-        $this->assertEquals($sql, $qry->getStatement());
+        $this->assertEquals($sql, $qry->getSql());
     }
 }

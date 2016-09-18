@@ -14,7 +14,9 @@
 
 namespace Phossa2\Query\Traits\Clause;
 
+use Phossa2\Query\Interfaces\ClauseInterface;
 use Phossa2\Query\Interfaces\Clause\OnInterface;
+use Phossa2\Query\Interfaces\ExpressionInterface;
 
 /**
  * OnTrait
@@ -30,4 +32,106 @@ use Phossa2\Query\Interfaces\Clause\OnInterface;
 trait OnTrait
 {
     use AbstractTrait;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function on(
+        $firstTableCol,
+        /*# string */ $operator = ClauseInterface::NO_OPERATOR,
+        /*# string */ $secondTableCol = ClauseInterface::NO_VALUE
+    ) {
+        return $this->realOn($firstTableCol, $operator, $secondTableCol);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function orOn(
+        $firstTableCol,
+        /*# string */ $operator = ClauseInterface::NO_OPERATOR,
+        /*# string */ $secondTableCol = ClauseInterface::NO_VALUE
+    ) {
+        return $this->realOn($firstTableCol, $operator, $secondTableCol, true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function onRaw(/*# string */ $rawString, array $params = [])
+    {
+        $rawString = $this->positionedParam($rawString, $params);
+        return $this->realOn($rawString);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function orOnRaw(/*# string */ $rawString, array $params = [])
+    {
+        $rawString = $this->positionedParam($rawString, $params);
+        return $this->realOn(
+            $rawString,
+            ClauseInterface::NO_OPERATOR,
+            ClauseInterface::NO_VALUE,
+            true
+        );
+    }
+
+    /**
+     * @param  string|ExpressionInterface $firstTableCol
+     * @param  string $operator
+     * @param  string $secondTableCol
+     * @param  bool $or
+     * @return $this
+     * @access protected
+     */
+    protected function realOn(
+        $firstTableCol,
+        /*# string */ $operator = ClauseInterface::NO_OPERATOR,
+        /*# string */ $secondTableCol = ClauseInterface::NO_VALUE,
+        /*# bool */ $or = false
+    ) {
+        if (is_object($firstTableCol)) {
+            $on = [$or, $firstTableCol];
+        } elseif (ClauseInterface::NO_OPERATOR === $operator) {
+            $on = [$or, $firstTableCol, '=', $firstTableCol];
+        } elseif (ClauseInterface::NO_VALUE === $secondTableCol) {
+            $on = [$or, $firstTableCol, '=', $operator];
+        } else {
+            $on = [$or, $firstTableCol, $operator, $secondTableCol];
+        }
+        $clause = &$this->getClause('ON');
+        $clause[] = $on;
+
+        return $this;
+    }
+
+    /**
+     * Build ON
+     *
+     * @param  string $prefix
+     * @param  array $settings
+     * @return string
+     * @access protected
+     */
+    protected function buildOn(
+        /*# string */ $prefix,
+        array $settings
+    )/*# : string */ {
+        $result = [];
+        $clause = &$this->getClause('ON');
+        foreach ($clause as $idx => $on) {
+            $res = [];
+            if (is_object($on[1])) {
+                $res[] = $this->quoteItem($on[1], $settings);
+            } else {
+                $res[] = $this->quote($on[1], $settings); // first col
+                $res[] = $on[2]; // operator
+                $res[] = $this->quote($on[3], $settings); // second col
+            }
+            $result[] = ($idx ? ($on[0] ? 'OR ' : 'AND ' ) : '') . join(' ', $res);
+        }
+        return trim($this->joinClause($prefix, '', $result, $settings));
+    }
 }

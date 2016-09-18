@@ -27,15 +27,9 @@ use Phossa2\Shared\Message\Message as BaseMessage;
  */
 class Message extends BaseMessage
 {
-    /*
-     * Package const "%s"
-     */
-    const PACKAGE_CONST = 1607191058;
-
     /**
      * {@inheritDoc}
      */
     protected static $messages = [
-        self::PACKAGE_CONST => 'Package const "%s"',
     ];
 }

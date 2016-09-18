@@ -44,15 +44,18 @@ interface SetInterface extends ClauseInterface
     /**
      * SET, but do NOT quote the value
      *
-     * Accept third parameter as positioned param
-     *
      * @param  string $col
      * @param  string $value
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE);
+    public function setRaw(
+        /*# string */ $col,
+        $value = ClauseInterface::NO_VALUE,
+        array $params = []
+    );
 
     /**
      * SET with template, used to set with functions
@@ -60,9 +63,15 @@ interface SetInterface extends ClauseInterface
      * @param  string $col
      * @param  string $template
      * @param  string|string[] $field
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function setTpl(/*# string */ $col, /*# string */ $template, $field);
+    public function setTpl(
+        /*# string */ $col,
+        /*# string */ $template,
+        $field,
+        array $params = []
+    );
 }

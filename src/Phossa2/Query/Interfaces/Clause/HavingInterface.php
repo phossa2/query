@@ -56,16 +56,17 @@ interface HavingInterface extends ClauseInterface
      *
      * ```php
      * // HAVNIG `count` = 10
-     * ->havingTpl('%s = 10', 'count')
+     * ->havingTpl('%s = ?', 'count', [10])
      * ```
      *
      * @param  string $template
      * @param  string|string[] $col column[s]
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function havingTpl(/*# string */ $template, $col);
+    public function havingTpl(/*# string */ $template, $col, array $params = []);
 
     /**
      * Raw mode Having
@@ -77,9 +78,10 @@ interface HavingInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function havingRaw(/*# string */ $rawString);
+    public function havingRaw(/*# string */ $rawString, array $params = []);
 }

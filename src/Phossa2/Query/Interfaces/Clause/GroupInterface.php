@@ -36,6 +36,9 @@ interface GroupInterface extends ClauseInterface
      * // GROUP BY `year`
      * ->group('year')
      *
+     * // GROUP BY `age`, `gender`
+     * ->group('age', 'gender')
+     *
      * // GROUP BY `year`, `gender`
      * ->group(['year', 'gender'])
      * ```
@@ -75,11 +78,12 @@ interface GroupInterface extends ClauseInterface
      *
      * @param  string $template
      * @param  string|string[] $col column[s]
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function groupTpl(/*# string */ $template, $col);
+    public function groupTpl(/*# string */ $template, $col, array $params = []);
 
     /**
      * Generic GROUP BY Raw mode
@@ -95,9 +99,10 @@ interface GroupInterface extends ClauseInterface
      * ```
      *
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function groupRaw(/*# string */ $rawString);
+    public function groupRaw(/*# string */ $rawString, array $params = []);
 }

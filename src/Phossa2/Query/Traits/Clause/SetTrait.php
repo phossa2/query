@@ -79,10 +79,13 @@ trait SetTrait
     /**
      * {@inheritDoc}
      */
-    public function setRaw(/*# string */ $col, $value = ClauseInterface::NO_VALUE)
-    {
+    public function setRaw(
+        /*# string */ $col,
+        $value = ClauseInterface::NO_VALUE,
+        array $params = []
+    ) {
         if (ClauseInterface::NO_VALUE !== $value) {
-            $value = $this->positionedParam($value, func_get_args(), 2);
+            $value = $this->positionedParam($value, $params);
         }
         return $this->set((string) $col, $value);
     }
@@ -90,9 +93,13 @@ trait SetTrait
     /**
      * {@inheritDoc}
      */
-    public function setTpl(/*# string */ $col, /*# string */ $template, $field)
-    {
-        $template = $this->positionedParam($template, func_get_args(), 3);
+    public function setTpl(
+        /*# string */ $col,
+        /*# string */ $template,
+        $field,
+        array $params = []
+    ) {
+        $template = $this->positionedParam($template, $params);
         return $this->set($col, new Template($template, $field));
     }
 

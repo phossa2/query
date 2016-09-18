@@ -44,11 +44,16 @@ interface ExtraClauseInterface extends ClauseInterface
      *
      * @param  string $position such as 'COL', 'TABLE'
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function before(/*# string */ $position, /*# string */ $rawString);
+    public function before(
+        /*# string */ $position,
+        /*# string */ $rawString,
+        array $params = []
+    );
 
     /**
      * Add after anther $clause
@@ -60,11 +65,16 @@ interface ExtraClauseInterface extends ClauseInterface
      *
      * @param  string $position such as 'COL', 'TABLE'
      * @param  string $rawString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function after(/*# string */ $position, /*# string */ $rawString);
+    public function after(
+        /*# string */ $position,
+        /*# string */ $rawString,
+        array $params = []
+    );
 
     /**
      * Hint follows the statement. e.g. 'INSERT DELAYED'

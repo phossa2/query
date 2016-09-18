@@ -50,7 +50,7 @@ class Expression extends StatementAbstract implements ExpressionInterface
      */
     protected function getConfigs()/*# : array */
     {
-        return ['WHERE' => ''];
+        return ['WHERE' => '', 'ON' => ''];
     }
 
     /**

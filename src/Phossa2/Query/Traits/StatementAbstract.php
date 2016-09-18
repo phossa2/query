@@ -76,6 +76,21 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     }
 
     /**
+     * Return the sql string (with parameter replaced)
+     *
+     * @param  array $settings extra settings if any
+     * @return string
+     * @access public
+     * @api
+     */
+    public function getSql(array $settings = [])/*# : string */
+    {
+        $settings['positionedParam'] = false;
+        $settings['namedParam'] = false;
+        return $this->getStatement($settings);
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getBindings()/*# : array */
@@ -88,10 +103,7 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
      */
     public function __toString()/*# : string */
     {
-        return $this->getStatement([
-            'positionedParam' => false,
-            'namedParam' => false,
-        ]);
+        return $this->getSql();
     }
 
     /**

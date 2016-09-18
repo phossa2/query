@@ -7,7 +7,7 @@
 [![License](https://poser.pugx.org/phossa2/query/license)](http://mit-license.org/)
 
 **phossa2/query** is a SQL query builder library with concise syntax for PHP. It
-supports Mysql, SQLite, Postgres and more dialects.
+supports Mysql dialect and more coming.
 
 It requires PHP 5.4, supports PHP 7.0+ and HHVM. It is compliant with [PSR-1][PSR-1],
 [PSR-2][PSR-2], [PSR-3][PSR-3], [PSR-4][PSR-4], and the proposed [PSR-5][PSR-5].
@@ -60,14 +60,14 @@ Usage
   ```php
   use Phossa2\Query\Builder;
 
-  // a builder default to 'Users' table and Mysql as default dialect
+  // a builder default to table 'Users' and Mysql as default dialect
   $users = new Builder('Users');
 
   // SELECT * FROM `Users` LIMIT 10
-  $sql = $users->select()->limit(10)->getStatement();
+  $sql = $users->select()->limit(10)->getSql();
 
   // INSERT INTO `Users` (`usr_name`) VALUES ('phossa')
-  $sql = $users->insert(['usr_name' => 'phossa'])->getStatement();
+  $sql = $users->insert(['usr_name' => 'phossa'])->getSql();
 
   // reset builder to table 'Sales'
   $sales = $users->table(['Sales' => 's']);
@@ -76,7 +76,7 @@ Usage
   $query = $sales->select()->where('user_id', 12);
 
   // SELECT * FROM `Sales` AS `s` WHERE `user_id` = ?
-  $sql = $query->getStatement(['positionedParam' => true]);
+  $sql = $query->getStatement(); // with positioned parameters
 
   // [12]
   var_dump($query->getBindings());
@@ -86,25 +86,16 @@ Usage
 
   - Columns/fields
 
-    Columns can be specified in the `select()` or in `col()`
+    Columns can be specified in the `select($col, ...)`, `col($col, $alias)` or
+    `col(array $cols)`.
 
     ```php
-    // SELECT `user_id`, `user_name` AS `n` FROM `Users`
-    $query = $users->select('user_id')->col('user_name', 'n');
+    // SELECT * FROM `Users`
+    $query = $users->select();
 
-    // same as above
-    $query = $users->select(['user_id', 'user_name' => 'n']);
+    // SELECT `user_id`, `user_name` FROM `Users`
+    $query = $users->select('user_id', 'user_name');
 
-    // same as above
-    $query = $users->select()->col('user_id')->col('user_name', 'n');
-
-    // same as above
-    $query = $users->select()->col(['user_id', 'user_name' => 'n']);
-    ```
-
-    Multiple columns either with multiple `col()` or using array,
-
-    ```php
     // SELECT `user_id`, `user_name` AS `n` FROM `Users`
     $query = $users->select()->col('user_id')->col('user_name', 'n');
 
@@ -112,104 +103,129 @@ Usage
     $query = $users->select()->col(['user_id', 'user_name' => 'n']);
     ```
 
-    Raw string can be provided as column,
+    Raw string can be provided using `colRaw($string, array $parameters)`
 
     ```php
-    // SELECT COUNT(user_id) AS `cnt` FROM `Users`
-    $query = $users->select()->colRaw(['COUNT(user_id)' => 'cnt']);
+    // SELECT COUNT(user_id) AS cnt FROM `Users`
+    $query = $users->select()->colRaw('COUNT(user_id) AS cnt');
+
+    // SELECT CONCAT(user_name, 'x') AS con FROM `Users`
+    $query = $users->select()->colRaw('CONCAT(user_name, ?) AS con', ['x']);
     ```
 
-    Common functions like `count()`, `min()`, `max()`, `avg()`, `sum()` can be
-    used directly in the columns.
+    Common functions like `count($col, $alias)`, `min($col, $alias)`,
+    `max($col, $alias)`, `avg($col, $alias)`, `sum($col, $alias)` can also be
+    used directly.
 
     ```php
-    // SELECT COUNT(`user_id`) AS `cnt`, MAX(`user_id`) AS `max_id` FROM `Users`
-    $query = $users->select()->count('user_id', 'cnt')->max('user_id', 'max_id');
+    // SELECT MAX(`user_id`) AS `maxId` FROM `Users`
+    $query = $users->select()->max('user_id', 'maxId');
     ```
 
-    Generic functions by using `colTpl($template, $cols, $alias)`,
+    Generic column template by using `colTpl($template, $cols, $alias)`,
 
     ```php
     // SELECT SUM(DISTINCT `score`) AS `s` FROM `Users`
     $query = $users->select()->colTpl('SUM(DISTINCT %s)', 'score', 's');
 
-    // more cols used in template
-    // SELECT CONCAT(`first_name`, ' ', `last_name`) AS `n` FROM `Users`
-    $query = $users->select()
-        ->colTpl("CONCAT(%s, ' ', %s)", ['first_name', 'last_name'], 'n');
+    // SELECT CONCAT(`fname`, ' ', `lname`) AS `fullName` FROM `Users`
+    $query = $users->select()->colTpl("CONCAT(%s, ' ', %s)", ['fname', 'lname'], 'fullName');
+    ```
+
+    Subquery can also be use in `col()`,
+
+    ```php
+    // SELECT (SELECT MAX(`user_id`) FROM `oldUsers`) AS `maxId` FROM `Users`
+    $query = $users->select()->col(
+        $users->select()->max('user_id')->table('oldUsers'),
+        'maxId'
+    );
     ```
 
   - Distinct
 
-    `DISTINCT` can be specified with `distinct($col, $alias)`,
+    `DISTINCT` can be specified with `distinct(...)`,
 
     ```php
-    // SELECT DISTINCT `user_alias` AS `a` FROM `Users`
-    $query = $users->select()->distinct()->col('user_alias', 'a');
+    // SELECT DISTINCT `user_alias` FROM `Users`
+    $query = $users->select()->distinct('user_alias);
 
-    // same as above
-    $query = $users->select()->distinct('user_alias', 'a');
+    // SELECT DISTINCT `user_alias`  AS `a` FROM `Users`
+    $query = $users->select()->distinct()->col('user_alias', 'a');
     ```
 
   - From
 
-    `from()` or `table()` can used with `$builder` object or `$select` query
-    object.
+    `from($table, $alias)` or `table($table, $alias)` can used with `$builder`
+    object or query object such as `$builder->select()`.
 
-    Using `table()` to replace current tables,
+    Using `table()` to replace any existing tables,
 
     ```php
-    // $sales is a clone of $users builder with table replaced
+    // $sales is a clone of builder $users with table replaced
     $sales = $users->table('Sales');
 
-    // table replaced in the query $select
+    // or replace table in the select query object
     $select = $users->select()->table('Sales');
 
     // SELECT * FROM `Users` AS `u`, `Accounts` AS `a`
     $query = $users->select()->table(['Users' => 'u', 'Accounts' => 'a']);
     ```
 
-    Using `from()` to append to current tables,
+    Using `from()` to append to any existing tables,
 
     ```php
-    // builder has default to both tables now, $usersAndSales === $users
-    $usersAndSales = $users->from('Sales', 's');
-
     // SELECT * FROM `Users`, `Sales` AS `s`
     $select = $users->select()->from('Sales', 's');
+
+    // builder has two tables now
+    $usersAndSales = $users->from('Sales', 's');
     ```
 
     Subqueries can be used in `from()` or `table()`,
 
     ```php
-    // SELECT * FROM (SELECT `user_id` FROM `oldusers`) AS `u`
+    // SELECT * FROM (SELECT `user_id` FROM `oldUsers`) AS `u`
     $query = $users->select()->table(
-        $users->select('user_id')->table('oldusers'), 'u'
+        $users->select('user_id')->table('oldUsers'),
+        'u'
     );
     ```
 
   - Group by
 
+    Group result with `group($col, ...)`,
+
     ```php
-    // SELECT `group_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `group_id`
-    $query = $users->select()->col('group_id')->count('*', 'cnt')->group('group_id');
+    // SELECT `grp_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `grp_id`
+    $query = $users->select()->col('grp_id')->count('*', 'cnt')->group('grp_id');
     ```
 
-    Multiple `group()` and `groupRaw()`,
+    Multiple `group()` and `groupRaw($str, array $params)`,
 
     ```php
-    // SELECT `group_id`, `age`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `group_id`, age ASC
-    $query = $users->select()->col('group_id')->col('age')->count('*', 'cnt')
-        ->group('group_id')->groupRaw('age ASC');
+    // SELECT `grp_id`, `age`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `grp_id`, age ASC
+    $query = $users->select('grp_id', 'age')->count('*', 'cnt')
+        ->group('grp_id')->groupRaw('age ASC');
+    ```
+
+    Template can also be used with `groupTpl($template, $cols)`,
+
+    ```php
+    // GROUP BY `year` WITH ROLLUP
+    $users->select()->groupTpl('%s WITH ROLLUP', 'year')
     ```
 
   - Join
 
-    Join with another table with same column name
+    Join with another table using `join($table, $col)`,
 
     ```php
-    // SELECT * FROM `Users` INNER JOIN `accounts` ON `Users`.`id` = `accounts`.`id`
-    $query = $users->select()->join('accounts', 'id');
+    // SELECT * FROM `Users` INNER JOIN `Accounts`
+    $query = $users->select()->join('Accounts');
+
+    // SELECT * FROM `Users` INNER JOIN `Accounts` ON `Users`.`id` = `Accounts`.`id`
+    $query = $users->select()->join('Accounts', 'id');
     ```
 
     Specify alias for the join table,
