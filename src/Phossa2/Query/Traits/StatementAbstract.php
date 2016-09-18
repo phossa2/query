@@ -143,9 +143,9 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     protected function buildSql(array $settings)/*# : string */
     {
         $result = $this->getType(); // type
-        $result .= $this->buildBeforeAfter('AFTER', 'TYPE', $settings); // hint
         $settings['join'] = $settings['seperator'] . $settings['indent'];
 
+        $result .= $this->buildBeforeAfter('AFTER', 'TYPE', $settings); // hint
         foreach ($this->getConfigs() as $pos => $prefix) {
             // before
             $result .= $this->buildBeforeAfter('BEFORE', $pos, $settings);

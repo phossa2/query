@@ -76,14 +76,14 @@ class Union extends StatementAbstract implements UnionStatementInterface
         $clause = &$this->getClause('UNION');
         $flat = $this->flatSettings($settings);
 
-        $parts = [];
+        $res = '';
         foreach ($clause as $idx => $field) {
-            if ($idx) { // prepend type UNION or UNION ALL
-                $parts[] = $field[1];
-            }
+            $parts = [];
+            $prefix = $idx ? $field[1] : '';
             $parts[] = $this->quoteItem($field[0], $flat);
+            $res .= $this->joinClause($prefix, '', $parts, $settings);
         }
-        return ltrim($this->joinClause($prefix, '', $parts, $settings));
+        return ltrim($res);
     }
 
     /**

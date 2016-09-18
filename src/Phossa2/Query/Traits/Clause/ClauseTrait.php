@@ -241,9 +241,10 @@ trait ClauseTrait
         if (empty($clause)) {
             return '';
         } else {
-            $join = $settings['seperator'] . $settings['indent'];
-            $pref = empty($prefix) ? '' : ($prefix . $join);
-            return $settings['seperator'] . $pref . join($seperator . $join, $clause);
+            $sepr = $settings['seperator'];
+            $join = $settings['join'];
+            $pref = empty($prefix) ? $join : ($sepr . $prefix . $join);
+            return $pref . join($seperator . $join, $clause);
         }
     }
 

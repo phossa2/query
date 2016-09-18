@@ -209,7 +209,10 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetSettings()
     {
-        $this->object->setSettings(['seperator' => "\n", 'indent' => "    "]);
-        $this->object->select('user_id', 'user_name')->getSql();
+        $this->object->setSettings(['seperator' => "\n", 'indent' => "  "]);
+        $sql = "SELECT\n  `user_id`,\n  `user_name`\nFROM\n  `Users`";
+        $this->assertEquals(
+            $sql, $this->object->select('user_id', 'user_name')->getSql()
+        );
     }
 }
