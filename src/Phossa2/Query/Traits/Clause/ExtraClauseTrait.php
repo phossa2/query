@@ -54,17 +54,17 @@ trait ExtraClauseTrait
     /**
      * {@inheritDoc}
      */
-    public function hint(/*# string */ $hintString)
+    public function hint(/*# string */ $hintString, array $params = [])
     {
-        return $this->beforeAfter('AFTER', 'TYPE', $hintString);
+        return $this->beforeAfter('AFTER', 'TYPE', $hintString, $params);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function option(/*# string */ $optionString)
+    public function option(/*# string */ $optionString, array $params = [])
     {
-        return $this->beforeAfter('AFTER', 'STMT', $optionString);
+        return $this->beforeAfter('AFTER', 'STMT', $optionString, $params);
     }
 
     /**

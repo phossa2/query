@@ -34,7 +34,10 @@ interface OrderInterface extends ClauseInterface
      * // ORDER BY `year` ASC, `month` ASC
      * ->order('year')->order('month')
      *
-     * // ORDER BY `year` ASC, `month` ASC
+     * // same as above
+     * ->order('year', 'month')
+     *
+     * // same as above
      * ->order(['year', 'month'])
      * ```
      *
@@ -49,10 +52,13 @@ interface OrderInterface extends ClauseInterface
      * Generic ORDER BY DESC
      *
      * ```php
-     * // ORDER BY `year` DESC
-     * ->orderDesc('year')
-     *
      * // ORDER BY `year` DESC, `month` DESC
+     * ->orderDesc('year')->orderDesc('month')
+     *
+     * // same as above
+     * ->orderDesc('year', 'month')
+     *
+     * // same as above
      * ->orderDesc(['year', 'month'])
      * ```
      *

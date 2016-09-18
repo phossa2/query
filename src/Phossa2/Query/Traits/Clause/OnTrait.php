@@ -130,8 +130,21 @@ trait OnTrait
                 $res[] = $on[2]; // operator
                 $res[] = $this->quote($on[3], $settings); // second col
             }
-            $result[] = ($idx ? ($on[0] ? 'OR ' : 'AND ' ) : '') . join(' ', $res);
+            $result[] = $this->onOrAnd($idx, $on[0]) . join(' ', $res);
         }
         return trim($this->joinClause($prefix, '', $result, $settings));
+    }
+
+    /**
+     * Prepend OR or AND
+     *
+     * @param  int $index
+     * @param  bool $or
+     * @return string
+     * @access protected
+     */
+    protected function onOrAnd(/*# int */ $index, /*# bool */ $or)
+    {
+        return $index ? ($or ? 'OR ' : 'AND ' ) : '';
     }
 }

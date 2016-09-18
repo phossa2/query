@@ -76,6 +76,16 @@ abstract class StatementAbstract extends ObjectAbstract implements StatementInte
     }
 
     /**
+     * {@inheritDoc}
+     */
+    public function getNamedStatement(array $settings = [])/*# : string */
+    {
+        $settings['positionedParam'] = false;
+        $settings['namedParam'] = true;
+        return $this->getStatement($settings);
+    }
+
+    /**
      * Return the sql string (with parameter replaced)
      *
      * @param  array $settings extra settings if any

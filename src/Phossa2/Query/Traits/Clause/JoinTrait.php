@@ -225,7 +225,7 @@ trait JoinTrait
             $res[] = $this->quoteItem($on, $settings);
         } else { // common on
             $res[] = $this->quote( // left
-                $this->getFirstTableAlias($cls, $on[0]) . $on[0], $settings);
+                $this->getFirstTableAlias($on[0]) . $on[0], $settings);
             $res[] = $on[1]; // operator
             $res[] = $this->quote( // right
                 $this->getSecondTableAlias($cls, $on[2]) . $on[2], $settings);
@@ -236,13 +236,11 @@ trait JoinTrait
     /**
      * Get first table alias
      *
-     * @param  array $cls
      * @param  string $left left part of eq
      * @return string
      * @access protected
      */
     protected function getFirstTableAlias(
-        array $cls,
         /*# string */ $left
     )/*# : string */ {
         if (false !== strpos($left, '.')) { // alias exists

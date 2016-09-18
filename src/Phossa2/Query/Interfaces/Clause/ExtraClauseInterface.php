@@ -84,11 +84,12 @@ interface ExtraClauseInterface extends ClauseInterface
      * ```
      *
      * @param  string $hintString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function hint(/*# string */ $hintString);
+    public function hint(/*# string */ $hintString, array $params = []);
 
     /**
      * String at the statement end
@@ -98,9 +99,10 @@ interface ExtraClauseInterface extends ClauseInterface
      * $builder->select()->option('FOR UPDATE');
      *
      * @param  string $optionString
+     * @param  array $params
      * @return $this
      * @access public
      * @api
      */
-    public function option(/*# string */ $optionString);
+    public function option(/*# string */ $optionString, array $params = []);
 }

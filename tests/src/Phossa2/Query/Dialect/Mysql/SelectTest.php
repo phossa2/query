@@ -400,6 +400,9 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $sql = 'SELECT * FROM `Users` ORDER BY `age` ASC, `score` ASC';
         $qry = $this->object->select()->order(['age', 'score']);
         $this->assertEquals($sql, $qry->getSql());
+
+        $qry = $this->object->select()->order('age', 'score');
+        $this->assertEquals($sql, $qry->getSql());
     }
 
     /**
@@ -499,6 +502,12 @@ class SelectTest extends \PHPUnit_Framework_TestCase
      */
     public function testOrWhere()
     {
+        $sql = "SELECT * FROM `Users` WHERE age > 18";
+        $this->assertEquals(
+            $sql,
+            $this->object->select()->where('age > 18')->getSql()
+        );
+
         $sql = "SELECT * FROM `Users` WHERE `age` = 18 OR `gender` = 'male'";
         $this->assertEquals(
             $sql,
@@ -684,11 +693,11 @@ class SelectTest extends \PHPUnit_Framework_TestCase
         $qry = $this->object->select()->join(['Sales', 's'], ['id', '<>', 'uid']);
         $this->assertEquals($sql, $qry->getSql());
 
-        // multiple joins @TODO
-        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`uid` = `s`.`uid` INNER JOIN `Orders` AS `o` ON `s`.`oid` = `o`.`oid`';
+        // multiple joins
+        $sql = 'SELECT * FROM `Users` INNER JOIN `Sales` AS `s` ON `Users`.`uid` = `s`.`uid` INNER JOIN `Orders` AS `o` ON `s`.`oid` <> `o`.`oid`';
         $qry = $this->object->select()
             ->join(['Sales', 's'], 'uid')
-            ->join(['Orders', 'o'], ['s.oid', 'o.oid']);
+            ->join(['Orders', 'o'], ['s.oid', '<>', 'o.oid']);
         $this->assertEquals($sql, $qry->getSql());
 
         // subquery in join

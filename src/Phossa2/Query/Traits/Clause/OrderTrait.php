@@ -37,6 +37,9 @@ trait OrderTrait
      */
     public function order($col)
     {
+        if (func_num_args() > 1) {
+            $col = func_get_args();
+        }
         return $this->realOrder($col, 'ASC');
     }
 
@@ -45,6 +48,9 @@ trait OrderTrait
      */
     public function orderDesc($col)
     {
+        if (func_num_args() > 1) {
+            $col = func_get_args();
+        }
         return $this->realOrder($col, 'DESC');
     }
 

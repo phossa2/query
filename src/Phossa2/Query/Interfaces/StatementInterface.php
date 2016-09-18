@@ -31,6 +31,16 @@ use Phossa2\Query\Interfaces\Clause\ExtraClauseInterface;
 interface StatementInterface extends SettingsAwareInterface, BuilderAwareInterface, OutputInterface, ExtraClauseInterface
 {
     /**
+     * Return statement with ':name' not quoted
+     *
+     * @param  array $settings
+     * @return string
+     * @access public
+     * @api
+     */
+    public function getNamedStatement(array $settings = [])/*# : string */;
+
+    /**
      * Return the sql string (with parameter replaced)
      *
      * @param  array $settings extra settings if any

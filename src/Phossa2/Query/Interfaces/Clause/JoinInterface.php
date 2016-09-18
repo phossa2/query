@@ -59,7 +59,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api
@@ -71,7 +70,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api
@@ -83,7 +81,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api
@@ -95,7 +92,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api
@@ -107,7 +103,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api
@@ -119,7 +114,6 @@ interface JoinInterface extends ClauseInterface
      *
      * @param  string|string[]|SelectStatementInterface $secondTable
      * @param  string|string[]|ExpressionInterface $onClause
-     * @param  string $firstTable default is the first one in SELECT
      * @return $this
      * @access public
      * @api

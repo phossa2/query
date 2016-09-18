@@ -51,6 +51,21 @@ class UpdateTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Tests Builder->update()->setRaw()
+     *
+     * @covers Phossa2\Query\Dialect\Mysql\Update::setRaw()
+     */
+    public function testSetRaw()
+    {
+        $sql = "UPDATE IGNORE `Users` SET `user_id` = `user_id` + 10, `user_status` = user_status | 2 ORDER BY `user_id` ASC LIMIT 10";
+        $qry = $this->object->update()->hint('IGNORE')
+            ->setTpl('user_id', '%s + ?', 'user_id', [10])
+            ->setRaw('user_status', 'user_status | 2')
+            ->order('user_id')->limit(10);
+        $this->assertEquals($sql, $qry->getSql());
+    }
+
+    /**
      * Tests Builder->update()->increment()
      *
      * @covers Phossa2\Query\Dialect\Mysql\Update::increment()
