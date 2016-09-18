@@ -24,7 +24,8 @@ Features
 - Support [SELECT](#select), [INSERT](#insert), [UPDATE](#update),
   [REPLACE](#replace), [DELETE](#delete).
 
-- Complex sql building with [expr()](#expr), [raw()](#raw).
+- Complex sql building with [`expr()`](#expr), [`raw()`](#raw),
+  [`before()`](#before) etc.
 
 - Statement with positioned or named [parameters](#param).
 
@@ -70,8 +71,8 @@ Usage
   // INSERT INTO `Users` (`usr_name`) VALUES ('phossa')
   $sql = $users->insert(['usr_name' => 'phossa'])->getSql();
 
-  // reset builder to table 'Sales'
-  $sales = $users->table(['Sales' => 's']);
+  // reset builder to table 'Sales' as 's'
+  $sales = $users->table('Sales', 's');
 
   // SELECT * FROM `Sales` AS `s` WHERE `user_id` = 12
   $qry = $sales->select()->where('user_id', 12);
@@ -149,16 +150,16 @@ Usage
 
     ```php
     // SELECT DISTINCT `user_alias` FROM `Users`
-    $qry = $users->select()->distinct('user_alias);
+    $qry = $users->select()->distinct('user_alias');
 
-    // SELECT DISTINCT `user_alias`  AS `a` FROM `Users`
+    // SELECT DISTINCT `user_alias` AS `a` FROM `Users`
     $qry = $users->select()->distinct()->col('user_alias', 'a');
     ```
 
   - From
 
-    `from($table, $alias)` or `table($table, $alias)` can used with `$builder`
-    object or query object such as `$builder->select()`.
+    `from($table, $alias)` or `table($table, $alias)` can be used with
+    `$builder` object or query object such as `$builder->select()`.
 
     Using `table()` to replace any existing tables,
 
@@ -167,7 +168,7 @@ Usage
     $sales = $users->table('Sales');
 
     // or replace table in the select query object
-    $select = $users->select()->table('Sales');
+    $select = $users->select()->table('Sales', 's');
 
     // SELECT * FROM `Users` AS `u`, `Accounts` AS `a`
     $qry = $users->select()->table(['Users' => 'u', 'Accounts' => 'a']);
@@ -267,8 +268,7 @@ Usage
     Subqueries in join,
 
     ```php
-    // SELECT * FROM `Users` INNER JOIN (SELECT `uid` FROM `oldUsers`) AS `x`
-    // ON `Users`.`uid` = `x`.`uid`
+    // SELECT * FROM `Users` INNER JOIN (SELECT `uid` FROM `oldUsers`) AS `x` ON `Users`.`uid` = `x`.`uid`
     $qry = $users->select()->join(
         [$builder->select('uid')->from('oldUsers'), 'x'],
         'uid'
@@ -393,7 +393,7 @@ Usage
 
     ```php
     // SELECT * FROM `Sales` WHERE EXISTS (SELECT `user_id` FROM `Users`)
-    $sql = $sales->select()->where('', 'EXISTS', $users->select('user_id'))->getStatement();
+    $sql = $sales->select()->where('', 'EXISTS', $users->select('user_id'))->getSql();
     ```
 
   - Having
@@ -420,7 +420,7 @@ Usage
                 ->select()->table('oldUsers1')
             ->unionAll()
                 ->select('user_id')->table('oldUsers2')
-                ->getSql()
+            ->getSql()
 
     // (SELECT * FROM `Users`) UNION (SELECT * FROM `oldUesrs`) ORDER BY `user_id` ASC LIMIT 10
     $sql = $builder->union(
@@ -474,7 +474,7 @@ Usage
   ```php
   // INSERT INTO `Users` (`uid`, `uname`) SELECT `user_id`, `user_name` FROM `oldUsers`
   $qry = $users->insert()->set(['uid', 'uname'])
-      ->select(['user_id', 'user_name'])->table('oldUsers');
+      ->select('user_id', 'user_name')->table('oldUsers');
   ```
 
 - <a name="update"></a>`UPDATE`
@@ -515,9 +515,8 @@ Usage
   Mysql version of replace,
 
   ```php
-  // REPLACE LOW_PRIORITY INTO `Users` (`user_id`, `user_name`) VALUES (3, 'phossa')
-  $qry = $users->replace(['user_id' => 3, 'user_name' => 'phossa'])
-      ->hint('LOW_PRIORITY');
+  // REPLACE INTO `Users` (`user_id`, `user_name`) VALUES (3, 'phossa')
+  $qry = $users->replace(['user_id' => 3, 'user_name' => 'phossa']);
   ```
 
 - <a name="delete"></a>`DELETE`
@@ -533,9 +532,9 @@ Usage
   Multiple tables deletion
 
   ```php
-  // DELETE `u` FROM `Users` AS `u` INNER JOIN `Accounts` AS `a`
+  // DELETE `u`, `a` FROM `Users` AS `u` INNER JOIN `Accounts` AS `a`
   // ON `u`.`user_id` = `a`.`user_id` WHERE `a`.`total_amount` < 10
-  $qry = $builder->delete('u')->table('Users', 'u')
+  $qry = $builder->delete('u', 'a')->table('Users', 'u')
       ->join(['Accounts', 'a'], 'user_id')->where('a.total_amount', '<', 10);
   ```
 
@@ -574,7 +573,7 @@ Advanced topics
 
 - <a name="raw"></a>`raw()`
 
-  Raw string bypass the quoting and escaping,
+  Raw string to bypass the quoting and escaping,
 
   ```php
   // SELECT score + 10 FROM `Students` WHERE `time` < NOW()
@@ -595,6 +594,15 @@ Advanced topics
   // same as above
   $qry = $builder->select()->from("Students")
     ->whereRaw("`age` IN RANGE(?, ?)", [1, 1.2]);
+  ```
+
+- <a name="template"></a>Template with `colTpl()`, `groupTpl()` etc.
+
+  Using template will make quotation of db names possible,
+
+  ```php
+  // SELECT MAX(`score`) AS max FROM `Users`
+  $sql = $users->select()->colTpl('MAX(%s)', 'score', 'max')->getSql();
   ```
 
 - <a name="before"></a>`before()`, `after()`, `hint()` and `option()`
@@ -642,6 +650,16 @@ Advanced topics
   $sql = $query->getNamedStatement();
   ```
 
+  Parameters can be applied to raw or template methods,
+
+  ```php
+  // SELECT * FROM `Users` GROUP BY `year` + 10
+  $sql = $users->select()->groupRaw('`year` + ?', [10])->getSql();
+
+  // same as above
+  $sql = $users->select()->groupTpl('%s + ?', 'year', [10])->getSql();
+  ```
+
 - <a name="settings"></a>Settings
 
   Settings can be applied to `$builder` during instantiation or using
@@ -659,6 +677,16 @@ Advanced topics
 
   ```php
   $sql = $users->select()->getSql(['autoQuote' => false]);
+  ```
+
+  Indented sql,
+
+  ```php
+  // SELECT
+  //     *
+  // FROM
+  //     `Users`
+  $sql = $users->select()->getSql(['seperator' => "\n", 'indent' => "    "]);
   ```
 
   List of settings,

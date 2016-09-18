@@ -201,4 +201,15 @@ class BuilderTest extends \PHPUnit_Framework_TestCase
             ->order('user_id')->limit(10);
         $this->assertEquals($sql, $qry->getSql());
     }
+
+    /**
+     * Tests Builder->setSettings()
+     *
+     * @covers Phossa2\Query\Builder::setSettings()
+     */
+    public function testSetSettings()
+    {
+        $this->object->setSettings(['seperator' => "\n", 'indent' => "    "]);
+        $this->object->select('user_id', 'user_name')->getSql();
+    }
 }
