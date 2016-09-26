@@ -23,8 +23,9 @@ use Phossa2\Query\Interfaces\BuilderAwareInterface;
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     BuilderAwareInterface
- * @version 2.0.0
+ * @version 2.0.1
  * @since   2.0.0 added
+ * @since   2.0.1 changed setBuilder() signature
  */
 trait BuilderAwareTrait
 {
@@ -36,8 +37,10 @@ trait BuilderAwareTrait
 
     /**
      * {@inheritDoc}
+     *
+     * @since  2.0.1 able to set NULL
      */
-    public function setBuilder(BuilderInterface $builder)
+    public function setBuilder(BuilderInterface $builder = null)
     {
         $this->builder = $builder;
         return $this;
