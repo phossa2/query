@@ -1,10 +1,11 @@
 # phossa2/query
 [![Build Status](https://travis-ci.org/phossa2/query.svg?branch=master)](https://travis-ci.org/phossa2/query)
 [![Code Quality](https://scrutinizer-ci.com/g/phossa2/query/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/phossa2/query/)
+[![Code Climate](https://codeclimate.com/github/phossa2/query/badges/gpa.svg)](https://codeclimate.com/github/phossa2/query)
 [![PHP 7 ready](http://php7ready.timesplinter.ch/phossa2/query/master/badge.svg)](https://travis-ci.org/phossa2/query)
 [![HHVM](https://img.shields.io/hhvm/phossa2/query.svg?style=flat)](http://hhvm.h4cc.de/package/phossa2/query)
 [![Latest Stable Version](https://img.shields.io/packagist/vpre/phossa2/query.svg?style=flat)](https://packagist.org/packages/phossa2/query)
-[![License](https://poser.pugx.org/phossa2/query/license)](http://mit-license.org/)
+[![License](https://img.shields.io/:license-mit-blue.svg)](http://mit-license.org/)
 
 **phossa2/query** is a SQL query builder library with concise syntax for PHP. It
 supports Mysql dialect and more coming.
@@ -46,7 +47,7 @@ or add the following lines to your `composer.json`
 ```json
 {
     "require": {
-       "phossa2/query": "^2.0.0"
+       "phossa2/query": "2.*"
     }
 }
 ```
