@@ -60,7 +60,7 @@ class Template extends Raw
     /**
      * {@inheritDoc}
      */
-    public function getStatement(array $settings= [])/*# : string */
+    public function getStatement(array $settings = [])/*# : string */
     {
         if (!empty($settings)) {
             $quoted = [];

@@ -50,9 +50,15 @@ trait HavingTrait
     public function havingTpl(/*# string */ $template, $col, array $params = [])
     {
         $template = $this->positionedParam($template, $params);
-        return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            true, false, true, 'HAVING');
+        return $this->realWhere(
+            new Template($template, $col),
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            true,
+            false,
+            true,
+            'HAVING'
+        );
     }
 
     /**
@@ -61,8 +67,15 @@ trait HavingTrait
     public function havingRaw(/*# string */ $rawString, array $params = [])
     {
         $rawString = $this->positionedParam($rawString, $params);
-        return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
-            WhereInterface::NO_VALUE, true, false, true, 'HAVING');
+        return $this->realWhere(
+            $rawString,
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            true,
+            false,
+            true,
+            'HAVING'
+        );
     }
 
     /**
@@ -88,10 +101,10 @@ trait HavingTrait
     abstract protected function realWhere(
         $col,
         $operator = WhereInterface::NO_OPERATOR,
-        $value    = WhereInterface::NO_VALUE,
+        $value = WhereInterface::NO_VALUE,
         /*# bool */ $logicAnd = true,
         /*# bool */ $whereNot = false,
-        /*# bool */ $rawMode  = false,
+        /*# bool */ $rawMode = false,
         /*# string */ $clause = 'WHERE'
     );
 }

@@ -49,9 +49,13 @@ trait WhereTrait
     public function whereTpl(/*# string */ $template, $col, array $params = [])
     {
         $template = $this->positionedParam($template, $params);
-        return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            'AND', '');
+        return $this->realWhere(
+            new Template($template, $col),
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            'AND',
+            ''
+        );
     }
 
     /**
@@ -60,9 +64,13 @@ trait WhereTrait
     public function orWhereTpl(/*# string */ $template, $col, array $params = [])
     {
         $template = $this->positionedParam($template, $params);
-        return $this->realWhere(new Template($template, $col),
-            WhereInterface::NO_OPERATOR, WhereInterface::NO_VALUE,
-            'OR', '');
+        return $this->realWhere(
+            new Template($template, $col),
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            'OR',
+            ''
+        );
     }
 
     /**
@@ -71,8 +79,14 @@ trait WhereTrait
     public function whereRaw(/*# string */ $rawString, array $params = [])
     {
         $rawString = $this->positionedParam($rawString, $params);
-        return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
-            WhereInterface::NO_VALUE, 'AND', '', true);
+        return $this->realWhere(
+            $rawString,
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            'AND',
+            '',
+            true
+        );
     }
 
     /**
@@ -81,8 +95,14 @@ trait WhereTrait
     public function orWhereRaw(/*# string */ $rawString, array $params = [])
     {
         $rawString = $this->positionedParam($rawString, $params);
-        return $this->realWhere($rawString, WhereInterface::NO_OPERATOR,
-            WhereInterface::NO_VALUE, 'OR', '', true);
+        return $this->realWhere(
+            $rawString,
+            WhereInterface::NO_OPERATOR,
+            WhereInterface::NO_VALUE,
+            'OR',
+            '',
+            true
+        );
     }
 
     /**
@@ -145,7 +165,7 @@ trait WhereTrait
     protected function realWhere(
         $col,
         $operator = WhereInterface::NO_OPERATOR,
-        $value    = WhereInterface::NO_VALUE,
+        $value = WhereInterface::NO_VALUE,
         /*# string */ $logicAnd = 'AND',
         /*# string */ $whereNot = '',
         /*# bool */ $rawMode = false,
@@ -175,7 +195,7 @@ trait WhereTrait
         array $cols,
         /*# string */ $logicAnd = 'AND',
         /*# string */ $whereNot = '',
-        /*# bool */ $rawMode  = false
+        /*# bool */ $rawMode = false
     ) {
         foreach ($cols as $fld => $val) {
             if (is_array($val)) {
@@ -265,15 +285,20 @@ trait WhereTrait
     {
         if (!empty($where[3])) {
             $cls[] = $this->quoteItem(
-                $where[3], $settings, $this->isRaw($where[3], $where[0])
+                $where[3],
+                $settings,
+                $this->isRaw($where[3], $where[0])
             );
         }
         if (WhereInterface::NO_OPERATOR !== $where[4]) {
             $cls[] = $where[4];
         }
         if (WhereInterface::NO_VALUE !== $where[5]) {
-            $cls[] = $this->processValue($where[5], $settings,
-                (bool) preg_match('/\bbetween\b/i', $where[4]));
+            $cls[] = $this->processValue(
+                $where[5],
+                $settings,
+                (bool) preg_match('/\bbetween\b/i', $where[4])
+            );
         }
         return join(' ', $cls);
     }

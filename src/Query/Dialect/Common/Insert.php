@@ -21,7 +21,6 @@ use Phossa2\Query\Traits\Clause\ClauseTrait;
 use Phossa2\Query\Interfaces\Statement\InsertStatementInterface;
 use Phossa2\Query\Interfaces\Statement\SelectStatementInterface;
 
-
 /**
  * Insert
  *
@@ -50,7 +49,8 @@ class Insert extends StatementAbstract implements InsertStatementInterface
      *
      * {@inheritDoc}
      */
-    public function select()/*# : SelectStatementInterface */ {
+    public function select()/*# : SelectStatementInterface */
+    {
         return $this->getBuilder()->select()
             ->setPrevious($this)    // previous stmt is INSERT
             ->col(func_get_args())  // cols from select()

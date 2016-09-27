@@ -79,8 +79,9 @@ trait GroupTrait
     protected function realGroup(
         $col,
         /*# sting */ $suffix = '',
-        /*# bool */ $rawMode = false)
-    {
+        /*# bool */ $rawMode = false
+    ) {
+    
         if (is_array($col)) {
             $this->multipleGroup($col, $suffix);
         } else {

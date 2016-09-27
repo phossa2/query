@@ -77,7 +77,7 @@ class Parameter
         // replace each placeholder with corresponding ?/:name/value
         return preg_replace_callback(
             '/\b__PHQUERY_[^_]++__\b/',
-            function($m) use (&$bindings, $settings) {
+            function ($m) use (&$bindings, $settings) {
                 return $this->replacePlaceholders($m[0], $bindings, $settings);
             },
             $sql
@@ -154,7 +154,7 @@ class Parameter
     protected function setEscapeCallable($escapeFunction)/*# : callable */
     {
         if (!is_callable($escapeFunction)) {
-            $this->escape = function($v) {
+            $this->escape = function ($v) {
                 if (is_numeric($v) && !is_string($v)) {
                     return $v;
                 } else {

@@ -69,7 +69,7 @@ trait OrderTrait
     public function orderRaw(/*# string */ $rawString, array $params = [])
     {
         $rawString = $this->positionedParam($rawString, $params);
-        return $this->realOrder($rawString, '',  true);
+        return $this->realOrder($rawString, '', true);
     }
 
     /**

@@ -47,7 +47,7 @@ trait QuoteTrait
         if (preg_match($pattern, $str)) {
             return preg_replace_callback(
                 '/\b([a-zA-Z\$][0-9a-zA-Z_\$]*+)\b/',
-                function($m) use ($prefix, $suffix) {
+                function ($m) use ($prefix, $suffix) {
                     return sprintf('%s%s%s', $prefix, $m[1], $suffix);
                 },
                 $str

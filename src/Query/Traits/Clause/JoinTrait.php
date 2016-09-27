@@ -95,8 +95,9 @@ trait JoinTrait
     public function joinRaw(
         /*# string */ $joinType,
         /*# string */ $rawString,
-        array $params = [])
-    {
+        array $params = []
+    ) {
+    
         $rawString = $this->positionedParam($rawString, $params);
         return $this->realJoin(strtoupper($joinType), $rawString, '', true);
     }
@@ -225,10 +226,14 @@ trait JoinTrait
             $res[] = $this->quoteItem($on, $settings);
         } else { // common on
             $res[] = $this->quote( // left
-                $this->getFirstTableAlias($on[0]) . $on[0], $settings);
+                $this->getFirstTableAlias($on[0]) . $on[0],
+                $settings
+            );
             $res[] = $on[1]; // operator
             $res[] = $this->quote( // right
-                $this->getSecondTableAlias($cls, $on[2]) . $on[2], $settings);
+                $this->getSecondTableAlias($cls, $on[2]) . $on[2],
+                $settings
+            );
         }
         return join(' ', $res);
     }
