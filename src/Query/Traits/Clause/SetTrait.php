@@ -206,7 +206,7 @@ trait SetTrait
     )/*# : string */ {
         $rows = [];
         $cols = array_keys($this->set_col);
-        foreach ($this->set_data as $num => $row) {
+        foreach ($this->set_data as $row) {
             $values = [];
             foreach ($cols as $col) {
                 $values[] = isset($row[$col]) ?
