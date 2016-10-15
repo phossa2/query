@@ -59,7 +59,7 @@ trait ColTrait
     /**
      * {@inheritDoc}
      */
-    public function count(/*# string */ $col, /*# string */ $alias = '')
+    public function cnt(/*# string */ $col, /*# string */ $alias = '')
     {
         return $this->colTpl('COUNT(%s)', $col, $alias);
     }

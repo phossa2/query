@@ -116,7 +116,7 @@ Usage
     $qry = $users->select()->colRaw('CONCAT(user_name, ?) AS con', ['x']);
     ```
 
-    Common functions like `count($col, $alias)`, `min($col, $alias)`,
+    Common functions like `cnt($col, $alias)`, `min($col, $alias)`,
     `max($col, $alias)`, `avg($col, $alias)`, `sum($col, $alias)` can also be
     used directly.
 
@@ -201,14 +201,14 @@ Usage
 
     ```php
     // SELECT `grp_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `grp_id`
-    $qry = $users->select()->col('grp_id')->count('*', 'cnt')->group('grp_id');
+    $qry = $users->select()->col('grp_id')->cnt('*', 'cnt')->group('grp_id');
     ```
 
     Multiple `group()` and `groupRaw($str, array $params)`,
 
     ```php
     // SELECT `grp_id`, `age`, COUNT(*) AS `cnt` FROM `Users` GROUP BY `grp_id`, age ASC
-    $qry = $users->select('grp_id', 'age')->count('*', 'cnt')
+    $qry = $users->select('grp_id', 'age')->cnt('*', 'cnt')
         ->group('grp_id')->groupRaw('age ASC');
     ```
 
@@ -582,7 +582,7 @@ Advanced topics
       ->from("Students")->where('time', '<', $builder->raw('NOW()'));
 
   // SELECT `grp_id`, COUNT(*) AS `cnt` FROM `Users` GROUP BY grp_id ASC
-  $qry = $users->select()->col('grp_id')->count('*', 'cnt')->groupRaw('grp_id ASC');
+  $qry = $users->select()->col('grp_id')->cnt('*', 'cnt')->groupRaw('grp_id ASC');
   ```
 
   Raw string with positioned parameters,

@@ -22,8 +22,9 @@ use Phossa2\Query\Interfaces\ClauseInterface;
  * @package Phossa2\Query
  * @author  Hong Zhang <phossa@126.com>
  * @see     ClauseInterface
- * @version 2.0.0
+ * @version 2.1.0
  * @since   2.0.0 added
+ * @since   2.1.0 changed `count()` to `cnt()`
  */
 interface ColInterface extends ClauseInterface
 {
@@ -79,7 +80,7 @@ interface ColInterface extends ClauseInterface
      *
      * ```php
      * // SELECT COUNT(`user_id`) AS `cnt`
-     * select()->count('user_id', 'cnt')
+     * select()->cnt('user_id', 'cnt')
      * ```
      *
      * @param  string $col
@@ -88,7 +89,7 @@ interface ColInterface extends ClauseInterface
      * @access public
      * @api
      */
-    public function count(/*# string */ $col, /*# string */ $alias = '');
+    public function cnt(/*# string */ $col, /*# string */ $alias = '');
 
     /**
      * MIN()

@@ -140,17 +140,17 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tests Builder->select()->count()
+     * Tests Builder->select()->cnt()
      *
-     * @covers Phossa2\Query\Dialect\Mysql\Select::count()
+     * @covers Phossa2\Query\Dialect\Mysql\Select::cnt()
      */
-    public function testCount()
+    public function testCnt()
     {
         // functions
         $sql = 'SELECT COUNT(`user_id`) AS `cnt`, MAX(`user_id`) AS `max_id` FROM `Users`';
         $this->assertEquals(
             $sql,
-            $this->object->select()->count('user_id', 'cnt')
+            $this->object->select()->cnt('user_id', 'cnt')
                 ->max('user_id', 'max_id')->getSql()
         );
     }
@@ -324,13 +324,13 @@ class SelectTest extends \PHPUnit_Framework_TestCase
     {
         // single
         $sql = 'SELECT COUNT(*) AS `cnt` FROM `Users` GROUP BY `age` DESC';
-        $qry = $this->object->select()->count('*', 'cnt')
+        $qry = $this->object->select()->cnt('*', 'cnt')
             ->groupTpl('%s DESC', 'age');
         $this->assertEquals($sql, $qry->getSql());
 
         // multiple
         $sql = 'SELECT COUNT(*) AS `cnt` FROM `Users` GROUP BY `age`, `group_id`';
-        $qry = $this->object->select()->count('*', 'cnt')
+        $qry = $this->object->select()->cnt('*', 'cnt')
             ->groupTpl('%s, %s', ['age', 'group_id']);
         $this->assertEquals($sql, $qry->getSql());
     }
