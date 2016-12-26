@@ -47,6 +47,10 @@ trait GroupTrait
      */
     public function groupDesc($col)
     {
+        // support multiple group by
+        if (func_num_args() > 1) {
+            $col = func_get_args();
+        }
         return $this->realGroup($col, 'DESC');
     }
 
@@ -81,7 +85,7 @@ trait GroupTrait
         /*# sting */ $suffix = '',
         /*# bool */ $rawMode = false
     ) {
-    
+
         if (is_array($col)) {
             $this->multipleGroup($col, $suffix);
         } else {
