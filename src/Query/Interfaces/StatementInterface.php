@@ -25,10 +25,11 @@ use Phossa2\Query\Interfaces\Clause\ExtraClauseInterface;
  * @see     BuilderAwareInterface
  * @see     OutputInterface
  * @see     ExtraClauseInterface
+ * @see     MappingInterface
  * @version 2.0.0
  * @since   2.0.0 added
  */
-interface StatementInterface extends SettingsAwareInterface, BuilderAwareInterface, OutputInterface, ExtraClauseInterface
+interface StatementInterface extends SettingsAwareInterface, BuilderAwareInterface, OutputInterface, ExtraClauseInterface, MappingInterface
 {
     /**
      * Return statement with ':name' not quoted
