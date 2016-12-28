@@ -31,7 +31,7 @@ use Phossa2\Query\Interfaces\StatementInterface;
  */
 abstract class StatementAbstract extends ObjectAbstract implements StatementInterface
 {
-    use SettingsAwareTrait, BuilderAwareTrait, ExtraClauseTrait, PreviousTrait, MappingTrait;
+    use SettingsAwareTrait, BuilderAwareTrait, ExtraClauseTrait, PreviousTrait;
 
     /**
      * value bindings
