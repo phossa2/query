@@ -181,12 +181,14 @@ trait SetTrait
         array $settings
     )/*# : string */ {
         $result = [];
-        foreach ($this->set_data[0] as $col => $val) {
-            if (ClauseInterface::NO_VALUE === $val) {
-                $result[] = $col;
-            } else {
-                $result[] = $this->quote($col, $settings) . ' = ' .
-                    $this->processValue($val, $settings);
+        if (isset($this->set_data[0])) {
+            foreach ($this->set_data[0] as $col => $val) {
+                if (ClauseInterface::NO_VALUE === $val) {
+                    $result[] = $col;
+                } else {
+                    $result[] = $this->quote($col, $settings) . ' = ' .
+                        $this->processValue($val, $settings);
+                }
             }
         }
         return $this->joinClause($prefix, ',', $result, $settings);
